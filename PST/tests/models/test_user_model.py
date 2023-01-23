@@ -11,7 +11,7 @@ class UserModelTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(email = 'john.doe@example.org')
+        self.user = User.objects.get(email = 'johndoe@example.org')
         self.second_user = User.objects.get(email = 'janedoe@example.org')
 
     def test_valid_user(self):
