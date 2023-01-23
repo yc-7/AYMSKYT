@@ -32,3 +32,8 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return  self.first_name+" "+self.last_name
