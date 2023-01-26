@@ -1,0 +1,34 @@
+[
+    {
+        "model": "PST.Category",
+        "pk": 1,
+        "fields": {
+            "user": 1 ,
+            "name": "Entertainment",
+            "budget": "150.00"
+        }
+    }, 
+
+    {
+        "model": "PST.Category",
+        "pk": 2,
+        "fields": {
+            "user": 1 ,
+            "name": "Transportation",
+            "budget": "100.00"
+        }
+    },
+
+    {
+        "model": "PST.Category",
+        "pk": 3,
+        "fields": {
+            "user": 2 ,
+            "name": "Entertainment",
+            "budget": "100.00"
+        }
+    }
+
+
+
+]
