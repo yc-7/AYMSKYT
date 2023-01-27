@@ -23,7 +23,7 @@ def log_in(request):
     next_url = request.GET.get('next') or ''
     return render(request, 'login.html', {'form': form, 'next': next_url})
 
-@login_required
+
 def log_out(request):
     logout(request)
     return redirect('home')
