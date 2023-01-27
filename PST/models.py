@@ -3,6 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
+from django.utils import timezone
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -32,3 +33,12 @@ class Category(models.Model):
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+
+class Expenditure(models.Model):
+    """Model for expenditures"""
+
+    title = models.CharField(max_length = 50, blank = False)
+    price = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+    date = models.DateField(default = timezone.now, blank = False)
+    description = models.CharField(max_length = 200, blank = True)
+    
