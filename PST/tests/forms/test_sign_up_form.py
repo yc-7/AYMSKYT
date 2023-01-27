@@ -8,7 +8,6 @@ class SignUpFormTest(TestCase):
 
     def setUp(self):
         self.form_input = {
-            'username': '@testuser',
             'first_name': 'Test',
             'last_name': 'User',
             'email': 'test@hotmail.com',
@@ -23,7 +22,6 @@ class SignUpFormTest(TestCase):
     # form has the necessary fields
     def test_form_has_fields(self):
         form = SignUpForm()
-        self.assertIn('username', form.fields)
         self.assertIn('first_name', form.fields)
         self.assertIn('last_name', form.fields)
         self.assertIn('email', form.fields)
