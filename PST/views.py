@@ -1,63 +1,39 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from .forms import *
 from .models import *
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from .decorators import login_prohibited
+from .views_functions import *
 
-
-# Create your views here.
-
-def login_prohibitied(view_function):
-    def modified_view_function(request):
-        if request.user.is_authenticated:
-            if request.user.is_staff:
-                return redirect('#####ADMIN PAGE DOESNT EXIST####', user_id=request.user.id)
-            else:
-                return redirect('dashboard', user_id=request.user.id)
-        else:
-            return view_function(request)
-    return modified_view_function
-
-#login page for clients (admins use /admin/)
-
+@login_prohibited
 def log_in(request):
     if request.method == 'POST':
         form = LogInForm(request.POST)
         if form.is_valid():
-            try:
-                user = User.objects.get(email=form.cleaned_data.get('email'))
-            except ObjectDoesNotExist:
-                messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
-                form = LogInForm()
-                return render(request, 'login.html', {'form': form})
-            else:
-                username = user.username
-                password = form.cleaned_data.get('password')
+            user = get_user(form)
+            if user:
                 login(request, user)
-                if user.is_staff:
-                    return redirect('#####ADMIN PAGE DOESNT EXIST####', user_id=user.id)
-                else:
-                    return redirect('dashboard', user_id=user.id)
-    else:
-        form = LogInForm()
-        return render(request, 'login.html', {'form': form})
+                redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
+                return redirect(redirect_url)
+            messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
+    form = LogInForm()
+    next_url = request.GET.get('next') or ''
+    return render(request, 'login.html', {'form': form, 'next': next_url})
 
 @login_required
 def log_out(request):
     logout(request)
     return redirect('home')
 
-#home page
-
+@login_prohibited
 def home(request):
     return render(request, 'home.html')
 
-#signup page, redirects to login once account has been created
-@login_prohibitied
+
+@login_prohibited
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -69,5 +45,5 @@ def sign_up(request):
     return render(request, 'signup.html', {'form': form})
 
 @login_required
-def dashboard(request, user_id):
-    return render(request,'dashboard.html', {'user_id': user_id})
+def dashboard(request):
+    return render(request,'dashboard.html')
