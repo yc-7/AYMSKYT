@@ -34,6 +34,9 @@ class Expenditure(models.Model):
     date = models.DateField(default = timezone.now, blank = False)
     description = models.CharField(max_length = 200, blank = True)
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
+
+    def __str__(self):
+        return "£"+self.price
     
 
 class Category(models.Model):
