@@ -42,5 +42,5 @@ class Category(models.Model):
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
-    expenditures = models.ForeignKey(Expenditure, blank = True, on_delete = models.CASCADE)
+    expenditures = models.ManyToManyField(Expenditure, blank = True, on_delete = models.CASCADE)
     
