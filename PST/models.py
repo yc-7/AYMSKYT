@@ -25,14 +25,6 @@ class User(AbstractUser):
     def __str__(self):
         return  self.first_name+" "+self.last_name
 
-    
-
-class Category(models.Model):
-    """Model for expenditure categories"""
-
-    user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
-    name = models.CharField(max_length = 50, blank = False)
-    budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
 
 class Expenditure(models.Model):
     """Model for expenditures"""
@@ -41,4 +33,14 @@ class Expenditure(models.Model):
     price = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
     date = models.DateField(default = timezone.now, blank = False)
     description = models.CharField(max_length = 200, blank = True)
+    receipt_image = models.FileField(upload_to='uploads/', blank = True)
+    
+
+class Category(models.Model):
+    """Model for expenditure categories"""
+
+    user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
+    name = models.CharField(max_length = 50, blank = False)
+    budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+    expenditures = models.ForeignKey(Expenditure, blank = True, on_delete = models.CASCADE)
     
