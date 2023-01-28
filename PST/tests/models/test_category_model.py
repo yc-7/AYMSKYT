@@ -21,7 +21,7 @@ class CategoryModelTestCase(TestCase):
         self._assert_category_is_valid()
 
     def test_category_name_need_not_be_unique(self):
-        self.category.name = 'Transportation'
+        self.category.name = self.second_category.name
         self._assert_category_is_valid()
 
     def test_category_name_must_not_be_blank(self):

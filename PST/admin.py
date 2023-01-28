@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import User, Category
+from .models import User, Category, Expenditure
 
-# Register your models here.
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = [
@@ -12,4 +11,10 @@ class UserAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = [
         'id', 'user', 'name', 'budget'
+    ]
+
+@admin.register(Expenditure)
+class ExpenditureAdmin(admin.ModelAdmin):
+    list_display = [
+        'id', 'user', 'category', 'title', 'price', 'date', 'description', 'receipt_image'
     ]
