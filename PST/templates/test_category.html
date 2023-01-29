@@ -1,0 +1,12 @@
+<html>
+    <body>
+        <table class="table">
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                <td><a href="{% url 'test_spending' category_id=category.id%}">£{{ category.budget.limit }} {{ category.budget.timeframe }}</a>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>

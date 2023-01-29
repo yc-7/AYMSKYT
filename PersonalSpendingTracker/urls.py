@@ -19,5 +19,7 @@ from PST import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
+    path('', views.test_category, name='test_category'),
+    path('test_spending/<int:category_id>', views.test_spending, name='test_spending')
+    #path('', views.home, name='home'),
 ]
