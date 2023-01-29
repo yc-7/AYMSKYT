@@ -1,0 +1,34 @@
+[
+    {
+        "model": "PST.Expenditure",
+        "pk": 1,
+        "fields": {
+            "title": "TFL",
+            "price": "14.28",
+            "date": "2023-01-26"
+        }
+
+    },
+
+    {
+        "model": "PST.Expenditure",
+        "pk": 2,
+        "fields": {
+            "title": "Cinema Tickets",
+            "price": "30.00",
+            "date": "2023-01-09"
+        }
+
+    },
+
+    {
+        "model": "PST.Expenditure",
+        "pk": 3,
+        "fields": {
+            "title": "Shoes",
+            "price": "100.00",
+            "date": "2023-01-15"
+        }
+
+    }
+]
