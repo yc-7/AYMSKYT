@@ -18,9 +18,9 @@ def log_in(request):
                 login(request, user)
                 redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
                 return redirect(redirect_url)
-            messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
+        messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
     form = LogInForm()
-    next_url = request.GET.get('next') or ''
+    next_url = request.GET.get('next') or request.POST.get('next') or ''
     return render(request, 'login.html', {'form': form, 'next': next_url})
 
 
