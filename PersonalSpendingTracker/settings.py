@@ -123,5 +123,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#login url for redirecting user when not logged in
+LOGIN_URL = 'log_in'
+
+# URL for redirects
+REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
+REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'dashboard'
+
 # User model for authentication and login purposes
 AUTH_USER_MODEL = 'PST.User'
