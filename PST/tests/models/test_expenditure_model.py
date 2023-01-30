@@ -56,7 +56,7 @@ class ExpenditureModelTestCase(TestCase):
         self._assert_expenditure_is_valid()
     
     def test_description_not_more_than_200_chars(self):
-        self.expenditure.description = 'a' * 203
+        self.expenditure.description = 'a' * 201
         self._assert_expenditure_is_invalid()
 
     def test_description_can_be_blank(self):
