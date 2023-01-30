@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body %}
+<section class="bg-dark text-light p-5 text-center">
+  <div class="container">
+
+    <h1 class="p-4">Sign up</h1>
+    <table align="center">
+      <form action="{% url 'sign_up' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Sign up">
+      </form>
+    </table>
+  </div>
+</section>
+
+{% endblock %}

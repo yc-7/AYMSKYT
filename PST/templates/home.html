@@ -1,8 +1,29 @@
-<html>
-    <head>
-        <title>AYMSKYT</title>
-    </head>
-    <body>
-        AYMSKYT
-    </body>
-</html>
+{% extends 'base.html' %}
+{% block body %}
+
+
+<section class="bg-dark text-light p-5 text-center">
+  <div class="container">
+    <div>
+      <h1>Personal Spending Tracker</h1>
+      <h5>Sign up or Log in to get started.</h5>
+    </div>
+
+    <div class="container p-5">
+
+      <p>
+        <a href='{% url 'sign_up' %}' class="btn btn-lg btn-info">
+          Sign up
+        </a>
+      </p>
+      <p>
+        <a href='{% url 'log_in' %}' class="btn btn-lg btn-info">
+          Log in
+        </a>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
