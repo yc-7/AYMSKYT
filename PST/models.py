@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
 from django.utils import timezone
+from django.core.validators import MaxLengthValidator
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -26,20 +27,26 @@ class User(AbstractUser):
         return  self.first_name+" "+self.last_name
 
 
-class Expenditure(models.Model):
-    """Model for expenditures"""
-
-    title = models.CharField(max_length = 50, blank = False)
-    price = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2, blank = False)
-    date = models.DateField(blank = True)
-    description = models.CharField(max_length = 200, blank = True)
-    receipt_image = models.FileField(upload_to='uploads/', blank = True)
-
 class Category(models.Model):
     """Model for expenditure categories"""
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
-    expenditures = models.ForeignKey(Expenditure, null = True, blank = True, on_delete = models.CASCADE)
+
+class Expenditure(models.Model):
+    """Model for expenditures"""
+
+    user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
+    category = models.ForeignKey(Category, null = True, blank = True, on_delete=models.CASCADE)
+    title = models.CharField(max_length = 50, blank = False)
+    price = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+    date = models.DateField(blank = True)
+    description = models.TextField(
+        blank = True, 
+        validators=[
+            MaxLengthValidator(200),
+        ]
+    )
+    receipt_image = models.FileField(upload_to='uploads/', blank = True)
     

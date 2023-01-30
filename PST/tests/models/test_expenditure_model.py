@@ -6,7 +6,11 @@ from PST.models import Expenditure
 class ExpenditureModelTestCase(TestCase):
     """Unit tests for the Expenditure model"""
 
-    fixtures = ['PST/tests/fixtures/default_expenditures.json']
+    fixtures = [
+        "PST/tests/fixtures/default_user.json",
+        "PST/tests/fixtures/default_other_user.json",
+        "PST/tests/fixtures/default_expenditures.json"
+    ]
 
     def setUp(self):
         self.expenditure = Expenditure.objects.get(pk=1)
@@ -52,7 +56,7 @@ class ExpenditureModelTestCase(TestCase):
         self._assert_expenditure_is_valid()
     
     def test_description_not_more_than_200_chars(self):
-        self.expenditure.description = 'a' * 201
+        self.expenditure.description = 'a' * 203
         self._assert_expenditure_is_invalid()
 
     def test_description_can_be_blank(self):
