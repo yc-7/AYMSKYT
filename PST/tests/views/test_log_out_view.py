@@ -21,12 +21,12 @@ class LogOutViewTestCase(TestCase, LogInTester):
         response = self.client.get(self.url, follow=True)
         response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'homepage.html')
         self.assertFalse(self._is_logged_in())
 
     def test_get_log_out_without_being_logged_in(self):
         response = self.client.get(self.url, follow=True)
         response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'homepage.html')
         self.assertFalse(self._is_logged_in())
