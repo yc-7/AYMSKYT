@@ -30,8 +30,7 @@ def log_out(request):
 
 @login_prohibited
 def home(request):
-    return render(request, 'home.html')
-
+    return render(request, 'homepage.html')
 
 @login_prohibited
 def sign_up(request):
@@ -47,3 +46,4 @@ def sign_up(request):
 @login_required
 def dashboard(request):
     return render(request,'dashboard.html')
+
