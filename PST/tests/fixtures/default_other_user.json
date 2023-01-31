@@ -7,7 +7,9 @@
       "last_name": "Doe",
       "email": "janedoe@example.org",
       "password": "pbkdf2_sha256$390000$8p9uNEZYtB5CTxES2VQe1Z$lSv0dmsmcM7V7yH54yReh/qbV3NQMl5koEfCMjPUGB4=",
-      "is_active": true
+      "is_active": true,
+      "is_staff": true,
+      "is_superuser": true
     }
   }
 ]

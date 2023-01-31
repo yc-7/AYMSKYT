@@ -6,7 +6,11 @@ from PST.models import Expenditure
 class ExpenditureModelTestCase(TestCase):
     """Unit tests for the Expenditure model"""
 
-    fixtures = ['PST/tests/fixtures/default_expenditures.json']
+    fixtures = [
+        "PST/tests/fixtures/default_user.json",
+        "PST/tests/fixtures/default_other_user.json",
+        "PST/tests/fixtures/default_expenditures.json"
+    ]
 
     def setUp(self):
         self.expenditure = Expenditure.objects.get(pk=1)

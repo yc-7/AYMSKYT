@@ -20,5 +20,8 @@ from PST import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('view_expenditures', views.view_expenditures, name='expenditures'),
+    path('log_in/', views.log_in, name='log_in'),
+    path('log_out/', views.log_out, name='log_out'),
+    path('sign_up/', views.sign_up, name='sign_up'),
+    path('dashboard/', views.dashboard , name='dashboard')
 ]
