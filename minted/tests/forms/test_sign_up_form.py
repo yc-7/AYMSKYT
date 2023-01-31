@@ -1,6 +1,6 @@
 from django.test import TestCase
-from PST.forms import SignUpForm
-from PST.models import User
+from minted.forms import SignUpForm
+from minted.models import User
 from django import forms
 
 class SignUpFormTest(TestCase):

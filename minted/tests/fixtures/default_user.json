@@ -1,6 +1,6 @@
 [
   {
-    "model": "PST.User",
+    "model": "minted.User",
     "pk": 1,
     "fields": {
       "first_name": "John",

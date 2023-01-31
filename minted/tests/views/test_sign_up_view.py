@@ -1,13 +1,13 @@
 from django.test import TestCase
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
-from PST.models import User
-from PST.forms import SignUpForm
+from minted.models import User
+from minted.forms import SignUpForm
 
 class SignUpViewTestCase(TestCase):
     """Tests of the sign up view."""
 
-    fixtures = ['PST/tests/fixtures/default_user.json']
+    fixtures = ['minted/tests/fixtures/default_user.json']
 
     def setUp(self):
         self.url = reverse('sign_up')

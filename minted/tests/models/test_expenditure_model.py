@@ -1,15 +1,15 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from PST.models import Expenditure
+from minted.models import Expenditure
 
 
 class ExpenditureModelTestCase(TestCase):
     """Unit tests for the Expenditure model"""
 
     fixtures = [
-        "PST/tests/fixtures/default_user.json",
-        "PST/tests/fixtures/default_other_user.json",
-        "PST/tests/fixtures/default_expenditures.json"
+        "minted/tests/fixtures/default_user.json",
+        "minted/tests/fixtures/default_other_user.json",
+        "minted/tests/fixtures/default_expenditures.json"
     ]
 
     def setUp(self):

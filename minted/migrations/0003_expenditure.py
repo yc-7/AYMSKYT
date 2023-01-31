@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('PST', '0002_category'),
+        ('minted', '0002_category'),
     ]
 
     operations = [
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('date', models.DateField(blank=True)),
                 ('description', models.TextField(blank=True, validators=[django.core.validators.MaxLengthValidator(200)])),
                 ('receipt_image', models.FileField(blank=True, upload_to='uploads/')),
-                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='PST.category')),
+                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='minted.category')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

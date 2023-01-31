@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'PST',
+    'minted',
 ]
 
 MIDDLEWARE = [
@@ -131,4 +131,4 @@ REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
 REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'dashboard'
 
 # User model for authentication and login purposes
-AUTH_USER_MODEL = 'PST.User'
+AUTH_USER_MODEL = 'minted.User'
