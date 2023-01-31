@@ -1,4 +1,4 @@
-"""Forms in the PST app"""
+"""Forms in the Minted app"""
 
 from django import forms
 from django.forms import ModelForm

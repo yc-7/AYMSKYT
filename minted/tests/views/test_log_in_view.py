@@ -1,17 +1,17 @@
 from django.contrib import messages
 from django.test import TestCase
 from django.urls import reverse
-from PST.forms import LogInForm
-from PST.models import User
+from minted.forms import LogInForm
+from minted.models import User
 from django.conf import settings
-from PST.tests.helpers import LogInTester, reverse_with_next
+from minted.tests.helpers import LogInTester, reverse_with_next
 
 class LogInViewTestCase(TestCase, LogInTester):
     """Tests of the log in view."""
 
     fixtures = [
-        'PST/tests/fixtures/default_user.json',
-        "PST/tests/fixtures/default_other_user.json"
+        'minted/tests/fixtures/default_user.json',
+        "minted/tests/fixtures/default_other_user.json"
     ]
 
     def setUp(self):

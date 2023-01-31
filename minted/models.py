@@ -1,4 +1,4 @@
-"""Models in the PST app"""
+"""Models in the Minted app"""
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser

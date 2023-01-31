@@ -1,14 +1,14 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from PST.models import User,Category
+from minted.models import User,Category
 
 class CategoryModelTestCase(TestCase):
     """Unit tests for the Category model"""
 
     fixtures = [
-        "PST/tests/fixtures/default_user.json",
-        "PST/tests/fixtures/default_other_user.json",
-        "PST/tests/fixtures/default_categories.json"
+        "minted/tests/fixtures/default_user.json",
+        "minted/tests/fixtures/default_other_user.json",
+        "minted/tests/fixtures/default_categories.json"
     ]
 
     def setUp(self):

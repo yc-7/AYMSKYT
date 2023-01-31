@@ -1,12 +1,12 @@
 from django.test import TestCase
 from django.urls import reverse
-from PST.tests.helpers import LogInTester
-from PST.models import User
+from minted.tests.helpers import LogInTester
+from minted.models import User
 
 class LogOutViewTestCase(TestCase, LogInTester):
     """Tests of the log out view."""
 
-    fixtures = ['PST/tests/fixtures/default_user.json']
+    fixtures = ['minted/tests/fixtures/default_user.json']
 
     def setUp(self):
         self.url = reverse('log_out')

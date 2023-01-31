@@ -1,5 +1,5 @@
 from django.test import TestCase
-from PST.models import User
+from minted.models import User
 from django.urls import reverse
 from django.conf import settings
 
@@ -7,8 +7,8 @@ class LogInProhibitedDecoratorTestCase(TestCase):
     """Unit tests of the prohibited decorator"""
 
     fixtures = [
-        "PST/tests/fixtures/default_user.json",
-        "PST/tests/fixtures/default_other_user.json",
+        "minted/tests/fixtures/default_user.json",
+        "minted/tests/fixtures/default_other_user.json",
     ]
 
     def setUp(self):

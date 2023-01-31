@@ -1,5 +1,5 @@
 from django.test import TestCase
-from PST.forms import LogInForm
+from minted.forms import LogInForm
 from django import forms
 
 

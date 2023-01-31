@@ -1,5 +1,5 @@
 from django.test import TestCase
-from PST.models import User
+from minted.models import User
 
 class UserManagerModelTestCase(TestCase):
     """Unit tests for the UserManager"""
