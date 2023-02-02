@@ -4,6 +4,7 @@ from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
 from .models import *
+from django.contrib.auth.forms import UserChangeForm
 
 
 class LogInForm(forms.Form):
@@ -44,4 +45,11 @@ class SignUpForm(forms.ModelForm):
             is_staff=False,
             is_superuser=False,
         )
+        
+class EditProfileForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email'] 
+
+
 

@@ -7,6 +7,8 @@ from .models import *
 from django.contrib import messages
 from .decorators import login_prohibited
 from .views_functions import *
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 @login_prohibited
 def log_in(request):
@@ -47,3 +49,39 @@ def sign_up(request):
 def dashboard(request):
     return render(request,'dashboard.html')
 
+@login_required
+def profile(request):
+    return render(request, 'profile.html', {'user': request.user})
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your details were successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = EditProfileForm(instance= request.user)
+    return render(request, 'edit_profile.html', {'form': form})
+    
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {
+        'form': form})
+    
+    
