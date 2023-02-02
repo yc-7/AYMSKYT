@@ -6,9 +6,13 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
+          {% if request.path == "/" %}
           <a class="nav-link" href="#">Features</a>
           <a class="nav-link" href="{% url 'sign_up' %}" aria-current="page">Sign up</a>
           <a class="nav-link" href="{% url 'log_in' %}" aria-current="page">Log in</a>
+          {% else %}
+          <a class="nav-link" href="{% url 'log_out' %}" aria-current="page">Log Out</a>
+          {% endif %}
         </div>
       </div>
     </div>
