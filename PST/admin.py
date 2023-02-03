@@ -17,9 +17,5 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Expenditure)
 class ExpenditureAdmin(admin.ModelAdmin):
     list_display = [
-<<<<<<< HEAD
-        'title', 'price', 'category', 'date', 'description', 'receipt_image'
-=======
         'id', 'user', 'category', 'title', 'price', 'date', 'description', 'receipt_image'
->>>>>>> 4bfb0187b2defa5cd7153ed108050b3cdcc80273
     ]

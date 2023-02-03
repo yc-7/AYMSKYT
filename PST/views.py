@@ -47,3 +47,6 @@ def sign_up(request):
 def dashboard(request):
     return render(request,'dashboard.html')
 
+def category_expenditures(request):
+    return render(request, '')
+

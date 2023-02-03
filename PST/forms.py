@@ -45,3 +45,18 @@ class SignUpForm(forms.ModelForm):
             is_superuser=False,
         )
 
+class ExpenditureForm(forms.ModelForm):
+    class Meta:
+        model = Expenditure
+        fields = ['title', 'price', 'date', 'description', 'receipt_image']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(ExpenditureForm, self).__init__(*args, **kwargs)
+
+    title = forms.CharField(label="Title")
+    price = forms.DecimalField(label = "Amount Spent", decimal_places = 2, max_digits = 6)
+    date = forms.DateField(label = "Date of Purchase", widget = forms.DateInput(format=('%d/%m/%Y'), attrs={'type': 'date', 'placeholder': '--', 'class': 'form-control'}))
+    description = forms.CharField(label = "Description", widget = forms.Textarea())
+    receipt_image = forms.FileField(label = "Receipt")
+
