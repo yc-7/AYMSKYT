@@ -1,19 +1,16 @@
-<nav class="navbar navbar-expand-lg bg-light">
-    <div class="container ms-auto">
-      <a class="navbar-brand" href="#">Minted</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          {% if request.path == "/" %}
-          <a class="nav-link" href="#">Features</a>
-          <a class="nav-link" href="{% url 'sign_up' %}" aria-current="page">Sign up</a>
-          <a class="nav-link" href="{% url 'log_in' %}" aria-current="page">Log in</a>
-          {% else %}
-          <a class="nav-link" href="{% url 'log_out' %}" aria-current="page">Log Out</a>
-          {% endif %}
-        </div>
-      </div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+    <div class="container">
+        <a class="navbar-brand" style="color: #3eb489" href="{% url 'home' %}">Minted</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        {% if user.is_authenticated %}
+          {% include 'partials/user_menu.html' %}
+        {% else %}
+          {% include 'partials/homepage_menu.html' %}
+        {% endif %}
     </div>
   </nav>
