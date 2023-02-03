@@ -1,17 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'base_content.html' %}
 {% block content %}
-<section class="bg-dark text-light p-5 text-center">
-  <div class="container">
 
-    <h1 class="p-4">Sign up</h1>
-    <table align="center">
-      <form action="{% url 'sign_up' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Sign up">
-      </form>
-    </table>
-  </div>
-</section>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-6 offset-md-3">
+            <h1>Sign Up</h1>
+
+            <form action="{% url 'sign_up' %}" method="post">
+                {% csrf_token %}
+                {% include 'partials/bootstrap_form.html' with form=form %}
+                <input type="submit" value="Sign up" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
