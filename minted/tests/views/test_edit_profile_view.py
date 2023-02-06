@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User
+from django.contrib import messages
+
 
 class EditProfileViewTestCase(TestCase):
     
@@ -14,8 +16,9 @@ class EditProfileViewTestCase(TestCase):
             'email': 'test@example.org',
         }
         self.user = User.objects.get(pk = 1)
+        
     
-    def test_view_uses_correct_template(self):
+    def test_edit_profile_url(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'edit_profile.html')
@@ -30,10 +33,10 @@ class EditProfileViewTestCase(TestCase):
         self.assertEqual(self.user.email, 'johndoe@example.org')
         
         
-    def test_form_valid_data(self):
+    def test_edit_profile_success(self):
         self.client.force_login(self.user)
         response = self.client.post(self.url, data=self.form_input)
-        self.assertRedirects(response, '/profile/')
+        self.assertRedirects(response, '/profile/', status_code=302, target_status_code=200)
         self.user.refresh_from_db()
         self.assertEqual(self.user.first_name, 'TestName')
         self.assertEqual(self.user.last_name, 'TestLastname',)

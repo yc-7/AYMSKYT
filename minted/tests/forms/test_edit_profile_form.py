@@ -1,7 +1,6 @@
 from django.test import TestCase
 from minted.forms import EditProfileForm
 from django import forms
-from minted.models import User
 
 
 class EditProfileFormTest(TestCase):
@@ -33,3 +32,17 @@ class EditProfileFormTest(TestCase):
             'last_name': ['This field is required.'],
             'email': ['This field is required.'],
         })
+        
+    def test_form_rejects_invalid_email(self):
+        self.form_input['email'] = 'bademail'
+        form = EditProfileForm(data=self.form_input)
+        self.assertFalse(form.is_valid())
+        
+    def test_form_rejects_empty_email(self):
+        self.form_input['email'] = ''
+        form = EditProfileForm(data=self.form_input)
+        self.assertFalse(form.is_valid())
+        
+    
+        
+    
