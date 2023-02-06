@@ -1,12 +1,11 @@
-from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from .forms import *
-from .models import *
+from ..forms import *
+from ..models import *
 from django.contrib import messages
-from .decorators import login_prohibited
-from .views_functions import *
+from ..decorators import login_prohibited
+from .views_functions.login_view_functions import *
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 
@@ -24,7 +23,6 @@ def log_in(request):
     form = LogInForm()
     next_url = request.GET.get('next') or request.POST.get('next') or ''
     return render(request, 'login.html', {'form': form, 'next': next_url})
-
 
 def log_out(request):
     logout(request)
@@ -48,6 +46,7 @@ def sign_up(request):
 @login_required
 def dashboard(request):
     return render(request,'dashboard.html')
+
 
 @login_required
 def profile(request):
@@ -84,3 +83,5 @@ def change_password(request):
     return render(request, 'change_password.html', {'form': form})
     
     
+
+
