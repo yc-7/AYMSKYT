@@ -5,7 +5,7 @@
 <div class="container">
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% include 'partials/bootstrap_form.html' with form=form %}
         <button type="submit">Submit</button>
     </form>
     <a href="{% url 'change_password' %}" class="btn btn-lg btn-info">
