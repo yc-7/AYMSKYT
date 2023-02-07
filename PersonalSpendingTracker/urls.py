@@ -24,5 +24,6 @@ urlpatterns = [
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard , name='dashboard'),
-    path('<str:category>/', views.category_expenditures, name='expenditures')
+    path('<str:category>/', views.category_expenditures, name='expenditures'),
+    path('edit_expenditure/', views.edit_expenditure, name='edit_expenditure')
 ]

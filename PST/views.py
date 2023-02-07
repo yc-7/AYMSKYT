@@ -7,6 +7,7 @@ from .models import *
 from django.contrib import messages
 from .decorators import login_prohibited
 from .views_functions import *
+from django.views import View
 
 @login_prohibited
 def log_in(request):
@@ -47,6 +48,26 @@ def sign_up(request):
 def dashboard(request):
     return render(request,'dashboard.html')
 
-def category_expenditures(request):
-    return render(request, '')
+
+def category_expenditures(request, category):
+    expenditures = Expenditure.objects.filter(user=request.user).filter(category=category)
+    return render(request, 'expenditures/expenditures_list.html', { 'expenditures': expenditures })
+
+
+def edit_expenditure(request, expenditure_id):
+    if request.method == 'POST':
+        form = Expenditure(request.POST, user=request.user)
+        if form.is_valid():
+            form.update(expenditure_id)
+            return redirect('expenditures')
+    else:
+        expenditure = Expenditure.objects.get(id=expenditure_id)
+        current_expenditure = { 'title': expenditure.title,
+                                'price': expenditure.price,
+                                'date': expenditure.date,
+                                'description': expenditure.description,
+                                'receipt_image': expenditure.receipt_image,
+                              }
+        form = ExpenditureForm(user=request.user, initial=current_expenditure)
+    return render(request, { 'form': form, 'expenditure': expenditure })
 

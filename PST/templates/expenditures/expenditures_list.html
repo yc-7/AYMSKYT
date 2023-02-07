@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% includes 'navbar.html' %}
+{% block content %}
+<div class="container vh-100">
+    <table class="table table-borderless">
+        {% for expenditure in expenditures %}
+           {% include 'expenditures/partials/expenditure_layout.html' with expenditure=expenditure %}
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
