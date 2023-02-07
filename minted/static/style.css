@@ -1,0 +1,57 @@
+.navbar-brand {
+    color: #d462a1;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+
+  }
+.custom-nav{
+  color: #C8E3DF;
+}
+
+/* .navbar {
+  height: 80px;
+  padding: 10px;
+  font-size: 18px;
+} */
+
+.nav-link{
+  color: #d462a1;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+}
+
+.container{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+
+.custom-bg{
+  background: #72e0ad;
+  height:100vh;
+}
+
+.custom-button{
+  background-color: #d462a1; 
+  color: white; 
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+
+body{
+  color: #47235e;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+i.bi-person-circle {
+  font-size: 2rem;
+  color: #d462a1;
+}
