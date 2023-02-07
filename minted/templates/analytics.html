@@ -1,0 +1,51 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div id = "container">
+  <form action="{% url 'view_analytics' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" class="btn btn-primary">
+  </form>
+</div>
+<div id="container" style="width: 50%;">
+  {{ data|json_script:"dataVar" }}
+  {{ labels|json_script:"labelsVar" }}
+  <canvas id="pie-chart"></canvas>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  // Do we want a newer version for chartjs? newest version does not work with js below.
+  // Move this to it's own javascript file.
+  var data = JSON.parse(document.getElementById('dataVar').textContent);
+  var labels = JSON.parse(document.getElementById('labelsVar').textContent);
+
+  var config = {
+    type: 'pie',
+    data: {
+      datasets: [{
+        data: data,
+        backgroundColor: [
+        '#FF6384', 
+        '#36A2EB', 
+        '#FFCE56', 
+        '#4BC0C0', 
+        '#9966FF'
+        ],
+        label: 'Total'
+      }],
+      labels: labels
+    },
+    options: {
+      responsive: true
+    }
+  };
+
+  window.onload = function() {
+    var ctx = document.getElementById('pie-chart').getContext('2d');
+    window.myPie = new Chart(ctx, config);
+  };
+
+</script>
+
+{% endblock %}

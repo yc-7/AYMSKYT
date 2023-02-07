@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
 from django.utils import timezone
 from django.core.validators import MaxLengthValidator
+import datetime
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -33,6 +34,17 @@ class Category(models.Model):
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+
+    def get_total_expenses_for_category(self, dateFrom, dateTo):
+        # if not(dateFrom and dateTo):
+        #     dateFrom = datetime.date.min
+        #     dateTo = datetime.date.max
+
+        print(dateFrom)
+        print(dateTo)
+        expenses = Expenditure.objects.filter(category=self).filter(date__gte = dateFrom).filter(date__lte = dateTo)
+        total = sum([expense.price for expense in expenses])
+        return total
 
 class Expenditure(models.Model):
     """Model for expenditures"""
