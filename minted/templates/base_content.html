@@ -3,7 +3,9 @@
     {% include 'partials/navbar.html' %}
     {% include 'partials/messages.html' %}
     <div class= "custom-bg">
-        {% block content %}
-        {% endblock %}
+        <section class = "p-5 ">
+            {% block content %}
+            {% endblock %}
+        </section>
     </div>
 {% endblock %}

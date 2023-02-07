@@ -47,5 +47,11 @@
 
 body{
   color: #47235e;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
 }
-  
+
+i.bi-person-circle {
+  font-size: 2rem;
+  color: #d462a1;
+}
