@@ -1,0 +1,33 @@
+.navbar-brand {
+    color: #F1A5CF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+
+  }
+.custom-nav{
+  color: #C8E3DF;
+}
+
+/* .navbar {
+  height: 80px;
+  padding: 10px;
+  font-size: 18px;
+} */
+
+.nav-link{
+  color: #F1A5CF;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.container{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+.custom-bg{
+  background: #7EDBB0;
+  height:100vh;
+}
+
+  
