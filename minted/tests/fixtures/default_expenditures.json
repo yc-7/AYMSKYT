@@ -1,0 +1,37 @@
+[
+    {
+        "model": "minted.Expenditure",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "title": "TFL",
+            "price": "14.28",
+            "date": "2023-01-26"
+        }
+
+    },
+
+    {
+        "model": "minted.Expenditure",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "title": "Cinema Tickets",
+            "price": "30.00",
+            "date": "2023-01-09"
+        }
+
+    },
+
+    {
+        "model": "minted.Expenditure",
+        "pk": 3,
+        "fields": {
+            "user": 2,
+            "title": "Shoes",
+            "price": "100.00",
+            "date": "2023-01-15"
+        }
+
+    }
+]

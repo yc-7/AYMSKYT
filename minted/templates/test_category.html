@@ -1,0 +1,17 @@
+<html>
+    <body>
+        <table class="table">
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                {% if category.budget %}
+                  <td>{{ category.budget }}</td>
+                {% else %}
+                  <td><a href="{% url 'test_spending' category_id=category.id%}">You have not set a limit, click here to add create one</a></td>
+                {% endif %}
+                <td><a href="{% url 'test_expenditure' %}">create expenditure</a></td>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>
