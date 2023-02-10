@@ -12,10 +12,12 @@ import datetime
 def view_analytics(request):
     labels = []
     data = []
-    start_date = datetime.date.today() - datetime.timedelta(days=365)
+
+    one_year_from_today = datetime.date.today() - datetime.timedelta(days=365)
+    start_date = one_year_from_today
     end_date = datetime.date.today()
 
-    form = TimeFrameForm(initial={'start_date': start_date, 'end_date':end_date})
+    form = TimeFrameForm(initial={'start_date': start_date, 'end_date': end_date})
 
     if request.method == 'POST':
         form = TimeFrameForm(request.POST)
@@ -25,14 +27,8 @@ def view_analytics(request):
     
 
     categories = Category.objects.filter(user = request.user)
-    print(categories)
     for category in categories:
         labels.append(category.name)
-        data.append(int(category.get_total_expenses_for_category(dateFrom=start_date, dateTo=end_date)))
+        data.append(int(category.get_total_expenses_for_category(date_from=start_date, date_to=end_date)))
     
-    # date = f"{start_date} - {end_date}"
-    return render(request, 'analytics.html', {
-        'form': form,
-        'labels': labels,
-        'data': data,
-    })
+    return render(request, 'analytics.html', {'form': form, 'labels': labels, 'data': data,})
