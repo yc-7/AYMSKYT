@@ -13,25 +13,32 @@
   <canvas id="pie-chart"></canvas>
 </div>
 
+<script>
+  var build_random_colours = function(numberOfColours){
+    colours = [];
+    for (var i = 0; i<numberOfColours; i++){
+      r = Math.floor(Math.random() * 255);
+      g = Math.floor(Math.random() * 255);
+      b = Math.floor(Math.random() * 255);
+      colours.push(`rgba(${r}, ${g}, ${b}, 0.8)`);
+    }
+    return colours;
+  }
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
   // Do we want a newer version for chartjs? newest version does not work with js below.
   // Move this to it's own javascript file.
   var data = JSON.parse(document.getElementById('dataVar').textContent);
   var labels = JSON.parse(document.getElementById('labelsVar').textContent);
-
+  var colours = build_random_colours(data.length);
   var config = {
     type: 'pie',
     data: {
       datasets: [{
         data: data,
-        backgroundColor: [
-        '#FF6384', 
-        '#36A2EB', 
-        '#FFCE56', 
-        '#4BC0C0', 
-        '#9966FF'
-        ],
+        backgroundColor: colours,
         label: 'Total'
       }],
       labels: labels
