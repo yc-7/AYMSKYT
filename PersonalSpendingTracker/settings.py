@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from django.contrib.messages import constants as message_constants
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'PST',
+    'minted',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -130,5 +132,11 @@ LOGIN_URL = 'log_in'
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
 REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'dashboard'
 
+# Message level tags should use Bootstrap terms
+MESSAGE_TAGS={
+    message_constants.DEBUG : 'dark',
+    message_constants.ERROR : 'danger',
+}
+
 # User model for authentication and login purposes
-AUTH_USER_MODEL = 'PST.User'
+AUTH_USER_MODEL = 'minted.User'

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block body %}
+    {% include 'partials/navbar.html' %}
+    {% include 'partials/messages.html' %}
+    <div class= "custom-bg">
+        <section class = "p-5 ">
+            {% block content %}
+            {% endblock %}
+        </section>
+    </div>
+{% endblock %}

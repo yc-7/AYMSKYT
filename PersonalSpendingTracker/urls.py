@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from PST import views
+from minted import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,6 +24,7 @@ urlpatterns = [
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard , name='dashboard'),
-    path('<str:category>/', views.category_expenditures, name='expenditures'),
-    path('edit_expenditure/', views.edit_expenditure, name='edit_expenditure')
+    path('<str:category_name>/', views.category_expenditures, name='expenditures'),
+    path('<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),
+    path('<str:category_name>/new_expenditure/', views.add_expenditure, name='add_expenditure')
 ]

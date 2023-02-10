@@ -1,0 +1,13 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form action="{% url 'edit_expenditure' expenditure.category.name expenditure.id %}" method="post">
+            {% csrf_token %}
+            {% include 'partials/bootstrap_form.html' with form=form %}
+            <input name="updateExpenditure" type="submit" value="Done" class="btn btn-lg custom-button">
+            <a name="cancelAddition" type="button" value="Cancel" class="btn btn-lg custom-button" href="{% url 'expenditures' expenditure.category.name %}">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
