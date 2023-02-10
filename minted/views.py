@@ -47,3 +47,15 @@ def sign_up(request):
 def dashboard(request):
     return render(request,'dashboard.html')
 
+def create_category(request):
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
+            return redirect('dashboard')           
+    else:
+        form = CategoryForm(initial={'user': request.user})
+    return render(request, 'categories.html', {'form': form})

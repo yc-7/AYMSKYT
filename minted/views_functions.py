@@ -35,3 +35,4 @@ def get_redirect_url_for_user(user):
     if user.is_staff and user.is_superuser:
         return settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN
     return settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_USER
+

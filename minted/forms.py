@@ -45,3 +45,10 @@ class SignUpForm(forms.ModelForm):
             is_superuser=False,
         )
 
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        exclude = ['user']
+
+        
