@@ -8,9 +8,11 @@
   </form>
 </div>
 <div id="container" style="width: 50%;">
-  {{ data|json_script:"dataVar" }}
-  {{ labels|json_script:"labelsVar" }}
+  {{ pie_data|json_script:"dataVar" }}
+  {{ pie_labels|json_script:"labelsVar" }}
+  {{ line_data|json_script:"lineVar" }}
   <canvas id="pie-chart"></canvas>
+  <canvas id="line-graph"></canvas>
 </div>
 
 <script>
@@ -30,23 +32,49 @@
 <script>
   // Do we want a newer version for chartjs? newest version does not work with js below.
   // Move this to it's own javascript file.
-  var data = JSON.parse(document.getElementById('dataVar').textContent);
-  var labels = JSON.parse(document.getElementById('labelsVar').textContent);
-  var colours = build_random_colours(data.length);
+  var pie_data = JSON.parse(document.getElementById('dataVar').textContent);
+  var pie_labels = JSON.parse(document.getElementById('labelsVar').textContent);
+  var colours = build_random_colours(pie_data.length);
   var config = {
     type: 'pie',
     data: {
       datasets: [{
-        data: data,
+        data: pie_data,
         backgroundColor: colours,
         label: 'Total'
       }],
-      labels: labels
+      labels: pie_labels
     },
     options: {
       responsive: true
     }
   };
+
+
+  var line_data = JSON.parse(document.getElementById('lineVar').textContent);
+  var ctx = document.getElementById('line-graph').getContext('2d');
+  var line_graph = new Chart(ctx, {
+    type: 'line',
+    data:{
+      labels: line_data.labels,
+      datasets: line_data.datasets
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            unit: 'month'
+          }
+        }],
+        yAxes: [{
+          ticks {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
 
   window.onload = function() {
     var ctx = document.getElementById('pie-chart').getContext('2d');

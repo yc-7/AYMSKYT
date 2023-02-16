@@ -5,7 +5,13 @@ from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
 from django.utils import timezone
 from django.core.validators import MaxLengthValidator
+from django.utils.dateparse import parse_datetime
+from operator import attrgetter
+from itertools import groupby
+from collections import defaultdict
+from decimal import Decimal
 import datetime
+
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -41,6 +47,26 @@ class Category(models.Model):
         total = sum([expense.price for expense in expenses])
 
         return total
+
+    def get_monthly_expenses_for_category(self, date_from, date_to):
+        expenses_by_month = {}
+
+        expenditures = Expenditure.objects.filter(category=self)
+        expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
+        #keyfunc = lambda x: x.date.strftime('%Y-%m')
+        for expense in expenses:
+            month_str = expense.date.strftime("%B %Y")
+            amount = Decimal(str(expense.price))
+            if month_str in expenses_by_month:
+                expenses_by_month[month_str]  += amount
+            else:
+                expenses_by_month[month_str] = amount
+        # for month, month_expenses in groupby(expenses, key = expenses.date.strftime('%Y-%m')):
+        #     expenses_sum = sum(expense.price for expense in month_expenses)
+        #     month_date = parse_datetime(month)
+        #     expenses_by_month[month_date] = expenses_sum
+
+        return expenses_by_month
 
 class Expenditure(models.Model):
     """Model for expenditures"""
