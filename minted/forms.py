@@ -55,26 +55,27 @@ class TestExpenditureForm(forms.ModelForm):
 class SpendingLimitForm(forms.ModelForm):
     class Meta:
         model = SpendingLimit
-        fields = ['remaining_budget', 'timeframe']
+        fields = ['budget', 'timeframe']
     
-    def save(self):
-        super().save(commit=False)
-        today = date.today()
-        start_date = self.cleaned_data.get('start_date')
-        timeframe = self.cleaned_data.get('timeframe')
-        end_date = self.cleaned_data.get('end_date')
-        if timeframe == '/week':
-            end_date = today - timedelta(days=today.isocalendar().weekday) + relativedelta(days =+ 7)
-            start_date = end_date - relativedelta(days =+ 6)
-        if timeframe == '/month':
-            start_date = date(today.year, today.month, 1)
-            end_date = date(today.year, (today.month+1)%12, 1) - timedelta(days=1)
-        if timeframe == '/quarter':
-            quarter = (today.month-1)//3 + 1
-            start_date = date(today.year, 3 * quarter - 2, 1)
-            end_date = date(today.year, (3* quarter)%12 + 1, 1) + timedelta(days=-1)
-        if timeframe == '/year':
-            start_date = date(today.year,1,1)
-            end_date = date(today.year+1, 1, 1) - timedelta(days=1)
-        return SpendingLimit.objects.create(remaining_budget = self.cleaned_data.get('remaining_budget'),
-                                            start_date = start_date, end_date = end_date, timeframe = timeframe)
+    # def save(self):
+    #     super().save(commit=False)
+    #     today = date.today()
+    #     budget = self.cleaned_data.get('budget')
+    #     start_date = self.cleaned_data.get('start_date')
+    #     timeframe = self.cleaned_data.get('timeframe')
+    #     end_date = self.cleaned_data.get('end_date')
+    #     if timeframe == '/week':
+    #         end_date = today - timedelta(days=today.isocalendar().weekday) + relativedelta(days =+ 7)
+    #         start_date = end_date - relativedelta(days =+ 6)
+    #     if timeframe == '/month':
+    #         start_date = date(today.year, today.month, 1)
+    #         end_date = date(today.year, (today.month+1)%12, 1) - timedelta(days=1)
+    #     if timeframe == '/quarter':
+    #         quarter = (today.month-1)//3 + 1
+    #         start_date = date(today.year, 3 * quarter - 2, 1)
+    #         end_date = date(today.year, (3* quarter)%12 + 1, 1) + timedelta(days=-1)
+    #     if timeframe == '/year':
+    #         start_date = date(today.year,1,1)
+    #         end_date = date(today.year+1, 1, 1) - timedelta(days=1)
+    #     return SpendingLimit.objects.create(budget = budget, remaining_budget = budget,
+    #                                         start_date = start_date, end_date = end_date, timeframe = timeframe)

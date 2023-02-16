@@ -12,15 +12,17 @@ TIMEFRAME = [
     ('/quarter', 'quarter'),
     ('/year', 'year'),
 ]
-
+#update spending limits whenever user logs in
 class SpendingLimit(models.Model):
-    remaining_budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
+    #remaining_budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
+    budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
+    #limit
     timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=True)
-    start_date = models.DateField(default = None, blank=False)
-    end_date = models.DateField(default = None, blank=False)
+    #start_date = models.DateField(default = None, blank=False)
+    #end_date = models.DateField(default = None, blank=False)
 
-    def __str__(self):
-        return 'You have ' + str(self.remaining_budget) + ' to spend until ' + str(self.end_date)
+    # def __str__(self):
+    #     return 'You have ' + str(self.remaining_budget) + ' to spend until ' + str(self.end_date)
 
 class User(AbstractUser):
     """User model for authentication"""

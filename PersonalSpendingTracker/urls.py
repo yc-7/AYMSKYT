@@ -19,10 +19,10 @@ from minted import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.test_category, name='test_category'),
+    #path('', views.test_category, name='test_category'),
     path('test_spending/<int:category_id>', views.test_spending, name='test_spending'),
     path('test_expenditure/', views.test_expenditure, name='test_expenditure'),
-    #path('', views.home, name='home'),
+    path('', views.home, name='home'),
     path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
