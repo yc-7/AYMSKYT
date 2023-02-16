@@ -48,7 +48,7 @@ def dashboard(request):
 
 def category_expenditures(request, category_name):
     category = Category.objects.get(name=category_name)
-    expenditures = Expenditure.objects.filter(category=category)
+    expenditures = Expenditure.objects.filter(category=category).order_by('-date')
     if request.method == 'POST':
         expenditure_id = int(request.POST['id'])
         expenditure = expenditures.get(id=expenditure_id)
