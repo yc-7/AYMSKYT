@@ -8,6 +8,7 @@ from ..decorators import login_prohibited
 from .views_functions.login_view_functions import *
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 
 @login_prohibited
 def log_in(request):
@@ -69,18 +70,21 @@ def edit_profile(request):
     
 @login_required
 def change_password(request):
+    current_user = request.user
     if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
+        form = PasswordForm(data=request.POST)
         if form.is_valid():
-            form.save()
-            update_session_auth_hash(request, form.user)
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('profile')
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = PasswordChangeForm(request.user)
+            password = form.cleaned_data.get('password')
+            if check_password(password, current_user.password):
+                new_password = form.cleaned_data.get('new_password')
+                current_user.set_password(new_password)
+                current_user.save()
+                update_session_auth_hash(request, current_user)
+                messages.add_message(request, messages.SUCCESS, "Password updated!")
+                return redirect('profile')
+    form = PasswordForm()
     return render(request, 'change_password.html', {'form': form})
+
     
     
 
