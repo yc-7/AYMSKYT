@@ -1,0 +1,32 @@
+
+<div class="container">
+    <h1>Categories</h1>
+    <p><a href="{% url 'create_category' %}" class="btn btn-primary">New Category</a></p>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th style="text-align:center; width:auto"></th>
+            <th style="text-align:center; width:30%"></th>
+            <th style="text-align:center; width:30%"></th>
+
+          </tr>
+        </thead>
+        
+        {% if categories %}
+          {% for category in categories %}
+            <tr><form action="{% url 'category_list_view' %}" method="get">
+                <input type="hidden" name="term_id" value="{{ term.id }}"/>
+                <td style="text-align:center">{{ category.user }}</td>
+                <td style="text-align:center">{{ category.name }}</td>
+                <td style="text-align:center">{{ category.budget }}</td>
+
+                <td style="text-align:center"><input type="submit" value="Edit"  class="btn btn-primary"/></td>
+            </form></tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+              <td colspan=4 style="text-align:left">No categories yet...</td>
+          </tr>
+        {% endif %}
+      </table>
+</div>

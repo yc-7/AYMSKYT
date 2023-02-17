@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate
 from django.conf import settings
+from django.shortcuts import redirect
+import urllib
 
 def get_user(form):
     """Autheticates user from login form
@@ -36,3 +38,13 @@ def get_redirect_url_for_user(user):
         return settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN
     return settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_USER
 
+def redirect_with_queries(url, **queries):
+    """
+    A regular html redirect but with optional added queries
+    """
+
+    response = redirect(url)
+    if queries:
+        query_string = urllib.parse.urlencode(queries)
+        response['location'] += '?' + query_string
+    return response

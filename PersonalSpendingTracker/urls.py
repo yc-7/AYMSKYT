@@ -24,5 +24,9 @@ urlpatterns = [
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard , name='dashboard'),
-    path('categories/', views.create_category, name = 'categories')
+    path('create_category/', views.create_category, name = 'create_category'),
+    #path('category/<int:category_id>', views.view_category, name ='view_category'),
+    path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
+    path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
+    path('category_list/', views.category_list_view, name = 'category_list')
 ]

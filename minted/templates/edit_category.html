@@ -4,13 +4,12 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-md-6 offset-md-3">
-            <h1>Create a spending category</h1>
+            <h1>EDIT!!!1!!!!11!!!11!!!</h1>
 
-            <form action="{% url 'categories' %}" method="post">
+            <form action="{% url 'edit_category' category_id%}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
                 {% include 'partials/bootstrap_form.html' with form=form %}
-                <input type="submit" value="Create a category" class="btn btn-primary">
+                <input type="submit" value="mmmmMmMMmMMm EDITTTTT" class="btn btn-primary">
             </form>
         </div>
     </div>
