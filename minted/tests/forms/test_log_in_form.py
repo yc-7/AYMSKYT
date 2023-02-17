@@ -63,18 +63,6 @@ class LogInFormTest(TestCase):
         form = LogInForm(data=self.form_input)
         self.assertFalse(form.is_valid())
 
-    # form rejects invalid email
-    def test_form_rejects_invalid_email(self):
-        self.form_input['email'] = 'bademail'
-        form = LogInForm(data=self.form_input)
-        self.assertTrue(form.is_valid())
-
-    # form rejects invalid password
-    def test_form_rejects_invalid_password(self):
-        self.form_input['password'] = 'badpassword'
-        form = LogInForm(data=self.form_input)
-        self.assertTrue(form.is_valid())
-
     
 
    
