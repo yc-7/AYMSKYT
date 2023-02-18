@@ -1,4 +1,5 @@
-
+{% extends 'base_content.html' %}
+{% block content %}
 <div class="container">
     <h1>Categories</h1>
     <p><a href="{% url 'create_category' %}" class="btn btn-primary">New Category</a></p>
@@ -14,14 +15,20 @@
         
         {% if categories %}
           {% for category in categories %}
-            <tr><form action="{% url 'category_list_view' %}" method="get">
-                <input type="hidden" name="term_id" value="{{ term.id }}"/>
+            <tr><form action="{% url 'edit_category' category.id %}" method="get">
+              {% csrf_token %}
                 <td style="text-align:center">{{ category.user }}</td>
                 <td style="text-align:center">{{ category.name }}</td>
                 <td style="text-align:center">{{ category.budget }}</td>
 
                 <td style="text-align:center"><input type="submit" value="Edit"  class="btn btn-primary"/></td>
-            </form></tr>
+            </form>
+            <td><form action="{% url 'delete_category' category.id %}" method="post">
+              {% csrf_token %}
+              <td style="text-align:center"><input type="submit" value="Delete"  class="btn btn-primary"/></td>
+            </form>
+          </td>
+        </tr>
           {% endfor %}
         {% else %}
           <tr>
@@ -30,3 +37,4 @@
         {% endif %}
       </table>
 </div>
+{% endblock %}
