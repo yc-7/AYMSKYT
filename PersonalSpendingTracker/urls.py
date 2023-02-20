@@ -25,8 +25,10 @@ urlpatterns = [
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard , name='dashboard'),
     path('create_category/', views.create_category, name = 'create_category'),
-    #path('category/<int:category_id>', views.view_category, name ='view_category'),
     path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
-    path('category_list/', views.category_list_view, name = 'category_list')
+    path('category_list/', views.category_list_view, name = 'category_list'),
+    path('profile/', views.profile , name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/edit/change_password/', views.change_password, name='change_password')
 ]

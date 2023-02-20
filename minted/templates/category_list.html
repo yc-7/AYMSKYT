@@ -9,7 +9,6 @@
             <th style="text-align:center; width:auto"></th>
             <th style="text-align:center; width:30%"></th>
             <th style="text-align:center; width:30%"></th>
-
           </tr>
         </thead>
         
@@ -17,10 +16,8 @@
           {% for category in categories %}
             <tr><form action="{% url 'edit_category' category.id %}" method="get">
               {% csrf_token %}
-                <td style="text-align:center">{{ category.user }}</td>
                 <td style="text-align:center">{{ category.name }}</td>
                 <td style="text-align:center">{{ category.budget }}</td>
-
                 <td style="text-align:center"><input type="submit" value="Edit"  class="btn btn-primary"/></td>
             </form>
             <td><form action="{% url 'delete_category' category.id %}" method="post">
