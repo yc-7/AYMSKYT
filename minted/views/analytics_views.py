@@ -12,8 +12,6 @@ import datetime
 def view_analytics(request):
     pie_labels = []
     pie_data = []
-    line_data = []
-    line_dataset = []
 
     one_year_from_today = datetime.date.today() - datetime.timedelta(days=365)
     start_date = one_year_from_today
@@ -33,11 +31,16 @@ def view_analytics(request):
         pie_labels.append(category.name)
         pie_data.append(int(category.get_total_expenses_for_category(date_from=start_date, date_to=end_date)))
 
+
+    line_dataset = []
+    all_months = {}
     for category in categories:
-        expenses = category.get_monthly_expenses_for_category(date_from=start_date, date_to=end_date)
         monthly_expenses = {}
+        expenses = category.get_monthly_expenses_for_category(date_from=start_date, date_to=end_date)
         for expense in expenses:
             month = expense
+            if month not in all_months:
+                all_months[month] = 0
             if month not in monthly_expenses:
                 monthly_expenses[month] = 0
             monthly_expenses[month] += expenses[expense]
@@ -47,26 +50,27 @@ def view_analytics(request):
         })
     
     line_data = []
+    # data = []
     for item in line_dataset:
-        data = {
+        data=[]
+        data_points = {
             'label': item['category_name'],
-            'data': [],
-            'fill': False,
+            'data': data,
         }
         for month, expense in item['monthly_expenses'].items():
-            data['data'].append({
+            data.append({
                 'x':month,
                 'y':expense
             })
-        line_data.append(data)
+        line_data.append(data_points)
     
     
     chart_data = {
-        'labels':sorted(list(set(monthly_expenses.keys()))), 
+        'labels':list(all_months.keys()), 
         'datasets': line_data
     }
     
 
 
     
-    return render(request, 'analytics.html', {'form': form, 'pie_labels': pie_labels, 'pie_data': pie_data, 'line_data': chart_data})
+    return render(request, 'analytics.html', {'form': form, 'pie_labels': pie_labels, 'pie_data': pie_data, 'chart_data': chart_data})

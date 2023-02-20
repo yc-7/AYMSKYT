@@ -1,5 +1,6 @@
 {% extends 'base_content.html' %}
 {% block content %}
+
 <div id = "container">
   <form action="{% url 'view_analytics' %}" method="post">
     {% csrf_token %}
@@ -10,7 +11,8 @@
 <div id="container" style="width: 50%;">
   {{ pie_data|json_script:"dataVar" }}
   {{ pie_labels|json_script:"labelsVar" }}
-  {{ line_data|json_script:"lineVar" }}
+  {{ chart_data|json_script:"lineVar" }}
+
   <canvas id="pie-chart"></canvas>
   <canvas id="line-graph"></canvas>
 </div>
@@ -30,6 +32,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
+  debugger
   // Do we want a newer version for chartjs? newest version does not work with js below.
   // Move this to it's own javascript file.
   var pie_data = JSON.parse(document.getElementById('dataVar').textContent);
@@ -53,33 +56,48 @@
 
   var line_data = JSON.parse(document.getElementById('lineVar').textContent);
   var ctx = document.getElementById('line-graph').getContext('2d');
-  var line_graph = new Chart(ctx, {
+  var line_config = {
     type: 'line',
     data:{
       labels: line_data.labels,
       datasets: line_data.datasets
+      //labels: ["jan", "feb", "nov", "dec"]
+      //datasets: [{
+        //data: [10, 5, 2, 6],
+      //}, {
+        //data: [15, 2, 4, 7]
+      //}, {
+        //data: [20, 5, 2, 3],
+        
+      //}]
     },
     options: {
       scales: {
-        xAxes: [{
-          type: 'time',
-          time: {
-            unit: 'month'
-          }
-        }],
+        //xAxes: [{
+          //type: 'time',
+          //time: {
+            //unit: 'month'
+          //}
+        //}],
         yAxes: [{
-          ticks {
+          ticks: {
             beginAtZero: true
           }
         }]
       }
+
     }
-  });
+  };
 
   window.onload = function() {
     var ctx = document.getElementById('pie-chart').getContext('2d');
     window.myPie = new Chart(ctx, config);
-  };
+
+    var ctx2 = document.getElementById('line-graph').getContext('2d');
+    window.myLine = new Chart(ctx2, line_config);
+  }
+
+ 
 
 </script>
 
