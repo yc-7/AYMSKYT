@@ -6,7 +6,6 @@ from ..models import *
 from django.contrib import messages
 from ..decorators import login_prohibited
 from .views_functions.login_view_functions import *
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 
@@ -87,5 +86,4 @@ def change_password(request):
 
     
     
-
 

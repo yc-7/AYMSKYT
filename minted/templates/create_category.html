@@ -1,0 +1,19 @@
+{% extends 'base_content.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-6 offset-md-3">
+            <h1>Create a spending category</h1>
+
+            <form action="{% url 'create_category' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% include 'partials/bootstrap_form.html' with form=form %}
+                <input type="submit" value="Create a category" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

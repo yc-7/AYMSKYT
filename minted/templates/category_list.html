@@ -1,0 +1,37 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <h1>Categories</h1>
+    <p><a href="{% url 'create_category' %}" class="btn btn-primary">New Category</a></p>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th style="text-align:center; width:auto"></th>
+            <th style="text-align:center; width:30%"></th>
+            <th style="text-align:center; width:30%"></th>
+          </tr>
+        </thead>
+        
+        {% if categories %}
+          {% for category in categories %}
+            <tr><form action="{% url 'edit_category' category.id %}" method="get">
+              {% csrf_token %}
+                <td style="text-align:center">{{ category.name }}</td>
+                <td style="text-align:center">{{ category.budget }}</td>
+                <td style="text-align:center"><input type="submit" value="Edit"  class="btn btn-primary"/></td>
+            </form>
+            <td><form action="{% url 'delete_category' category.id %}" method="post">
+              {% csrf_token %}
+              <td style="text-align:center"><input type="submit" value="Delete"  class="btn btn-primary"/></td>
+            </form>
+          </td>
+        </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+              <td colspan=4 style="text-align:left">No categories yet...</td>
+          </tr>
+        {% endif %}
+      </table>
+</div>
+{% endblock %}

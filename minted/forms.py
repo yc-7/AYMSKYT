@@ -76,7 +76,9 @@ class PasswordForm(forms.Form):
         if new_password != password_confirmation:
             self.add_error('password_confirmation', 'Confirmation does not match password.')
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        exclude = ['user']
 
-
-
-
+        
