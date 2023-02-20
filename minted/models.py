@@ -8,7 +8,9 @@ from django.core.validators import MaxLengthValidator
 from django.utils.dateparse import parse_datetime
 from operator import attrgetter
 from itertools import groupby
-from collections import defaultdict
+from datetime import datetime, timedelta
+from datetime import date
+from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 import datetime
 
@@ -50,19 +52,24 @@ class Category(models.Model):
 
     def get_monthly_expenses_for_category(self, date_from, date_to):
         expenses_by_month = {}
-        
+        all_months = {}
+        current_date = date_from.replace(day=1)
+        while current_date <= date_to:
+            year_month = current_date.strftime('%m-%Y')
+            all_months[year_month] = 0
+            current_date = current_date + relativedelta(months = 1)
 
         expenditures = Expenditure.objects.filter(category=self)
         expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
         for expense in expenses:
-            month_str = expense.date.strftime("%B %Y")
+            month_str = expense.date.strftime("%m-%Y")
             amount = Decimal(str(expense.price))
             if month_str in expenses_by_month:
-                expenses_by_month[month_str]  += amount
+                all_months[month_str]  += amount
             else:
-                expenses_by_month[month_str] = amount
+                all_months[month_str] = amount
 
-        return expenses_by_month
+        return all_months
 
 class Expenditure(models.Model):
     """Model for expenditures"""

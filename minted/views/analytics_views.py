@@ -6,8 +6,12 @@ from ..models import *
 from django.contrib import messages
 from ..decorators import login_prohibited
 from .views_functions.login_view_functions import *
+import random
 import datetime
 
+def get_random_color():
+    colours = ['#2c3e50', '#eaecee', '#d5d8dc', '#abb2b9', '#808b96', '#566573', '#2c3e50', '#273746', '#212f3d', '#1c2833', '#17202a', '#9b59b6', '#f5eef8', '#ebdef0', '#d7bde2', '#c39bd3', '#af7ac5', '#9b59b6', '#884ea0', '#76448a', '#633974', '#512e5f']
+    return random.choice(colours)
 
 def view_analytics(request):
     pie_labels = []
@@ -50,12 +54,17 @@ def view_analytics(request):
         })
     
     line_data = []
-    # data = []
     for item in line_dataset:
+        colour = get_random_color()
         data=[]
         data_points = {
             'label': item['category_name'],
             'data': data,
+            'fill': False,
+            'borderColor': colour,
+            'backgroundColor': colour,
+            'pointHoverRadius': 8,
+            'pointHoverBorderColor': 'white',
         }
         for month, expense in item['monthly_expenses'].items():
             data.append({
@@ -69,8 +78,6 @@ def view_analytics(request):
         'labels':list(all_months.keys()), 
         'datasets': line_data
     }
-    
-
 
     
     return render(request, 'analytics.html', {'form': form, 'pie_labels': pie_labels, 'pie_data': pie_data, 'chart_data': chart_data})
