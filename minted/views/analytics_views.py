@@ -37,20 +37,23 @@ def view_analytics(request):
 
 
     line_dataset = []
-    all_months = {}
+    all_dates = {}
     for category in categories:
-        monthly_expenses = {}
-        expenses = category.get_monthly_expenses_for_category(date_from=start_date, date_to=end_date)
+        expenses_per_time = {}
+        difference_in_days = end_date - start_date
+        if difference_in_days.days > 60:
+            expenses = category.get_monthly_expenses_for_category(date_from=start_date, date_to=end_date)
+        else:
+            expenses = category.get_weekly_expenses_for_category(date_from=start_date, date_to=end_date)
         for expense in expenses:
-            month = expense
-            if month not in all_months:
-                all_months[month] = 0
-            if month not in monthly_expenses:
-                monthly_expenses[month] = 0
-            monthly_expenses[month] += expenses[expense]
+            if expense not in all_dates:
+                all_dates[expense] = 0
+            if expense not in expenses_per_time:
+                expenses_per_time[expense] = 0
+            expenses_per_time[expense] += expenses[expense]
         line_dataset.append({
             'category_name': category.name,
-            'monthly_expenses': monthly_expenses
+            'expenses_per_time': expenses_per_time
         })
     
     line_data = []
@@ -66,16 +69,16 @@ def view_analytics(request):
             'pointHoverRadius': 8,
             'pointHoverBorderColor': 'white',
         }
-        for month, expense in item['monthly_expenses'].items():
+        for date, expense in item['expenses_per_time'].items():
             data.append({
-                'x':month,
+                'x':date,
                 'y':expense
             })
         line_data.append(data_points)
     
     
     chart_data = {
-        'labels':list(all_months.keys()), 
+        'labels':list(all_dates.keys()), 
         'datasets': line_data
     }
 
