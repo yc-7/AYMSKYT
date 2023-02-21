@@ -57,3 +57,20 @@ class SignUpFormTest(TestCase):
         self.form_input['password_confirmation'] = 'badpassword'
         form = SignUpForm(data=self.form_input)
         self.assertFalse(form.is_valid())
+        
+    # email must be in the correct format
+    def test_form_rejects_invalid_email(self):
+        self.form_input['email'] = 'bademail'
+        form = SignUpForm(data=self.form_input)
+        self.assertFalse(form.is_valid())
+        
+    # email can't be empty   
+    def test_form_rejects_empty_email(self):
+        self.form_input['email'] = ''
+        form = SignUpForm(data=self.form_input)
+        self.assertFalse(form.is_valid())
+        
+    # form can't be empty   
+    def test_blank_data(self):
+        form = SignUpForm({})
+        self.assertFalse(form.is_valid())

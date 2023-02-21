@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
 from django.utils import timezone
-from django.core.validators import MaxLengthValidator
+from django.core.validators import MaxLengthValidator, MinValueValidator
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -31,7 +31,7 @@ class Category(models.Model):
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
-    budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+    budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2, validators=[MinValueValidator(0)])
 
 
 class Expenditure(models.Model):

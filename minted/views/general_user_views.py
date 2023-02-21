@@ -6,6 +6,8 @@ from minted.models import *
 from django.contrib import messages
 from minted.decorators import login_prohibited
 from .views_functions.login_view_functions import *
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 
 @login_prohibited
 def log_in(request):
@@ -45,44 +47,43 @@ def sign_up(request):
 def dashboard(request):
     return render(request,'dashboard.html')
 
-
-def category_expenditures(request, category_name):
-    category = Category.objects.get(name=category_name)
-    expenditures = Expenditure.objects.filter(category=category).order_by('-date')
-    if request.method == 'POST':
-        expenditure_id = int(request.POST['id'])
-        expenditure = expenditures.get(id=expenditure_id)
-        expenditure.delete()
-        return redirect('expenditures', category_name=category_name)
-    return render(request, 'expenditures/expenditures_list.html', { 'expenditures': expenditures, 'category': category })
-
-
-def edit_expenditure(request, category_name, expenditure_id):
-    if request.method == 'POST':
-        form = ExpenditureForm(request.POST, user=request.user, category=category_name)
-        if form.is_valid():
-            form.update(expenditure_id)
-            return redirect('expenditures', category_name=category_name)
-    else:
-        expenditure = Expenditure.objects.get(id=expenditure_id)
-        current_expenditure = { 'title': expenditure.title,
-                                'price': expenditure.price,
-                                'date': expenditure.date,
-                                'description': expenditure.description,
-                                'receipt_image': expenditure.receipt_image,
-                              }
-        form = ExpenditureForm(user=request.user, category=category_name, initial=current_expenditure)
-    return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })
-
-def add_expenditure(request, category_name):
-    if request.method == 'POST':
-        form = ExpenditureForm(request.POST, user=request.user, category=category_name)
-        if request.POST.get("addExpenditure"):
-            if form.is_valid():
-                form.save()
-                return redirect('expenditures', category_name=category_name)
-        elif request.POST.get("cancelAddition"):
-            return redirect('expenditures', category_name=category_name)
-    form = ExpenditureForm(user=request.user, category=category_name)
-    return render(request, 'expenditures/add_expenditure.html', { 'form': form, 'category': category_name })
         
+@login_required
+def profile(request):
+    return render(request, 'profile.html', {'user': request.user})
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your details were successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = EditProfileForm(instance= request.user)
+    return render(request, 'edit_profile.html', {'form': form})
+    
+@login_required
+def change_password(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = PasswordForm(data=request.POST)
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            if check_password(password, current_user.password):
+                new_password = form.cleaned_data.get('new_password')
+                current_user.set_password(new_password)
+                current_user.save()
+                update_session_auth_hash(request, current_user)
+                messages.add_message(request, messages.SUCCESS, "Password updated!")
+                return redirect('profile')
+    form = PasswordForm()
+    return render(request, 'change_password.html', {'form': form})
+
+    
+    
+
