@@ -9,7 +9,8 @@ class TimeFrameFormTest(TestCase):
     def setUp(self):
         self.form_input = {
             'start_date': datetime.date(2023, 1, 1),
-            'end_date': datetime.date(2024, 1, 1)
+            'end_date': datetime.date(2024, 1, 1), 
+            'time_interval': 'monthly'
         }
     
     def test_form_has_necessary_fields(self):
@@ -22,6 +23,10 @@ class TimeFrameFormTest(TestCase):
         self.assertIn('end_date', form.fields)
         end_date_field = form.fields['end_date']
         self.assertTrue(isinstance(end_date_field, forms.DateField))
+
+        self.assertIn('time_interval', form.fields)
+        time_interval_field = form.fields['time_interval']
+        self.assertTrue(isinstance(time_interval_field, forms.ChoiceField))
 
     def test_valid_time_frame_form(self):
         form = TimeFrameForm(data = self.form_input)
