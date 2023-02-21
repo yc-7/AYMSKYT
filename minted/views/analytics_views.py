@@ -9,9 +9,6 @@ from .views_functions.login_view_functions import *
 import random
 import datetime
 
-def get_random_color():
-    colours = ['#2c3e50', '#eaecee', '#d5d8dc', '#abb2b9', '#808b96', '#566573', '#2c3e50', '#273746', '#212f3d', '#1c2833', '#17202a', '#9b59b6', '#f5eef8', '#ebdef0', '#d7bde2', '#c39bd3', '#af7ac5', '#9b59b6', '#884ea0', '#76448a', '#633974', '#512e5f']
-    return random.choice(colours)
 
 def view_analytics(request):
     pie_labels = []
@@ -41,10 +38,14 @@ def view_analytics(request):
     for category in categories:
         expenses_per_time = {}
         difference_in_days = end_date - start_date
-        if difference_in_days.days > 60:
+        if difference_in_days.days > 1825:
+            expenses = category.get_yearly_expenses_for_category(date_from= start_date, date_to=end_date)
+        elif difference_in_days.days > 60:
             expenses = category.get_monthly_expenses_for_category(date_from=start_date, date_to=end_date)
-        else:
+        elif difference_in_days.days > 21:
             expenses = category.get_weekly_expenses_for_category(date_from=start_date, date_to=end_date)
+        else:
+            expenses = category.get_daily_expenses_for_category(date_from= start_date, date_to= end_date)
         for expense in expenses:
             if expense not in all_dates:
                 all_dates[expense] = 0
@@ -58,16 +59,18 @@ def view_analytics(request):
     
     line_data = []
     for item in line_dataset:
-        colour = get_random_color()
         data=[]
         data_points = {
             'label': item['category_name'],
             'data': data,
             'fill': False,
-            'borderColor': colour,
-            'backgroundColor': colour,
+            'borderColor': '',
+            'backgroundColor': '',
             'pointHoverRadius': 8,
             'pointHoverBorderColor': 'white',
+            'pointBorderColor': 'white',
+            'pointStyle': 'rectRot',
+
         }
         for date, expense in item['expenses_per_time'].items():
             data.append({

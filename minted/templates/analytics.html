@@ -13,8 +13,8 @@
   {{ pie_labels|json_script:"labelsVar" }}
   {{ chart_data|json_script:"lineVar" }}
 
-  <canvas id="pie-chart"></canvas>
   <canvas id="line-graph"></canvas>
+  <canvas id="pie-chart"></canvas>
 </div>
 
 <script>
@@ -55,6 +55,12 @@
 
 
   var line_data = JSON.parse(document.getElementById('lineVar').textContent);
+
+  for (var i=0; i< line_data.datasets.length; i++){
+    line_data.datasets[i].backgroundColor = colours[i]
+    line_data.datasets[i].borderColor = colours[i]
+  
+  }
   var ctx = document.getElementById('line-graph').getContext('2d');
   var line_config = {
     type: 'line',
