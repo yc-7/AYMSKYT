@@ -50,10 +50,20 @@ class SignUpForm(forms.ModelForm):
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())
     end_date = forms.DateField(widget=DateInput())
+    time_choices = [
+        ('yearly', 'Yearly'),
+        ('monthly', 'Monthly'),
+        ('weekly', 'Weekly'),
+        ('daily', 'Daily'),
+    ]
+    time_interval = forms.ChoiceField(choices = time_choices, widget=forms.Select)
+
 
     def clean(self):
         super().clean()
         start_date = self.cleaned_data.get('start_date')
         end_date = self.cleaned_data.get('end_date')
+        time_interval = self.cleaned_data.get('time_interval')
         if start_date > end_date:
             self.add_error('start_date', 'Start date must be earlier than end date.')
+        

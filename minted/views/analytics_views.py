@@ -17,14 +17,21 @@ def view_analytics(request):
     one_year_from_today = datetime.date.today() - datetime.timedelta(days=365)
     start_date = one_year_from_today
     end_date = datetime.date.today()
+    default_time_interval = 'monthly'
 
-    form = TimeFrameForm(initial={'start_date': start_date, 'end_date': end_date})
+    form = TimeFrameForm(initial={
+        'start_date': start_date, 
+        'end_date': end_date, 
+        'time_interval': default_time_interval})
 
     if request.method == 'POST':
         form = TimeFrameForm(request.POST)
         if form.is_valid():
             start_date = form.cleaned_data.get('start_date')
             end_date = form.cleaned_data.get('end_date')
+            time_interval = form.cleaned_data.get('time_interval')
+    else:
+        time_interval = default_time_interval
     
 
     categories = Category.objects.filter(user = request.user)
@@ -37,12 +44,13 @@ def view_analytics(request):
     all_dates = {}
     for category in categories:
         expenses_per_time = {}
-        difference_in_days = end_date - start_date
-        if difference_in_days.days > 1825:
+        
+
+        if time_interval == 'yearly':
             expenses = category.get_yearly_expenses_for_category(date_from= start_date, date_to=end_date)
-        elif difference_in_days.days > 60:
+        elif time_interval == 'monthly':
             expenses = category.get_monthly_expenses_for_category(date_from=start_date, date_to=end_date)
-        elif difference_in_days.days > 21:
+        elif time_interval == 'weekly':
             expenses = category.get_weekly_expenses_for_category(date_from=start_date, date_to=end_date)
         else:
             expenses = category.get_daily_expenses_for_category(date_from= start_date, date_to= end_date)
