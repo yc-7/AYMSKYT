@@ -1,10 +1,10 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from ..forms import *
-from ..models import *
+from minted.forms import *
+from minted.models import *
 from django.contrib import messages
-from ..decorators import login_prohibited
+from minted.decorators import login_prohibited
 from .views_functions.login_view_functions import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
@@ -47,7 +47,7 @@ def sign_up(request):
 def dashboard(request):
     return render(request,'dashboard.html')
 
-
+        
 @login_required
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})

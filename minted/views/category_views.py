@@ -1,9 +1,11 @@
 from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
 from ..forms import *
 from ..models import *
 from .views_functions.login_view_functions import *
 from django.contrib import messages
 
+@login_required
 def create_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -16,6 +18,7 @@ def create_category(request):
         form = CategoryForm(initial={'user': request.user})
     return render(request, 'create_category.html', {'form': form})
 
+@login_required
 def delete_category(request, category_id):
     if request.method == 'POST':
         if len(Category.objects.filter(id=category_id)) == 0:
@@ -25,12 +28,14 @@ def delete_category(request, category_id):
         messages.add_message(request, messages.SUCCESS, "Category deleted successfully")
     return redirect('category_list')
 
+@login_required
 def category_list_view(request):
     current_user = request.user
     my_categories = Category.objects.filter(user = current_user)
     context = {'user': current_user,'categories': my_categories}
     return render(request, 'category_list.html', context)
 
+@login_required
 def edit_category(request, category_id):
     if not category_id:
         return redirect('category_list')

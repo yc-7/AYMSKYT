@@ -76,6 +76,53 @@ class PasswordForm(forms.Form):
         if new_password != password_confirmation:
             self.add_error('password_confirmation', 'Confirmation does not match password.')
 
+class ExpenditureForm(forms.ModelForm):
+    class Meta:
+        model = Expenditure
+        fields = ['title', 'price', 'date', 'description', 'receipt_image']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        self.category = Category.objects.get(name=kwargs.pop('category'))
+        super(ExpenditureForm, self).__init__(*args, **kwargs)
+
+    title = forms.CharField(label="Title")
+    price = forms.DecimalField(label = "Amount Spent", decimal_places = 2, max_digits = 6)
+    date = forms.DateField(label = "Date of Purchase", widget = forms.DateInput(format=('%d/%m/%Y'), attrs={'type': 'date', 'placeholder': '--', 'class': 'form-control'}))
+    description = forms.CharField(label = "Description", widget = forms.Textarea(), required = False)
+    receipt_image = forms.FileField(label = "Receipt", required = False)
+
+    def clean(self):
+        super().clean()
+        description = self.cleaned_data.get('description') or None
+        receipt_image = self.cleaned_data.get('receipt_image') or None
+
+    def save(self):
+        """Create a new expenditure"""
+
+        super().save(commit=False)
+        expenditure = Expenditure.objects.create(
+                user = self.user,
+                category = self.category,
+                title = self.cleaned_data.get('title'),
+                price = self.cleaned_data.get('price'),
+                date = self.cleaned_data.get('date'),
+                description = self.cleaned_data.get('description'),
+                receipt_image = self.cleaned_data.get('receipt_image')
+            )
+
+    def update(self, expenditure_id):
+        """Update an existing expenditure"""
+
+        expenditure = Expenditure.objects.get(id=expenditure_id)
+        expenditure.title = self.cleaned_data.get('title')
+        expenditure.price = self.cleaned_data.get('price')
+        expenditure.date = self.cleaned_data.get('date')
+        expenditure.description = self.cleaned_data.get('description')
+        expenditure.receipt_image = self.cleaned_data.get('receipt_image')
+        expenditure.save()
+
+
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category

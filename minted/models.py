@@ -26,13 +26,13 @@ class User(AbstractUser):
     def __str__(self):
         return  self.first_name+" "+self.last_name
 
-
 class Category(models.Model):
     """Model for expenditure categories"""
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2, validators=[MinValueValidator(0)])
+
 
 class Expenditure(models.Model):
     """Model for expenditures"""
@@ -49,4 +49,4 @@ class Expenditure(models.Model):
         ]
     )
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
-    
+
