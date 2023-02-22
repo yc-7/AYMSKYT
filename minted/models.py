@@ -7,7 +7,7 @@ from django.core.validators import MaxLengthValidator
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import datetime
-
+from django.core.validators import MaxLengthValidator, MinValueValidator
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -29,13 +29,13 @@ class User(AbstractUser):
     def __str__(self):
         return  self.first_name+" "+self.last_name
 
-
 class Category(models.Model):
     """Model for expenditure categories"""
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
-    budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+    budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2, validators=[MinValueValidator(0)])
+
 
     def get_total_expenses_for_category(self, date_from, date_to):
         expenditures = Expenditure.objects.filter(category=self)
@@ -141,4 +141,4 @@ class Expenditure(models.Model):
         ]
     )
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
-    
+

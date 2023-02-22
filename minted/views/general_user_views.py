@@ -1,11 +1,13 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from ..forms import *
-from ..models import *
+from minted.forms import *
+from minted.models import *
 from django.contrib import messages
-from ..decorators import login_prohibited
+from minted.decorators import login_prohibited
 from .views_functions.login_view_functions import *
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 
 @login_prohibited
 def log_in(request):
@@ -44,4 +46,44 @@ def sign_up(request):
 @login_required
 def dashboard(request):
     return render(request,'dashboard.html')
+
+        
+@login_required
+def profile(request):
+    return render(request, 'profile.html', {'user': request.user})
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your details were successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = EditProfileForm(instance= request.user)
+    return render(request, 'edit_profile.html', {'form': form})
+    
+@login_required
+def change_password(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = PasswordForm(data=request.POST)
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            if check_password(password, current_user.password):
+                new_password = form.cleaned_data.get('new_password')
+                current_user.set_password(new_password)
+                current_user.save()
+                update_session_auth_hash(request, current_user)
+                messages.add_message(request, messages.SUCCESS, "Password updated!")
+                return redirect('profile')
+    form = PasswordForm()
+    return render(request, 'change_password.html', {'form': form})
+
+    
+    
 
