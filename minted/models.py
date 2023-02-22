@@ -4,7 +4,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
 from django.utils import timezone
-from django.core.validators import MaxLengthValidator
+from django.core.validators import MaxLengthValidator, MinValueValidator
+
 
 TIMEFRAME = [
     ('/week', 'week'),
@@ -12,17 +13,15 @@ TIMEFRAME = [
     ('/quarter', 'quarter'),
     ('/year', 'year'),
 ]
-#update spending limits whenever user logs in
-class SpendingLimit(models.Model):
-    #remaining_budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
-    budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
-    #limit
-    timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=True)
-    #start_date = models.DateField(default = None, blank=False)
-    #end_date = models.DateField(default = None, blank=False)
 
-    # def __str__(self):
-    #     return 'You have ' + str(self.remaining_budget) + ' to spend until ' + str(self.end_date)
+class SpendingLimit(models.Model):
+    """Model for spending limits"""
+
+    budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
+    timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=True)
+
+    def __str__(self):
+        return ' £' + str(self.budget) + str(self.timeframe)
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -30,7 +29,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
-    budget     = models.ForeignKey(SpendingLimit, null = True, blank = True, on_delete=models.SET_NULL)
+    #TO DO: edit overall budget
+    #budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -49,8 +49,9 @@ class Category(models.Model):
     """Model for expenditure categories"""
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
+    #name needs to be unqiue? for each user minted.models.Category.MultipleObjectsReturned: get() returned more than one Category -- it returned 3
     name = models.CharField(max_length = 50, blank = False)
-    budget = models.OneToOneField(SpendingLimit, null = True, blank = True, on_delete=models.SET_NULL)
+    budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -70,3 +71,4 @@ class Expenditure(models.Model):
         ]
     )
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
+

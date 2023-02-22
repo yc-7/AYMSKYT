@@ -19,12 +19,20 @@ from minted import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('', views.test_category, name='test_category'),
-    path('test_spending/<int:category_id>', views.test_spending, name='test_spending'),
-    path('test_expenditure/', views.test_expenditure, name='test_expenditure'),
     path('', views.home, name='home'),
     path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
-    path('dashboard/', views.dashboard , name='dashboard')
+    path('dashboard/', views.dashboard , name='dashboard'),
+    path('category_list/<str:category_name>/', views.category_expenditures, name='expenditures'),
+    path('category_list/<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),
+    path('category_list/<str:category_name>/new_expenditure/', views.add_expenditure, name='add_expenditure'),
+    path('create_category/', views.create_category, name = 'create_category'),
+    path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
+    path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
+    path('category_list/', views.category_list_view, name = 'category_list'),
+    path('profile/', views.profile , name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/edit/change_password/', views.change_password, name='change_password'),
+    path('budget_list/', views.budget_list, name = 'budget_list'),
 ]

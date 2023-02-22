@@ -23,5 +23,5 @@ class ExpenditureAdmin(admin.ModelAdmin):
 @admin.register(SpendingLimit)
 class SpendingLimitAdmin(admin.ModelAdmin):
     list_display = [
-        'remaining_budget', 'start_date', 'end_date', 'timeframe'
+        'budget', 'timeframe'
     ]
