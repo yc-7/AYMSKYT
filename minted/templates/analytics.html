@@ -9,10 +9,13 @@
   </form>
 </div>
 <div id="container" style="width: 50%;">
+
   {{ category_pie_chart_data|json_script:"pieChartData" }}
   {{ category_line_chart_data|json_script:"lineChartData" }}
+  {{ all_spending_line_chart_data|json_script:"allSpendingLineChartData" }}
 
   <canvas id="line-graph"></canvas>
+  <canvas id="all-spending-line-graph"></canvas>
   <canvas id="pie-chart"></canvas>
 </div>
 
@@ -60,12 +63,35 @@
     line_data.datasets[i].borderColor = colours[i]
   
   }
-  var ctx = document.getElementById('line-graph').getContext('2d');
   var line_config = {
     type: 'line',
     data:{
       labels: line_data.labels,
       datasets: line_data.datasets
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+
+    }
+  };
+
+  var all_spending_line_data = JSON.parse(document.getElementById('allSpendingLineChartData').textContent);
+
+  for (var i=0; i< all_spending_line_data.datasets.length; i++){
+    all_spending_line_data.datasets[i].backgroundColor = colours[i]
+    all_spending_line_data.datasets[i].borderColor = colours[i]
+  }
+  var all_spending_line_config = {
+    type: 'line',
+    data:{
+      labels: all_spending_line_data.labels,
+      datasets: all_spending_line_data.datasets
     },
     options: {
       scales: {
@@ -85,6 +111,9 @@
 
     var ctx2 = document.getElementById('line-graph').getContext('2d');
     window.myLine = new Chart(ctx2, line_config);
+
+    var ctx3 = document.getElementById('all-spending-line-graph').getContext('2d');
+    window.myLine = new Chart(ctx3, all_spending_line_config);
   }
 </script>
 

@@ -29,6 +29,54 @@ def get_category_expenses_for_time_interval(category, time_interval, start_date,
     
     return expenses
 
+def generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval):
+    line_dataset = []
+    for category in categories:
+        
+        expenses = get_category_expenses_for_time_interval(category, time_interval, start_date, end_date)
+
+        line_dataset.append({
+            'category_name': category.name,
+            'expenses_per_time': expenses
+        })
+    
+    all_expenses = {}
+
+    for item in line_dataset:
+        for date, expense in item['expenses_per_time'].items():
+            if date not in all_expenses:
+                all_expenses[date] = expense
+            else:
+                all_expenses[date] += expense
+
+    data = []
+    line_data = []
+    for date, expense in all_expenses.items():
+        data.append({
+            'x': date, 
+            'y': expense
+        })
+    
+    data_points = {
+        'label': 'Total spending',
+        'data': data,
+        'fill': False,
+        'borderColor': '',
+        'backgroundColor': '',
+        'pointHoverRadius': 8,
+        'pointHoverBorderColor': 'white',
+        'pointBorderColor': 'white',
+        'pointStyle': 'rectRot',
+    }
+
+    line_data.append(data_points)
+    all_spending_line_chart_data = {
+        'labels':list(expenses.keys()),
+        'datasets': line_data
+    }
+    return all_spending_line_chart_data
+
+
 def generate_category_line_chart_dataset(categories, start_date, end_date, time_interval):
     line_dataset = []
     for category in categories:
