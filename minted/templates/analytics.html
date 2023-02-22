@@ -9,9 +9,8 @@
   </form>
 </div>
 <div id="container" style="width: 50%;">
-  {{ pie_data|json_script:"dataVar" }}
-  {{ pie_labels|json_script:"labelsVar" }}
-  {{ chart_data|json_script:"lineVar" }}
+  {{ category_pie_chart_data|json_script:"pieChartData" }}
+  {{ category_line_chart_data|json_script:"lineChartData" }}
 
   <canvas id="line-graph"></canvas>
   <canvas id="pie-chart"></canvas>
@@ -35,18 +34,18 @@
   debugger
   // Do we want a newer version for chartjs? newest version does not work with js below.
   // Move this to it's own javascript file.
-  var pie_data = JSON.parse(document.getElementById('dataVar').textContent);
-  var pie_labels = JSON.parse(document.getElementById('labelsVar').textContent);
-  var colours = build_random_colours(pie_data.length);
+
+  var pieChartData = JSON.parse(document.getElementById('pieChartData').textContent);
+  var colours = build_random_colours(pieChartData.data.length);
   var config = {
     type: 'pie',
     data: {
       datasets: [{
-        data: pie_data,
+        data: pieChartData.data,
         backgroundColor: colours,
         label: 'Total'
       }],
-      labels: pie_labels
+      labels: pieChartData.labels,
     },
     options: {
       responsive: true
@@ -54,7 +53,7 @@
   };
 
 
-  var line_data = JSON.parse(document.getElementById('lineVar').textContent);
+  var line_data = JSON.parse(document.getElementById('lineChartData').textContent);
 
   for (var i=0; i< line_data.datasets.length; i++){
     line_data.datasets[i].backgroundColor = colours[i]
@@ -87,9 +86,6 @@
     var ctx2 = document.getElementById('line-graph').getContext('2d');
     window.myLine = new Chart(ctx2, line_config);
   }
-
- 
-
 </script>
 
 {% endblock %}

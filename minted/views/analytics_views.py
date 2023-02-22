@@ -1,28 +1,22 @@
-from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from ..forms import *
-from ..models import *
-from django.contrib import messages
-from ..decorators import login_prohibited
-from .views_functions.login_view_functions import *
-import random
+from django.shortcuts import render
+from minted.forms import TimeFrameForm
+from minted.models import Category
+from minted.views.views_functions.analytics_view_functions import *
 import datetime
 
-
+@login_required
 def view_analytics(request):
-    pie_labels = []
-    pie_data = []
-
     one_year_from_today = datetime.date.today() - datetime.timedelta(days=365)
+
+    # Defaults
     start_date = one_year_from_today
     end_date = datetime.date.today()
-    default_time_interval = 'monthly'
-
+    time_interval = 'monthly'
     form = TimeFrameForm(initial={
         'start_date': start_date, 
         'end_date': end_date, 
-        'time_interval': default_time_interval})
+        'time_interval': time_interval})
 
     if request.method == 'POST':
         form = TimeFrameForm(request.POST)
@@ -30,68 +24,10 @@ def view_analytics(request):
             start_date = form.cleaned_data.get('start_date')
             end_date = form.cleaned_data.get('end_date')
             time_interval = form.cleaned_data.get('time_interval')
-    else:
-        time_interval = default_time_interval
     
-
     categories = Category.objects.filter(user = request.user)
-    for category in categories:
-        pie_labels.append(category.name)
-        pie_data.append(int(category.get_total_expenses_for_category(date_from=start_date, date_to=end_date)))
 
-
-    line_dataset = []
-    all_dates = {}
-    for category in categories:
-        expenses_per_time = {}
-        
-
-        if time_interval == 'yearly':
-            expenses = category.get_yearly_expenses_for_category(date_from= start_date, date_to=end_date)
-        elif time_interval == 'monthly':
-            expenses = category.get_monthly_expenses_for_category(date_from=start_date, date_to=end_date)
-        elif time_interval == 'weekly':
-            expenses = category.get_weekly_expenses_for_category(date_from=start_date, date_to=end_date)
-        else:
-            expenses = category.get_daily_expenses_for_category(date_from= start_date, date_to= end_date)
-        for expense in expenses:
-            if expense not in all_dates:
-                all_dates[expense] = 0
-            if expense not in expenses_per_time:
-                expenses_per_time[expense] = 0
-            expenses_per_time[expense] += expenses[expense]
-        line_dataset.append({
-            'category_name': category.name,
-            'expenses_per_time': expenses_per_time
-        })
+    category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date)
+    category_line_chart_data = generate_category_line_chart_dataset(categories, start_date, end_date, time_interval)
     
-    line_data = []
-    for item in line_dataset:
-        data=[]
-        data_points = {
-            'label': item['category_name'],
-            'data': data,
-            'fill': False,
-            'borderColor': '',
-            'backgroundColor': '',
-            'pointHoverRadius': 8,
-            'pointHoverBorderColor': 'white',
-            'pointBorderColor': 'white',
-            'pointStyle': 'rectRot',
-
-        }
-        for date, expense in item['expenses_per_time'].items():
-            data.append({
-                'x':date,
-                'y':expense
-            })
-        line_data.append(data_points)
-    
-    
-    chart_data = {
-        'labels':list(all_dates.keys()), 
-        'datasets': line_data
-    }
-
-    
-    return render(request, 'analytics.html', {'form': form, 'pie_labels': pie_labels, 'pie_data': pie_data, 'chart_data': chart_data})
+    return render(request, 'analytics.html', {'form': form, 'category_pie_chart_data': category_pie_chart_data, 'category_line_chart_data': category_line_chart_data})
