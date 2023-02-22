@@ -44,10 +44,7 @@ def generate_all_spending_line_chart_dataset(categories, start_date, end_date, t
 
     for item in line_dataset:
         for date, expense in item['expenses_per_time'].items():
-            if date not in all_expenses:
-                all_expenses[date] = expense
-            else:
-                all_expenses[date] += expense
+            all_expenses[date] = all_expenses.get(date, 0) + expense
 
     data = []
     line_data = []
