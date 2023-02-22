@@ -18,17 +18,6 @@ def generate_category_pie_chart_dataset(categories, start_date, end_date):
     return category_pie_chart_data
 
 def get_category_expenses_for_time_interval(category, time_interval, start_date, end_date):
-    # only from python 3.10 onwards
-    # match time_interval:
-    #     case 'yearly':
-    #         return category.get_yearly_expenses_for_category(date_from = start_date, date_to = end_date)
-    #     case 'monthly':
-    #         return category.get_monthly_expenses_for_category(date_from = start_date, date_to = end_date)
-    #     case 'weekly':
-    #         return category.get_weekly_expenses_for_category(date_from = start_date, date_to = end_date)
-    #     case _:
-    #         return category.get_daily_expenses_for_category(date_from = start_date, date_to = end_date)
-
     if time_interval == 'yearly':
         expenses = category.get_yearly_expenses_for_category(date_from = start_date, date_to = end_date)
     elif time_interval == 'monthly':
@@ -76,7 +65,6 @@ def generate_category_line_chart_dataset(categories, start_date, end_date, time_
     
     
     category_line_chart_data = {
-        #'labels':list(all_dates.keys()), 
         'labels':list(expenses.keys()),
         'datasets': line_data
     }

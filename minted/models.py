@@ -3,15 +3,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
-from django.utils import timezone
 from django.core.validators import MaxLengthValidator
-from django.utils.dateparse import parse_datetime
-from operator import attrgetter
-from itertools import groupby
-from datetime import datetime, timedelta
-from datetime import date
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from decimal import Decimal
 import datetime
 
 
@@ -49,7 +43,7 @@ class Category(models.Model):
         total = sum([expense.price for expense in expenses])
 
         return total
-    
+
     def get_yearly_expenses_for_category(self, date_from, date_to):
         all_years = {}
         current_date = date_from.replace(day = 1)
@@ -62,16 +56,15 @@ class Category(models.Model):
         expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
         for expense in expenses:
             year_str = expense.date.strftime("%Y")
-            amount = Decimal(str(expense.price))
-            if year_str in all_years:
-                all_years[year_str]  += amount
-            else:
-                all_years[year_str] = amount
+            amount = expense.price
+
+            all_years[year_str] = all_years.get(year_str, 0) + amount
 
         return all_years
 
     def get_monthly_expenses_for_category(self, date_from, date_to):
         all_months = {}
+
         current_date = date_from.replace(day=1)
         while current_date <= date_to:
             year_month = current_date.strftime('%m-%Y')
@@ -80,13 +73,12 @@ class Category(models.Model):
 
         expenditures = Expenditure.objects.filter(category=self)
         expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
+
         for expense in expenses:
             month_str = expense.date.strftime("%m-%Y")
-            amount = Decimal(str(expense.price))
-            if month_str in all_months:
-                all_months[month_str]  += amount
-            else:
-                all_months[month_str] = amount
+            amount = expense.price
+
+            all_months[month_str] = all_months.get(month_str, 0) + amount
 
         return all_months
     
@@ -107,7 +99,7 @@ class Category(models.Model):
         expenditures = Expenditure.objects.filter(category=self)
         expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
         for expense in expenses:
-            amount = Decimal(str(expense.price))
+            amount = expense.price
 
             for week_start_date in all_weeks:
                 week_start_date_object = datetime.datetime.strptime(week_start_date, '%d-%m-%Y')
@@ -128,11 +120,9 @@ class Category(models.Model):
         expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
         for expense in expenses:
             day_str = expense.date.strftime("%d-%m-%Y")
-            amount = Decimal(str(expense.price))
-            if day_str in all_days:
-                all_days[day_str]  += amount
-            else:
-                all_days[day_str] = amount
+            amount = expense.price
+
+            all_days[day_str] = all_days.get(day_str, 0) + amount
 
         return all_days
 
