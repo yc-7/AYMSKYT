@@ -1,4 +1,43 @@
-from minted.models import Category
+
+def get_category_expenses_for_time_interval(category, time_interval, start_date, end_date):
+    if time_interval == 'yearly':
+        expenses = category.get_yearly_expenses_for_category(date_from = start_date, date_to = end_date)
+    elif time_interval == 'monthly':
+        expenses = category.get_monthly_expenses_for_category(date_from = start_date, date_to = end_date)
+    elif time_interval == 'weekly':
+        expenses = category.get_weekly_expenses_for_category(date_from = start_date, date_to = end_date)
+    else:
+        expenses = category.get_daily_expenses_for_category(date_from = start_date, date_to = end_date)
+    
+    return expenses
+
+def create_labels(categories, time_interval, start_date, end_date):
+    labels = []
+    if categories:
+        labels = list(get_category_expenses_for_time_interval(categories[0], time_interval, start_date, end_date).keys())
+
+    return labels
+
+def create_data(expenses):
+    data = []
+    for date, expense in expenses:
+        data.append({
+            'x': date, 
+            'y': expense
+        })
+    return data
+
+def create_line_dataset(categories, time_interval, start_date, end_date):
+    line_dataset = []
+    for category in categories:
+        
+        expenses = get_category_expenses_for_time_interval(category, time_interval, start_date, end_date)
+
+        line_dataset.append({
+            'category_name': category.name,
+            'expenses_per_time': expenses
+        })
+    return line_dataset
 
 def generate_category_pie_chart_dataset(categories, start_date, end_date):
     pie_labels = []
@@ -17,42 +56,18 @@ def generate_category_pie_chart_dataset(categories, start_date, end_date):
 
     return category_pie_chart_data
 
-def get_category_expenses_for_time_interval(category, time_interval, start_date, end_date):
-    if time_interval == 'yearly':
-        expenses = category.get_yearly_expenses_for_category(date_from = start_date, date_to = end_date)
-    elif time_interval == 'monthly':
-        expenses = category.get_monthly_expenses_for_category(date_from = start_date, date_to = end_date)
-    elif time_interval == 'weekly':
-        expenses = category.get_weekly_expenses_for_category(date_from = start_date, date_to = end_date)
-    else:
-        expenses = category.get_daily_expenses_for_category(date_from = start_date, date_to = end_date)
-    
-    return expenses
-
 def generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval):
-    line_dataset = []
-    for category in categories:
-        
-        expenses = get_category_expenses_for_time_interval(category, time_interval, start_date, end_date)
-
-        line_dataset.append({
-            'category_name': category.name,
-            'expenses_per_time': expenses
-        })
+    labels = create_labels(categories,time_interval, start_date, end_date)
     
+    line_dataset = create_line_dataset(categories, time_interval, start_date, end_date)
+
     all_expenses = {}
 
     for item in line_dataset:
         for date, expense in item['expenses_per_time'].items():
             all_expenses[date] = all_expenses.get(date, 0) + expense
 
-    data = []
-    line_data = []
-    for date, expense in all_expenses.items():
-        data.append({
-            'x': date, 
-            'y': expense
-        })
+    data = create_data(all_expenses.items())
     
     data_points = {
         'label': 'Total spending',
@@ -66,33 +81,21 @@ def generate_all_spending_line_chart_dataset(categories, start_date, end_date, t
         'pointStyle': 'rectRot',
     }
 
-    line_data.append(data_points)
     all_spending_line_chart_data = {
-        'labels':list(expenses.keys()),
-        'datasets': line_data
+        'labels': labels,
+        'datasets': [data_points]
     }
     return all_spending_line_chart_data
 
 
 def generate_category_line_chart_dataset(categories, start_date, end_date, time_interval):
-    line_dataset = []
-    for category in categories:
-        
-        expenses = get_category_expenses_for_time_interval(category, time_interval, start_date, end_date)
+    labels = create_labels(categories,time_interval, start_date, end_date)
 
-        line_dataset.append({
-            'category_name': category.name,
-            'expenses_per_time': expenses
-        })
+    line_dataset = create_line_dataset(categories, time_interval, start_date, end_date)
     
     line_data = []
     for item in line_dataset:
-        data=[]
-        for date, expense in item['expenses_per_time'].items():
-            data.append({
-                'x':date,
-                'y':expense
-            })
+        data = create_data(item['expenses_per_time'].items())
         
         data_points = {
             'label': item['category_name'],
@@ -108,9 +111,8 @@ def generate_category_line_chart_dataset(categories, start_date, end_date, time_
         
         line_data.append(data_points)
     
-    
     category_line_chart_data = {
-        'labels':list(expenses.keys()),
+        'labels': labels,
         'datasets': line_data
     }
 
