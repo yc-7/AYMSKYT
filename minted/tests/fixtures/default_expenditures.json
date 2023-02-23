@@ -30,7 +30,7 @@
         "pk": 3,
         "fields": {
             "user": 2,
-            "category": 2, 
+            "category": 3, 
             "title": "Shoes",
             "price": "100.00",
             "date": "2023-01-15"
