@@ -29,8 +29,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
-    #TO DO: edit overall budget
-    #budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
+    budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -49,7 +48,6 @@ class Category(models.Model):
     """Model for expenditure categories"""
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
-    #name needs to be unqiue? for each user minted.models.Category.MultipleObjectsReturned: get() returned more than one Category -- it returned 3
     name = models.CharField(max_length = 50, blank = False)
     budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
 

@@ -9,7 +9,14 @@
     <a href="{% url 'edit_profile' %}" class="btn btn-lg btn-info">
         Edit Details
     </a>
-
+    <br>
+    <br>
+    <h1>Budget</h1>
+    <p>Spending limit: {{ user.budget.budget }}</p>
+    <p>Timeframe: {{ user.budget.timeframe }}</p>
+    <a href="{% url 'edit_spending_limit' %}" class="btn btn-lg btn-info">
+        Edit Limits
+    </a>
 </div>
 
 {% endblock %}

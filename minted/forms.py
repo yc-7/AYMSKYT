@@ -39,7 +39,7 @@ class SignUpForm(forms.ModelForm):
 
     def save(self):
         super().save(commit=False)
-        user = User.objects.create_user(
+        return User.objects.create_user(
             first_name=self.cleaned_data.get('first_name'),
             last_name=self.cleaned_data.get('last_name'),
             email=self.cleaned_data.get('email'),
@@ -90,7 +90,7 @@ class ExpenditureForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        self.category = Category.objects.get(name=kwargs.pop('category'))
+        self.category = Category.objects.filter(user=self.user).get(name=kwargs.pop('category'))
         super(ExpenditureForm, self).__init__(*args, **kwargs)
 
     title = forms.CharField(label="Title")
@@ -108,7 +108,7 @@ class ExpenditureForm(forms.ModelForm):
         """Create a new expenditure"""
 
         super().save(commit=False)
-        expenditure = Expenditure.objects.create(
+        return Expenditure.objects.create(
                 user = self.user,
                 category = self.category,
                 title = self.cleaned_data.get('title'),

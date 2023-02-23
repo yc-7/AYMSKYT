@@ -32,7 +32,9 @@ urlpatterns = [
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
     path('category_list/', views.category_list_view, name = 'category_list'),
     path('profile/', views.profile , name='profile'),
-    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/edit/profile', views.edit_profile, name='edit_profile'),
+    path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('profile/edit/change_password/', views.change_password, name='change_password'),
     path('budget_list/', views.budget_list, name = 'budget_list'),
+
 ]
