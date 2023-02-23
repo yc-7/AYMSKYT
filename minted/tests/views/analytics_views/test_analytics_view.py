@@ -146,8 +146,8 @@ class AnalyticsViewTest(TestCase):
 
         form = response.context['form']
         self.assertTrue(form.is_valid())
-        self.assertTrue(form['start_date'], datetime.date(2023, 1, 1))
-        self.assertTrue(form['end_date'], datetime.date(2024, 1, 1))
+        self.assertTrue(form['start_date'], self.form_input['start_date'])
+        self.assertTrue(form['end_date'], self.form_input['end_date'])
         self.assertTrue(form['time_interval'], time_interval)
 
         number_of_months_in_range = abs(self.form_input['end_date'] - self.form_input['start_date']).days//30 + 1
@@ -184,8 +184,8 @@ class AnalyticsViewTest(TestCase):
 
         form = response.context['form']
         self.assertTrue(form.is_valid())
-        self.assertTrue(form['start_date'], datetime.date(2023, 1, 1))
-        self.assertTrue(form['end_date'], datetime.date(2024, 1, 1))
+        self.assertTrue(form['start_date'], self.form_input['start_date'])
+        self.assertTrue(form['end_date'], self.form_input['end_date'])
         self.assertTrue(form['time_interval'], time_interval)
 
         number_of_weeks_in_range = abs(self.form_input['end_date'] - self.form_input['start_date']).days//7 + 1
@@ -215,22 +215,22 @@ class AnalyticsViewTest(TestCase):
 
         form = response.context['form']
         self.assertTrue(form.is_valid())
-        self.assertTrue(form['start_date'], datetime.date(2023, 1, 1))
-        self.assertTrue(form['end_date'], datetime.date(2024, 1, 1))
+        self.assertTrue(form['start_date'], self.form_input['start_date'])
+        self.assertTrue(form['end_date'], self.form_input['end_date'])
         self.assertTrue(form['time_interval'], time_interval)
 
-        number_of_weeks_in_range = abs(self.form_input['end_date'] - self.form_input['start_date']).days + 1
+        number_of_days_in_range = abs(self.form_input['end_date'] - self.form_input['start_date']).days + 1
         number_of_categories_for_user = Category.objects.filter(user=self.user).count() 
 
         pie_chart_data = response.context['category_pie_chart_data'].get('data')
         self.assertTrue(len(pie_chart_data), number_of_categories_for_user)
 
         category_line_chart_datasets_category_1 = response.context['category_line_chart_data'].get('datasets')[0].get('data')
-        self.assertEqual(len(category_line_chart_datasets_category_1), number_of_weeks_in_range)
+        self.assertEqual(len(category_line_chart_datasets_category_1), number_of_days_in_range)
         # TODO: Find better way to test dataset...
 
         category_line_chart_datasets_category_2 = response.context['category_line_chart_data'].get('datasets')[0].get('data')
-        self.assertEqual(len(category_line_chart_datasets_category_2), number_of_weeks_in_range)
+        self.assertEqual(len(category_line_chart_datasets_category_2), number_of_days_in_range)
 
         all_spending_line_chart_datasets = response.context['all_spending_line_chart_data'].get('datasets')[0].get('data')
-        self.assertTrue(len(all_spending_line_chart_datasets), number_of_weeks_in_range)
+        self.assertTrue(len(all_spending_line_chart_datasets), number_of_days_in_range)
