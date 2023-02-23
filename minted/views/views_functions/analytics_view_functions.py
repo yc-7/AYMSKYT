@@ -5,7 +5,7 @@ def generate_category_pie_chart_dataset(categories, start_date, end_date):
     pie_data = []
 
     for category in categories:
-        total_expenses_for_category = int(category.get_total_expenses_for_category(date_from=start_date, date_to=end_date))
+        total_expenses_for_category = float(category.get_total_expenses_for_category(date_from=start_date, date_to=end_date))
 
         pie_labels.append(category.name)
         pie_data.append(total_expenses_for_category)
