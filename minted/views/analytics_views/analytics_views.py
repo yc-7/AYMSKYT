@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from minted.forms import TimeFrameForm
 from minted.models import Category
-from minted.views.views_functions.analytics_view_functions import generate_category_line_chart_dataset, generate_category_pie_chart_dataset, generate_all_spending_line_chart_dataset
+from minted.views.analytics_views.analytics_view_functions import generate_category_line_chart_dataset, generate_category_pie_chart_dataset, generate_all_spending_line_chart_dataset
 import datetime
 
 @login_required

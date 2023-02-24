@@ -4,10 +4,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
 from django.core.validators import MaxLengthValidator
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-import datetime
 from django.core.validators import MaxLengthValidator, MinValueValidator
+from .model_functions import *
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -36,95 +34,49 @@ class Category(models.Model):
     name = models.CharField(max_length = 50, blank = False)
     budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2, validators=[MinValueValidator(0)])
 
+    def get_expenditures_between_dates(self, date_from, date_to):
+        expenditures = Expenditure.objects.filter(category=self)
+        expenses = expenditures.filter(date__gte = date_from, date__lte = date_to).order_by('date')
+
+        return expenses
 
     def get_total_expenses_for_category(self, date_from, date_to):
-        expenditures = Expenditure.objects.filter(category=self)
-        expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to)
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
         total = sum([expense.price for expense in expenses])
 
         return total
 
     def get_yearly_expenses_for_category(self, date_from, date_to):
-        all_years = {}
-        current_date = date_from.replace(day = 1)
-        while current_date <= date_to:
-            year = current_date.strftime('%Y')
-            all_years[year] = 0
-            current_date = current_date + relativedelta(years = 1)
+        all_years = get_years_between_dates(date_from, date_to)
 
-        expenditures = Expenditure.objects.filter(category=self)
-        expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
-        for expense in expenses:
-            year_str = expense.date.strftime("%Y")
-            amount = expense.price
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        yearly_expenses = get_spending_for_years(all_years, expenses)
 
-            all_years[year_str] = all_years.get(year_str, 0) + amount
-
-        return all_years
+        return yearly_expenses
 
     def get_monthly_expenses_for_category(self, date_from, date_to):
-        all_months = {}
+        all_months = get_months_between_dates(date_from, date_to)
 
-        current_date = date_from.replace(day=1)
-        while current_date <= date_to:
-            year_month = current_date.strftime('%m-%Y')
-            all_months[year_month] = 0
-            current_date = current_date + relativedelta(months = 1)
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        monthly_expenses = get_spending_for_months(all_months, expenses)
 
-        expenditures = Expenditure.objects.filter(category=self)
-        expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
-
-        for expense in expenses:
-            month_str = expense.date.strftime("%m-%Y")
-            amount = expense.price
-
-            all_months[month_str] = all_months.get(month_str, 0) + amount
-
-        return all_months
+        return monthly_expenses
     
     def get_weekly_expenses_for_category(self, date_from, date_to):
-        all_weeks = {}
-        current_date = date_from.replace(day=1)
-        
-        while current_date <= date_to:
-            year_month_week = current_date.strftime('%d-%m-%Y')
-            all_weeks[year_month_week] = 0
-            current_date = current_date + relativedelta(weeks = 1)
-        
-        def is_within_week(date_to_check, start_week):
-            sunday_date = start_week + relativedelta(days = 6)
-            falls_within_week = start_week <= date_to_check <= sunday_date
-            return falls_within_week
+        all_weeks = get_weeks_between_dates(date_from, date_to)
 
-        expenditures = Expenditure.objects.filter(category=self)
-        expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
-        for expense in expenses:
-            amount = expense.price
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        weekly_expenses = get_spending_for_weeks(all_weeks, expenses)
 
-            for week_start_date in all_weeks:
-                week_start_date_object = datetime.datetime.strptime(week_start_date, '%d-%m-%Y')
-                if is_within_week(expense.date, week_start_date_object.date()):
-                    all_weeks[week_start_date] += amount
-
-        return all_weeks
+        return weekly_expenses
     
     def get_daily_expenses_for_category(self, date_from, date_to):
-        all_days = {}
-        current_date = date_from
-        while current_date <= date_to:
-            year_month_day = current_date.strftime('%d-%m-%Y')
-            all_days[year_month_day] = 0
-            current_date = current_date + relativedelta(days = 1)
+        all_days = get_days_between_dates(date_from, date_to)
 
-        expenditures = Expenditure.objects.filter(category=self)
-        expenses = expenditures.filter(date__gte = date_from).filter(date__lte = date_to).order_by('date')
-        for expense in expenses:
-            day_str = expense.date.strftime("%d-%m-%Y")
-            amount = expense.price
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        daily_expenses = get_spending_for_days(all_days, expenses)
 
-            all_days[day_str] = all_days.get(day_str, 0) + amount
-
-        return all_days
+        return daily_expenses
 
 class Expenditure(models.Model):
     """Model for expenditures"""
