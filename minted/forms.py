@@ -37,7 +37,7 @@ class SignUpForm(forms.ModelForm):
         if new_password != password_confirmation:
             self.add_error('password_confirmation', 'Confirmation does not match password.')
 
-    def save(self):
+    def save(self, budget):
         super().save(commit=False)
         return User.objects.create_user(
             first_name=self.cleaned_data.get('first_name'),
@@ -46,6 +46,7 @@ class SignUpForm(forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
             is_staff=False,
             is_superuser=False,
+            budget=budget
         )
 
 class SpendingLimitForm(forms.ModelForm):

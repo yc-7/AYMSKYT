@@ -5,7 +5,7 @@ from .models import User, Category, Expenditure, SpendingLimit
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'email', 'first_name', 'last_name', 'is_active'
+        'id', 'email', 'first_name', 'last_name', 'is_active', 'budget'
     ]
 
 @admin.register(Category)

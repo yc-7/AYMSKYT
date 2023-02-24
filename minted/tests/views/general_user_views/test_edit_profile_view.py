@@ -6,7 +6,10 @@ from django.contrib import messages
 
 class EditProfileViewTestCase(TestCase):
     
-    fixtures = ['minted/tests/fixtures/default_user.json']
+    fixtures = [
+        'minted/tests/fixtures/default_user.json',
+        "minted/tests/fixtures/default_spending_limit.json"
+    ]
     
     def setUp(self):
         self.url = reverse('edit_profile')

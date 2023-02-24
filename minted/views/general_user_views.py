@@ -39,9 +39,7 @@ def sign_up(request):
         spending_form = SpendingLimitForm(request.POST)
         if form.is_valid() and spending_form.is_valid():
             spending = spending_form.save()
-            user = form.save()
-            user.budget = spending
-            user.save()
+            user = form.save(spending)
             return redirect('log_in')
     else:
         form = SignUpForm()

@@ -18,7 +18,7 @@ class SpendingLimit(models.Model):
     """Model for spending limits"""
 
     budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
-    timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=True)
+    timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=False)
 
     def __str__(self):
         return ' £' + str(self.budget) + str(self.timeframe)
