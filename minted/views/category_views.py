@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from ..forms import *
-from ..models import *
-from .views_functions.login_view_functions import *
+from minted.forms import *
+from minted.models import *
+from minted.views.general_user_views.login_view_functions import *
 from django.contrib import messages
 
 @login_required
