@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from ..forms import *
 from ..models import *
-from .views_functions.login_view_functions import *
+from .general_user_views.login_view_functions import *
 from django.contrib import messages
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta

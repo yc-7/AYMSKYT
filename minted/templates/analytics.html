@@ -1,0 +1,50 @@
+{% extends 'base_content.html' %}
+{% block content %}
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'random_colour_generator.js' %}"></script>
+<script src="{% static 'chartjs_chart_generators.js' %}"></script>
+
+<div id = "container">
+  <form action="{% url 'view_analytics' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" class="btn btn-primary">
+  </form>
+</div>
+<div id="container" style="width: 50%;">
+
+  {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
+  {{ category_line_chart_data|json_script:"lineChartData" }}
+  {{ all_spending_line_chart_data|json_script:"allSpendingLineChartData" }}
+
+  <canvas id="line-graph"></canvas>
+  <canvas id="all-spending-line-graph"></canvas>
+  <canvas id="pie-chart"></canvas>
+</div>
+
+<script>
+  var category_pie_chart_data = JSON.parse(document.getElementById('categoryPieChartData').textContent);
+  var category_line_chart_data = JSON.parse(document.getElementById('lineChartData').textContent);
+  var all_spending_line_chart_data = JSON.parse(document.getElementById('allSpendingLineChartData').textContent);
+
+  var colours = build_random_colours(category_pie_chart_data.data.length);
+  
+  var pie_chart_config = create_bar_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
+  var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours)
+  var all_spending_line_config = create_line_chart_config(all_spending_line_chart_data.datasets, all_spending_line_chart_data.labels, colours)
+
+  window.onload = function() {
+    var category_pie_chart = document.getElementById('pie-chart').getContext('2d');
+    window.myPie = new Chart(category_pie_chart, pie_chart_config);
+
+    var category_line_chart = document.getElementById('line-graph').getContext('2d');
+    window.myLine = new Chart(category_line_chart, line_config);
+
+    var all_spending_line_chart = document.getElementById('all-spending-line-graph').getContext('2d');
+    window.myLine = new Chart(all_spending_line_chart, all_spending_line_config);
+  }
+</script>
+
+{% endblock %}
