@@ -7,10 +7,10 @@ import datetime
 
 @login_required
 def view_analytics(request):
-    one_year_from_today = datetime.date.today() - datetime.timedelta(days=365)
+    date_one_year_ago = datetime.date.today() - datetime.timedelta(days=365)
 
     # Defaults
-    start_date = one_year_from_today
+    start_date = date_one_year_ago
     end_date = datetime.date.today()
     time_interval = 'monthly'
     form = TimeFrameForm(initial={
