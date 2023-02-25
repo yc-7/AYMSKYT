@@ -7,7 +7,6 @@ from django.core.validators import MaxLengthValidator
 from django.core.validators import MaxLengthValidator, MinValueValidator
 from .model_functions import *
 
-
 TIMEFRAME = [
     ('/week', 'week'),
     ('/month', 'month'),
@@ -97,6 +96,48 @@ class Category(models.Model):
         expenses = self.get_expenditures_between_dates(date_from, date_to)
         daily_expenses = get_spending_for_days(all_days, expenses)
 
+    def get_expenditures_between_dates(self, date_from, date_to):
+        expenditures = Expenditure.objects.filter(category=self)
+        expenses = expenditures.filter(date__gte = date_from, date__lte = date_to).order_by('date')
+
+        return expenses
+
+    def get_total_expenses_for_category(self, date_from, date_to):
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        total = sum([expense.price for expense in expenses])
+
+        return total
+
+    def get_yearly_expenses_for_category(self, date_from, date_to):
+        all_years = get_years_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        yearly_expenses = get_spending_for_years(all_years, expenses)
+
+        return yearly_expenses
+
+    def get_monthly_expenses_for_category(self, date_from, date_to):
+        all_months = get_months_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        monthly_expenses = get_spending_for_months(all_months, expenses)
+
+        return monthly_expenses
+    
+    def get_weekly_expenses_for_category(self, date_from, date_to):
+        all_weeks = get_weeks_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        weekly_expenses = get_spending_for_weeks(all_weeks, expenses)
+
+        return weekly_expenses
+    
+    def get_daily_expenses_for_category(self, date_from, date_to):
+        all_days = get_days_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        daily_expenses = get_spending_for_days(all_days, expenses)
+        
         return daily_expenses
 
 class Expenditure(models.Model):
