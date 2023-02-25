@@ -82,8 +82,8 @@ class ExpenditureForm(forms.ModelForm):
         fields = ['title', 'price', 'date', 'description', 'receipt_image']
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
-        self.category = Category.objects.get(name=kwargs.pop('category'))
+        self.user = kwargs.pop('user', None)
+        self.category = Category.objects.get(user=self.user, name=kwargs.pop('category'))
         super(ExpenditureForm, self).__init__(*args, **kwargs)
 
     title = forms.CharField(label="Title")
