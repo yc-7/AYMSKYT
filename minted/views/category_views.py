@@ -8,15 +8,19 @@ from django.contrib import messages
 @login_required
 def create_category(request):
     if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            category = form.save(commit=False)
+        category_form = CategoryForm(request.POST)
+        spending_form = SpendingLimitForm(request.POST)
+        if category_form.is_valid() and spending_form.is_valid():
+            spending = spending_form.save()
+            category = category_form.save(commit=False)
             category.user = request.user
+            category.budget = spending
             category.save()
             return redirect('category_list')           
     else:
-        form = CategoryForm(initial={'user': request.user})
-    return render(request, 'create_category.html', {'form': form})
+        category_form = CategoryForm(initial={'user': request.user})
+        spending_form = SpendingLimitForm()
+    return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
 
 @login_required
 def delete_category(request, category_id):
@@ -24,7 +28,8 @@ def delete_category(request, category_id):
         if len(Category.objects.filter(id=category_id)) == 0:
             messages.add_message(request, messages.ERROR, "Category does not exist")
             return redirect('create_category')
-        Category.objects.get(id=category_id).delete()
+        category = Category.objects.get(id=category_id)
+        SpendingLimit.objects.get(category=category).delete()
         messages.add_message(request, messages.SUCCESS, "Category deleted successfully")
     return redirect('category_list')
 
@@ -47,17 +52,23 @@ def edit_category(request, category_id):
         return redirect('create_category')
 
     category = Category.objects.get(id=category_id)
+    spending = SpendingLimit.objects.get(category=category)
 
     if request.user != category.user and not request.user.is_superuser:
         return redirect('category_list')
 
     if request.method == 'POST':
-        form = CategoryForm(instance=category, data=request.POST)
-        if form.is_valid():
+        category_form = CategoryForm(instance=category, data=request.POST)
+        spending_form = SpendingLimitForm(request.POST)
+        if category_form.is_valid() and spending_form.is_valid():
             messages.add_message(request, messages.SUCCESS, "Category updated!")
-            form.save()
-            print("here1")
+            new_spending = spending_form.save()
+            category = category_form.save(commit=False)
+            category.budget = new_spending
+            category.save()
+            spending.delete()
             return redirect('category_list')
     else:
-        form = CategoryForm(instance=category)
-    return render(request, 'edit_category.html', {'form': form, 'category_id': category.id})
+        category_form = CategoryForm(instance=category)
+        spending_form = SpendingLimitForm(instance=spending)
+    return render(request, 'edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id})

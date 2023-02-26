@@ -10,7 +10,8 @@ class PasswordViewTest(TestCase):
     """Test suite for the password view."""
 
     fixtures = [
-        'minted/tests/fixtures/default_user.json'
+        'minted/tests/fixtures/default_user.json',
+        "minted/tests/fixtures/default_spending_limit.json"
     ]
 
     def setUp(self):

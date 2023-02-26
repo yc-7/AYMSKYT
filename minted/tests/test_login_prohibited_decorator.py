@@ -9,6 +9,7 @@ class LogInProhibitedDecoratorTestCase(TestCase):
     fixtures = [
         "minted/tests/fixtures/default_user.json",
         "minted/tests/fixtures/default_other_user.json",
+        "minted/tests/fixtures/default_spending_limit.json"
     ]
 
     def setUp(self):

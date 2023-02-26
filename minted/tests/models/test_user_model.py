@@ -1,13 +1,14 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from minted.models import User
+from minted.models import User, SpendingLimit
 
 class UserModelTestCase(TestCase):
     """Unit tests for the User models"""
 
     fixtures = [
         "minted/tests/fixtures/default_user.json",
-        "minted/tests/fixtures/default_other_user.json"
+        "minted/tests/fixtures/default_other_user.json",
+        "minted/tests/fixtures/default_spending_limit.json"
     ]
 
     def setUp(self):
@@ -16,7 +17,6 @@ class UserModelTestCase(TestCase):
 
     def test_valid_user(self):
         self._assert_user_is_valid()
-
 
     def test_first_name_must_not_be_blank(self):
         self.user.first_name = ''
@@ -80,7 +80,10 @@ class UserModelTestCase(TestCase):
         self.user.email = 'johndoe@@example.org'
         self._assert_user_is_invalid()
 
-    
+    def test_user_budget_can_be_blank(self):
+        self.user.budget = None
+        self._assert_user_is_valid()
+
     def _assert_user_is_valid(self):
         try:
             self.user.full_clean()
