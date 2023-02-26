@@ -92,7 +92,7 @@ class ExpenditureForm(forms.ModelForm):
         fields = ['title', 'price', 'date', 'description', 'receipt_image']
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
+        self.user = kwargs.pop('user', None)
         self.category = Category.objects.filter(user=self.user).get(name=kwargs.pop('category'))
         super(ExpenditureForm, self).__init__(*args, **kwargs)
 
