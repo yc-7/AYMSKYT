@@ -6,7 +6,10 @@ from minted.models import User
 class LogOutViewTestCase(TestCase, LogInTester):
     """Tests of the log out view."""
 
-    fixtures = ['minted/tests/fixtures/default_user.json']
+    fixtures = [
+        'minted/tests/fixtures/default_user.json',
+        "minted/tests/fixtures/default_spending_limit.json"
+    ]
 
     def setUp(self):
         self.url = reverse('log_out')

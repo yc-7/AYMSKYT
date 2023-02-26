@@ -12,7 +12,8 @@ class AnalyticsViewTest(TestCase):
         'minted/tests/fixtures/default_user.json',
         'minted/tests/fixtures/default_other_user.json',
         "minted/tests/fixtures/default_categories.json",
-        "minted/tests/fixtures/default_expenditures.json"
+        "minted/tests/fixtures/default_expenditures.json",
+        "minted/tests/fixtures/default_spending_limit.json"
     ]
 
     def setUp(self):

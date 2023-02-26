@@ -3,7 +3,9 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from .models import *
+from minted.models import User, SpendingLimit, Expenditure, Category
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
 
 class DateInput(forms.DateInput):
@@ -37,16 +39,22 @@ class SignUpForm(forms.ModelForm):
         if new_password != password_confirmation:
             self.add_error('password_confirmation', 'Confirmation does not match password.')
 
-    def save(self):
+    def save(self, budget):
         super().save(commit=False)
-        user = User.objects.create_user(
+        return User.objects.create_user(
             first_name=self.cleaned_data.get('first_name'),
             last_name=self.cleaned_data.get('last_name'),
             email=self.cleaned_data.get('email'),
             password=self.cleaned_data.get('new_password'),
             is_staff=False,
             is_superuser=False,
+            budget=budget
         )
+
+class SpendingLimitForm(forms.ModelForm):
+    class Meta:
+        model = SpendingLimit
+        fields = ['budget', 'timeframe']
         
 class EditProfileForm(UserChangeForm):
     password = None
@@ -85,7 +93,7 @@ class ExpenditureForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        self.category = Category.objects.get(name=kwargs.pop('category'))
+        self.category = Category.objects.filter(user=self.user).get(name=kwargs.pop('category'))
         super(ExpenditureForm, self).__init__(*args, **kwargs)
 
     title = forms.CharField(label="Title")
@@ -103,7 +111,7 @@ class ExpenditureForm(forms.ModelForm):
         """Create a new expenditure"""
 
         super().save(commit=False)
-        expenditure = Expenditure.objects.create(
+        return Expenditure.objects.create(
                 user = self.user,
                 category = self.category,
                 title = self.cleaned_data.get('title'),
@@ -124,11 +132,10 @@ class ExpenditureForm(forms.ModelForm):
         expenditure.receipt_image = self.cleaned_data.get('receipt_image')
         expenditure.save()
 
-
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        exclude = ['user']
+        exclude = ['user', 'budget']
 
         
 class TimeFrameForm(forms.Form):
