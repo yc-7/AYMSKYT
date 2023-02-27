@@ -43,6 +43,15 @@ class User(AbstractUser):
 
     def __str__(self):
         return  self.first_name+" "+self.last_name
+    
+    def get_categories(self):
+        categories = Category.objects.filter(user=self)
+        return categories
+    
+    def get_expenditures(self):
+        expenditures = Expenditure.objects.filter(category__user=self) 
+        #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
+        return expenditures
 
 class Category(models.Model):
     """Model for expenditure categories"""
@@ -53,6 +62,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_expenditures(self):
+        expenditures = Expenditure.objects.filter(category=self)
+        return expenditures
         
     def get_expenditures_between_dates(self, date_from, date_to):
         expenditures = Expenditure.objects.filter(category=self)
@@ -143,7 +156,6 @@ class Category(models.Model):
 class Expenditure(models.Model):
     """Model for expenditures"""
 
-    user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     category = models.ForeignKey(Category, null = True, blank = True, on_delete=models.CASCADE)
     title = models.CharField(max_length = 50, blank = False)
     price = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)

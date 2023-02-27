@@ -3,7 +3,6 @@
         "model": "minted.Expenditure",
         "pk": 1,
         "fields": {
-            "user": 1,
             "category": 1, 
             "title": "TFL",
             "price": "14.28",
@@ -16,7 +15,6 @@
         "model": "minted.Expenditure",
         "pk": 2,
         "fields": {
-            "user": 1,
             "category": 2, 
             "title": "Cinema Tickets",
             "price": "30.00",
@@ -29,7 +27,6 @@
         "model": "minted.Expenditure",
         "pk": 3,
         "fields": {
-            "user": 2,
             "category": 3, 
             "title": "Shoes",
             "price": "100.00",

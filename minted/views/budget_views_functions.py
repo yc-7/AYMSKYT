@@ -29,7 +29,7 @@ def total_spending_limits_of_category(category):
     return total_spending_limit(filtered_expenditures, budget, timeframe)
 
 def total_spending_limits_of_user(user):
-    filtered_expenditures = Expenditure.objects.filter(user=user)
+    filtered_expenditures = user.get_expenditures()
     timeframe = user.budget.timeframe
     budget = user.budget.budget
     return total_spending_limit(filtered_expenditures, budget, timeframe)
