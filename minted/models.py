@@ -50,7 +50,7 @@ class User(AbstractUser):
     
     def get_expenditures(self):
         expenditures = Expenditure.objects.filter(category__user=self) 
-        # expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
+        #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
 
 class Category(models.Model):
