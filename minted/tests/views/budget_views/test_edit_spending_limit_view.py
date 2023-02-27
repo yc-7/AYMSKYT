@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from minted.models import User
+from minted.models import User, SpendingLimit
 from django.contrib import messages
 
 
-class EditProfileViewTestCase(TestCase):
+class EditSpendingLimitViewTestCase(TestCase):
     
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -12,43 +12,37 @@ class EditProfileViewTestCase(TestCase):
     ]
     
     def setUp(self):
-        self.url = reverse('edit_profile')
+        self.url = reverse('edit_spending_limit')
         self.form_input = {
-            'first_name': 'TestName',
-            'last_name': 'TestLastname',
-            'email': 'test@example.org',
+            'budget': '200',
+            'timeframe': '/month'
         }
         self.user = User.objects.get(pk = 1)
         
     
-    def test_edit_profile_url(self):
+    def test_edit_spending_limit_url(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'edit_profile.html')
+        self.assertTemplateUsed(response, 'edit_spending_limit.html')
         
     def test_view_redirects_to_login_if_not_logged_in(self):
         response = self.client.get(self.url)
         self.assertRedirects(response, '/log_in/?next=' + self.url)
-        
-    def test_original_data(self):
-        self.assertEqual(self.user.first_name, 'John')
-        self.assertEqual(self.user.last_name, 'Doe')
-        self.assertEqual(self.user.email, 'johndoe@example.org')
-        
-        
-    def test_edit_profile_success(self):
+           
+    def test_spending_limit_successfully_changes(self):
         self.client.force_login(self.user)
+        self.assertEqual(self.user.budget.budget, 150.00)
+        self.assertEqual(self.user.budget.timeframe, '/week')
         response = self.client.post(self.url, data=self.form_input)
         self.assertRedirects(response, '/profile/', status_code=302, target_status_code=200)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.first_name, 'TestName')
-        self.assertEqual(self.user.last_name, 'TestLastname',)
-        self.assertEqual(self.user.email, 'test@example.org')
+        self.assertEqual(self.user.budget.budget, 200.00)
+        self.assertEqual(self.user.budget.timeframe, '/month')
         
     def test_form_invalid_data(self):
         self.client.force_login(self.user)
-        response = self.client.post(self.url, data={'email': 'invalid'})
-        self.assertTemplateUsed(response, 'edit_profile.html')
+        response = self.client.post(self.url, data={'budget': 100.1})
+        self.assertTemplateUsed(response, 'edit_spending_limit.html')
         self.assertContains(response, 'Please correct the error below.')
-        
-    
+        self.assertEqual(self.user.budget.budget, 150.00)
+        self.assertEqual(self.user.budget.timeframe, '/week')

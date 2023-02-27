@@ -3,8 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
-from django.utils import timezone
 from django.core.validators import MaxLengthValidator, MinValueValidator, MaxValueValidator
+from .model_functions import *
 
 class Streak(models.Model):
         
@@ -17,6 +17,22 @@ class Streak(models.Model):
         ]
     )
 
+TIMEFRAME = [
+    ('/week', 'week'),
+    ('/month', 'month'),
+    ('/quarter', 'quarter'),
+    ('/year', 'year'),
+]
+
+class SpendingLimit(models.Model):
+    """Model for spending limits"""
+
+    budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
+    timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=False)
+
+    def __str__(self):
+        return ' £' + str(self.budget) + str(self.timeframe)
+
 class User(AbstractUser):
     """User model for authentication"""
 
@@ -24,6 +40,7 @@ class User(AbstractUser):
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
     streak_data = models.ForeignKey(Streak , default= None,  on_delete=models.CASCADE)
+    budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -38,13 +55,101 @@ class User(AbstractUser):
     def __str__(self):
         return  self.first_name+" "+self.last_name
 
-
 class Category(models.Model):
     """Model for expenditure categories"""
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
-    budget = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2, validators=[MinValueValidator(0)])
+    budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+        
+    def get_expenditures_between_dates(self, date_from, date_to):
+        expenditures = Expenditure.objects.filter(category=self)
+        expenses = expenditures.filter(date__gte = date_from, date__lte = date_to).order_by('date')
+
+        return expenses
+
+    def get_total_expenses_for_category(self, date_from, date_to):
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        total = sum([expense.price for expense in expenses])
+
+        return total
+
+    def get_yearly_expenses_for_category(self, date_from, date_to):
+        all_years = get_years_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        yearly_expenses = get_spending_for_years(all_years, expenses)
+
+        return yearly_expenses
+
+    def get_monthly_expenses_for_category(self, date_from, date_to):
+        all_months = get_months_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        monthly_expenses = get_spending_for_months(all_months, expenses)
+
+        return monthly_expenses
+    
+    def get_weekly_expenses_for_category(self, date_from, date_to):
+        all_weeks = get_weeks_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        weekly_expenses = get_spending_for_weeks(all_weeks, expenses)
+
+        return weekly_expenses
+    
+    def get_daily_expenses_for_category(self, date_from, date_to):
+        all_days = get_days_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        daily_expenses = get_spending_for_days(all_days, expenses)
+
+    def get_expenditures_between_dates(self, date_from, date_to):
+        expenditures = Expenditure.objects.filter(category=self)
+        expenses = expenditures.filter(date__gte = date_from, date__lte = date_to).order_by('date')
+
+        return expenses
+
+    def get_total_expenses_for_category(self, date_from, date_to):
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        total = sum([expense.price for expense in expenses])
+
+        return total
+
+    def get_yearly_expenses_for_category(self, date_from, date_to):
+        all_years = get_years_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        yearly_expenses = get_spending_for_years(all_years, expenses)
+
+        return yearly_expenses
+
+    def get_monthly_expenses_for_category(self, date_from, date_to):
+        all_months = get_months_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        monthly_expenses = get_spending_for_months(all_months, expenses)
+
+        return monthly_expenses
+    
+    def get_weekly_expenses_for_category(self, date_from, date_to):
+        all_weeks = get_weeks_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        weekly_expenses = get_spending_for_weeks(all_weeks, expenses)
+
+        return weekly_expenses
+    
+    def get_daily_expenses_for_category(self, date_from, date_to):
+        all_days = get_days_between_dates(date_from, date_to)
+
+        expenses = self.get_expenditures_between_dates(date_from, date_to)
+        daily_expenses = get_spending_for_days(all_days, expenses)
+        
+        return daily_expenses
 
 class Expenditure(models.Model):
     """Model for expenditures"""
@@ -62,5 +167,3 @@ class Expenditure(models.Model):
     )
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
     
-    
-

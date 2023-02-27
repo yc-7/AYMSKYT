@@ -1,11 +1,11 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from ..forms import *
-from ..models import *
+from minted.forms import *
+from minted.models import *
 from django.contrib import messages
-from ..decorators import login_prohibited
-from .views_functions.login_view_functions import *
+from minted.decorators import login_prohibited
+from minted.views.general_user_views.login_view_functions import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 
@@ -50,18 +50,21 @@ def home(request):
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
+        spending_form = SpendingLimitForm(request.POST)
+        if form.is_valid() and spending_form.is_valid():
+            spending = spending_form.save()
+            user = form.save(spending)
             return redirect('log_in')
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+        spending_form = SpendingLimitForm()
+    return render(request, 'signup.html', {'form': form, 'spending_form': spending_form})
 
 @login_required
 def dashboard(request):
     return render(request,'dashboard.html')
 
-
+        
 @login_required
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})
@@ -80,6 +83,20 @@ def edit_profile(request):
     else:
         form = EditProfileForm(instance= request.user)
     return render(request, 'edit_profile.html', {'form': form})
+
+@login_required
+def edit_spending_limit(request):
+    if request.method == 'POST':
+        form = SpendingLimitForm(request.POST, instance=request.user.budget)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your spending limits were successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = SpendingLimitForm(instance= request.user.budget)
+    return render(request, 'edit_spending_limit.html', {'form': form})
     
 @login_required
 def change_password(request):

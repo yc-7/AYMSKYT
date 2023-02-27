@@ -9,7 +9,8 @@
             <form action="{% url 'create_category' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
-                {% include 'partials/bootstrap_form.html' with form=form %}
+                {% include 'partials/bootstrap_form.html' with form=category_form %}
+                {% include 'partials/bootstrap_form.html' with form=spending_form %}
                 <input type="submit" value="Create a category" class="btn btn-primary">
             </form>
         </div>

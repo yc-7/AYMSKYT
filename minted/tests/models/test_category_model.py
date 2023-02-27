@@ -8,7 +8,8 @@ class CategoryModelTestCase(TestCase):
     fixtures = [
         "minted/tests/fixtures/default_user.json",
         "minted/tests/fixtures/default_other_user.json",
-        "minted/tests/fixtures/default_categories.json"
+        "minted/tests/fixtures/default_categories.json",
+        "minted/tests/fixtures/default_spending_limit.json"
     ]
 
     def setUp(self):
@@ -35,24 +36,9 @@ class CategoryModelTestCase(TestCase):
     def test_category_name_must_not_contain_more_than_50_characters(self):
         self.category.name = 'x' * 51
         self._assert_category_is_invalid()
-
-    def test_category_budget_must_not_be_longer_than_6_digits(self):
-        self.category.budget = 123456.70
-        self._assert_category_is_invalid()
-
-    def test_category_budget_can_be_6_digits(self):
-        self.category.budget = 1234.56
-        self._assert_category_is_valid()
     
     def test_category_budget_cannot_be_blank(self):
         self.category.budget = None
-        self._assert_category_is_invalid()
-    
-    def test_category_budget_must_be_2_decimal_places(self):
-        self.category.budget = 123.1
-        self._assert_category_is_invalid()
-
-        self.category.budget = 123.123
         self._assert_category_is_invalid()
 
     def test_category_must_have_user(self):

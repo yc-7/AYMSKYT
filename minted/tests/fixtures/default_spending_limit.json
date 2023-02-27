@@ -1,0 +1,28 @@
+[
+    {
+        "model": "minted.SpendingLimit",
+        "pk": 1,
+        "fields": {
+            "budget": "150.00",
+            "timeframe": "/week"
+        }
+    }, 
+
+    {
+        "model": "minted.SpendingLimit",
+        "pk": 2,
+        "fields": {
+            "budget": "100.00",
+            "timeframe": "/week"
+        }
+    },
+
+    {
+        "model": "minted.SpendingLimit",
+        "pk": 3,
+        "fields": {
+            "budget": "1000.00",
+            "timeframe": "/year"
+        }
+    }
+]
