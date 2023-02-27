@@ -16,13 +16,27 @@ def log_in(request):
         if form.is_valid():
             user = get_user(form)
             if user:
+                user.last_login
                 login(request, user)
+                check_streak(user)
                 redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
                 return redirect(redirect_url)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
     form = LogInForm()
     next_url = request.GET.get('next') or request.POST.get('next') or ''
     return render(request, 'login.html', {'form': form, 'next': next_url})
+    
+def check_streak(user):
+    if (user.streak_data.last_login_time == None):
+        user.streak_data.last_login_time = user.last_login
+        user.streak_data.streak = user.streak_data.streak + 1
+        print("hi")
+    else:
+        print("poo")
+    
+        
+        
+    
 
 def log_out(request):
     logout(request)
