@@ -25,7 +25,6 @@ urlpatterns = [
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('analytics/', views.view_analytics, name='view_analytics'),
-    path('dashboard/', views.dashboard , name='dashboard'),
     path('category_list/<str:category_name>/', views.category_expenditures, name='expenditures'),
     path('category_list/<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),
     path('category_list/<str:category_name>/new_expenditure/', views.add_expenditure, name='add_expenditure'),

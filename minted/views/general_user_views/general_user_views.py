@@ -40,7 +40,8 @@ def sign_up(request):
         if form.is_valid() and spending_form.is_valid():
             spending = spending_form.save()
             user = form.save(spending)
-            return redirect('log_in')
+            login(request, user)
+            return redirect('dashboard')
     else:
         form = SignUpForm()
         spending_form = SpendingLimitForm()
@@ -49,12 +50,10 @@ def sign_up(request):
 @login_required
 def dashboard(request):
     return render(request,'dashboard.html')
-
-        
+      
 @login_required
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})
-
 
 @login_required
 def edit_profile(request):
