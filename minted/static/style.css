@@ -6,9 +6,9 @@
 
 }
 .custom-nav{
-padding-left: 80px;
-padding-right: 80px;
-color: #C8E3DF;
+  padding-left: 80px;
+  padding-right: 80px;
+  color: #C8E3DF;
 }
 
 /* .navbar {
@@ -18,42 +18,41 @@ font-size: 18px;
 } */
 
 .nav-link{
-color: #d462a1;
-font-family: 'Montserrat', sans-serif;
-font-weight: 800;
+  color: #d462a1;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
 }
 
 .container{
-font-family: 'Montserrat', sans-serif;
-font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
 }
 
 
 .custom-bg{
-background: #72e0ad;
-height:100vh;
+  background: #72e0ad;
+  height:100%;
+  min-height:100vh;
 }
 
 .custom-button{
-background-color: #d462a1; 
-color: white; 
+  background-color: #d462a1; 
+  color: white; 
 }
 
 .card {
-display: flex;
-flex-direction: column;
-height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-
-
 body{
-color: #47235e;
-font-family: 'Montserrat', sans-serif;
-font-weight: 500;
+  color: #47235e;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
 }
 
 i.bi-person-circle {
-font-size: 2rem;
-color: #d462a1;
+  font-size: 2rem;
+  color: #d462a1;
 }
