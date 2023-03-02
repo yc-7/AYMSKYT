@@ -75,7 +75,7 @@ class Category(models.Model):
 
     def get_total_expenses_for_category(self, date_from, date_to):
         expenses = self.get_expenditures_between_dates(date_from, date_to)
-        total = sum([expense.price for expense in expenses])
+        total = sum([expense.amount for expense in expenses])
 
         return total
 
@@ -116,13 +116,13 @@ class Expenditure(models.Model):
 
     category = models.ForeignKey(Category, null = True, blank = True, on_delete=models.CASCADE)
     title = models.CharField(max_length = 50, blank = False)
-    price = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+    amount = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
     date = models.DateField(blank = True)
     description = models.TextField(
         blank = True, 
-        validators=[
+        validators = [
             MaxLengthValidator(200),
         ]
     )
-    receipt = models.FileField(upload_to='uploads/', blank = True)
+    receipt = models.FileField(upload_to = 'uploads/', blank = True)
 

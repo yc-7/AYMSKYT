@@ -96,19 +96,17 @@ class PasswordForm(forms.Form):
 class ExpenditureForm(forms.ModelForm):
     class Meta:
         model = Expenditure
-        fields = ['title', 'price', 'date', 'description', 'receipt']
+        fields = ['title', 'amount', 'date', 'description', 'receipt']
         widgets = {
             'description': forms.Textarea(),
             'receipt': forms.FileField()
         }
-
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.category = Category.objects.filter(user=self.user).get(name=kwargs.pop('category'))
         super(ExpenditureForm, self).__init__(*args, **kwargs)
 
-    price = forms.DecimalField(label = "Amount Spent", decimal_places = 2, max_digits = 6)
     date = forms.DateField(label = "Date of Purchase", widget = forms.DateInput(format=('%d/%m/%Y'), attrs={'type': 'date', 'placeholder': '--', 'class': 'form-control'}))
 
     def clean(self):
@@ -123,7 +121,7 @@ class ExpenditureForm(forms.ModelForm):
         return Expenditure.objects.create(
                 category = self.category,
                 title = self.cleaned_data.get('title'),
-                price = self.cleaned_data.get('price'),
+                amount = self.cleaned_data.get('amount'),
                 date = self.cleaned_data.get('date'),
                 description = self.cleaned_data.get('description'),
                 receipt = self.cleaned_data.get('receipt')
@@ -134,7 +132,7 @@ class ExpenditureForm(forms.ModelForm):
 
         expenditure = Expenditure.objects.get(id=expenditure_id)
         expenditure.title = self.cleaned_data.get('title')
-        expenditure.price = self.cleaned_data.get('price')
+        expenditure.amount = self.cleaned_data.get('amount')
         expenditure.date = self.cleaned_data.get('date')
         expenditure.description = self.cleaned_data.get('description')
         expenditure.receipt = self.cleaned_data.get('receipt')

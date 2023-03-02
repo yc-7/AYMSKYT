@@ -26,7 +26,7 @@ def edit_expenditure(request, category_name, expenditure_id):
     else:
         expenditure = Expenditure.objects.get(id=expenditure_id)
         current_expenditure = { 'title': expenditure.title,
-                                'price': expenditure.price,
+                                'amount': expenditure.amount,
                                 'date': expenditure.date,
                                 'description': expenditure.description,
                                 'receipt': expenditure.receipt,

@@ -52,7 +52,7 @@ def get_days_between_dates(date_from, date_to):
 def get_spending_for_years(years, expenditures):
     for expense in expenditures:
             year_str = expense.date.strftime("%Y")
-            amount = expense.price
+            amount = expense.amount
 
             years[year_str] = years.get(year_str, 0) + amount
 
@@ -61,7 +61,7 @@ def get_spending_for_years(years, expenditures):
 def get_spending_for_months(months, expenditures):
     for expense in expenditures:
         month_str = expense.date.strftime("%m-%Y")
-        amount = expense.price
+        amount = expense.amount
 
         months[month_str] = months.get(month_str, 0) + amount
 
@@ -69,7 +69,7 @@ def get_spending_for_months(months, expenditures):
 
 def get_spending_for_weeks(weeks, expenditures):
     for expense in expenditures:
-        amount = expense.price
+        amount = expense.amount
 
         for week_start_date in weeks:
             week_start_date_object = datetime.datetime.strptime(week_start_date, '%d-%m-%Y').date()
@@ -81,7 +81,7 @@ def get_spending_for_weeks(weeks, expenditures):
 def get_spending_for_days(days, expenditures):
     for expense in expenditures:
         day_str = expense.date.strftime("%d-%m-%Y")
-        amount = expense.price
+        amount = expense.amount
 
         days[day_str] = days.get(day_str, 0) + amount
 

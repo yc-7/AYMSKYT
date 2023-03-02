@@ -13,7 +13,7 @@ class ExpenditureFormTestCase(TestCase):
     def setUp(self):
         self.form_input = {
             'title': 'Cinema Tickets',
-            'price': '30.00',
+            'amount': '30.00',
             'date': '2023-02-25',
             'description': 'Tickets to a movie',
             'receipt': None
@@ -28,9 +28,9 @@ class ExpenditureFormTestCase(TestCase):
         self.assertIn('title', form.fields)
         title_field = form.fields['title']
         self.assertTrue(isinstance(title_field, forms.CharField))
-        self.assertIn('price', form.fields)
-        price_field = form.fields['price']
-        self.assertTrue(isinstance(price_field, forms.DecimalField))
+        self.assertIn('amount', form.fields)
+        amount_field = form.fields['amount']
+        self.assertTrue(isinstance(amount_field, forms.DecimalField))
         self.assertIn('date', form.fields)
         date_field = form.fields['date']
         date_widget = date_field.widget
@@ -49,8 +49,8 @@ class ExpenditureFormTestCase(TestCase):
         self.form_input['title'] = ''
         self._test_form_is_invalid()
     
-    def test_form_rejects_empty_price(self):
-        self.form_input['price'] = ''
+    def test_form_rejects_empty_amount(self):
+        self.form_input['amount'] = ''
         self._test_form_is_invalid()
     
     def test_form_rejects_empty_date(self):
