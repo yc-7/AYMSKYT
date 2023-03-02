@@ -3,8 +3,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
-from django.core.validators import MaxLengthValidator
-from django.core.validators import MaxLengthValidator, MinValueValidator
 from .model_functions import *
 
 TIMEFRAME = [
@@ -115,14 +113,9 @@ class Expenditure(models.Model):
     """Model for expenditures"""
 
     category = models.ForeignKey(Category, null = True, blank = True, on_delete=models.CASCADE)
-    title = models.CharField(max_length = 50, blank = False)
+    title = models.CharField(max_length = 50)
     amount = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
-    date = models.DateField(blank = True)
-    description = models.TextField(
-        blank = True, 
-        validators = [
-            MaxLengthValidator(200),
-        ]
-    )
+    date = models.DateField()
+    description = models.CharField(max_length = 200, blank = True)
     receipt = models.FileField(upload_to = 'uploads/', blank = True)
 

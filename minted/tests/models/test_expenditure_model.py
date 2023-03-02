@@ -49,9 +49,9 @@ class ExpenditureModelTestCase(TestCase):
         self.expenditure.amount = 123456.1
         self._assert_expenditure_is_invalid()
     
-    def test_date_can_be_blank(self):
+    def test_date_cannot_be_blank(self):
         self.expenditure.date = None
-        self._assert_expenditure_is_valid()
+        self._assert_expenditure_is_invalid()
 
     def test_description_can_be_200_chars(self):
         self.expenditure.description = 'a' * 200

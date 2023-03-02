@@ -98,16 +98,25 @@ class ExpenditureForm(forms.ModelForm):
         model = Expenditure
         fields = ['title', 'amount', 'date', 'description', 'receipt']
         widgets = {
-            'description': forms.Textarea(),
-            'receipt': forms.FileField()
+            'description': forms.Textarea(attrs = {'rows': 3})
         }
+
+    date = forms.DateField(
+        label = "Date of Purchase",
+        widget = forms.DateInput(
+            format = ('%d/%m/%Y'),
+            attrs = {
+                'type': 'date',
+                'placeholder': '--',
+                'class': 'form-control'
+            }
+        )
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.category = Category.objects.filter(user=self.user).get(name=kwargs.pop('category'))
         super(ExpenditureForm, self).__init__(*args, **kwargs)
-
-    date = forms.DateField(label = "Date of Purchase", widget = forms.DateInput(format=('%d/%m/%Y'), attrs={'type': 'date', 'placeholder': '--', 'class': 'form-control'}))
 
     def clean(self):
         super().clean()
@@ -143,7 +152,6 @@ class CategoryForm(forms.ModelForm):
         model = Category
         exclude = ['user', 'budget']
 
-        
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())
     end_date = forms.DateField(widget=DateInput())
