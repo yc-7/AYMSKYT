@@ -124,5 +124,5 @@ class Expenditure(models.Model):
             MaxLengthValidator(200),
         ]
     )
-    receipt_image = models.FileField(upload_to='uploads/', blank = True)
+    receipt = models.FileField(upload_to='uploads/', blank = True)
 

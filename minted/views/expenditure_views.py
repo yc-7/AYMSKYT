@@ -29,7 +29,7 @@ def edit_expenditure(request, category_name, expenditure_id):
                                 'price': expenditure.price,
                                 'date': expenditure.date,
                                 'description': expenditure.description,
-                                'receipt_image': expenditure.receipt_image,
+                                'receipt': expenditure.receipt,
                               }
         form = ExpenditureForm(user=request.user, category=category_name, initial=current_expenditure)
     return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })

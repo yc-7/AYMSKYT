@@ -16,7 +16,7 @@ class ExpenditureFormTestCase(TestCase):
             'price': '30.00',
             'date': '2023-02-25',
             'description': 'Tickets to a movie',
-            'receipt_image': None
+            'receipt': None
         }
 
     def test_valid_form_data(self):
@@ -41,8 +41,8 @@ class ExpenditureFormTestCase(TestCase):
         description_widget = description_field.widget
         self.assertTrue(isinstance(description_field, forms.CharField))
         self.assertTrue(isinstance(description_widget, forms.Textarea))
-        self.assertIn('receipt_image', form.fields)
-        receipt_field = form.fields['receipt_image']
+        self.assertIn('receipt', form.fields)
+        receipt_field = form.fields['receipt']
         self.assertTrue(isinstance(receipt_field, forms.FileField))
     
     def test_form_rejects_empty_title(self):
@@ -61,9 +61,9 @@ class ExpenditureFormTestCase(TestCase):
         form = ExpenditureForm(user=1, category='Entertainment')
         self.assertEqual(form.fields['description'].required, False)
 
-    def test_form_accepts_empty_receipt_image(self):
+    def test_form_accepts_empty_receipt(self):
         form = ExpenditureForm(user=1, category='Entertainment')
-        self.assertEqual(form.fields['receipt_image'].required, False)
+        self.assertEqual(form.fields['receipt'].required, False)
 
     def _test_form_is_valid(self):
         form = ExpenditureForm(user=1, category='Entertainment', data=self.form_input, )

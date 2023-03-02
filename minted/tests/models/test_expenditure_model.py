@@ -66,7 +66,7 @@ class ExpenditureModelTestCase(TestCase):
         self._assert_expenditure_is_valid()
 
     def test_image_file_can_be_blank(self):
-        self.expenditure.receipt_image = None
+        self.expenditure.receipt = None
         self._assert_expenditure_is_valid()
 
     def test_expenditure_titles_can_be_identical(self):
