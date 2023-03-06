@@ -23,31 +23,27 @@ def delete_expenditure(request, expenditure_id):
 
 @login_required
 def edit_expenditure(request, category_name, expenditure_id):
+    expenditure = Expenditure.objects.get(id=expenditure_id)
+    form = ExpenditureForm(instance=expenditure)
     if request.method == 'POST':
-        form = ExpenditureForm(request.POST, user=request.user, category=category_name)
+        form = ExpenditureForm(request.POST, instance=expenditure)
         if form.is_valid():
-            form.update(expenditure_id)
+            form.save()
             return redirect('expenditures', category_name=category_name)
-    else:
-        expenditure = Expenditure.objects.get(id=expenditure_id)
-        current_expenditure = { 'title': expenditure.title,
-                                'amount': expenditure.amount,
-                                'date': expenditure.date,
-                                'description': expenditure.description,
-                                'receipt': expenditure.receipt,
-                              }
-        form = ExpenditureForm(user=request.user, category=category_name, initial=current_expenditure)
     return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })
 
 @login_required
 def add_expenditure(request, category_name):
     if request.method == 'POST':
-        form = ExpenditureForm(request.POST, user=request.user, category=category_name)
+        category = Category.objects.get(user=request.user, name=category_name) # Need to make sure there are no duplicate categories with same name
+        form = ExpenditureForm(request.POST)
         if request.POST.get("addExpenditure"):
             if form.is_valid():
-                form.save()
+                expenditure = form.save()
+                expenditure.category = category
+                expenditure.save()
                 return redirect('expenditures', category_name=category_name)
         elif request.POST.get("cancelAddition"):
             return redirect('expenditures', category_name=category_name)
-    form = ExpenditureForm(user=request.user, category=category_name)
+    form = ExpenditureForm()
     return render(request, 'expenditures/add_expenditure.html', { 'form': form, 'category': category_name })
