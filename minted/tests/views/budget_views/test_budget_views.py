@@ -19,7 +19,7 @@ class BudgetListViewTestCase(TestCase):
         self.user = User.objects.get(pk=1)
         self.other_user = User.objects.get(pk=2)
         self.category = Category.objects.get(pk=2)
-        self.expenditure = Expenditure.objects.create(title="TFL", price= 10, date= date.today(), category = self.category)
+        self.expenditure = Expenditure.objects.create(title = "TFL", amount = 10, date = date.today(), category = self.category)
 
     def test_budget_list_url(self):
         self.assertEqual(self.url, '/budget_list/')
