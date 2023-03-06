@@ -8,6 +8,10 @@ from minted.decorators import login_prohibited
 from minted.views.general_user_views.login_view_functions import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
+from datetime import datetime, timedelta
+import pytz
+
+
 
 @login_prohibited
 def log_in(request):
@@ -16,7 +20,6 @@ def log_in(request):
         if form.is_valid():
             user = get_user(form)
             if user:
-                user.last_login
                 login(request, user)
                 check_streak(user)
                 redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
@@ -26,13 +29,21 @@ def log_in(request):
     next_url = request.GET.get('next') or request.POST.get('next') or ''
     return render(request, 'login.html', {'form': form, 'next': next_url})
     
+
+    
 def check_streak(user):
-    if (user.streak_data.last_login_time == None):
-        user.streak_data.last_login_time = user.last_login
-        user.streak_data.streak = user.streak_data.streak + 1
-        print("hi")
+    
+    now = datetime.now(pytz.utc)
+    window_start = now - timedelta(days=1)
+
+    if user.streak_data.last_login_time is not None and user.streak_data.last_login_time >= window_start:
+        user.streak_data.streak += 1
     else:
-        print("poo")
+        user.streak_data.streak = 1
+
+    user.streak_data.last_login_time = user.last_login
+    user.streak_data.save()
+    
     
         
         

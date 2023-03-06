@@ -8,7 +8,7 @@ from .model_functions import *
 
 class Streak(models.Model):
         
-    last_login_time = models.DateTimeField(blank = True)
+    last_login_time = models.DateTimeField(blank = True, null= True)
     streak = models.IntegerField(
         default = 0, 
         validators= [
@@ -39,7 +39,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
-    streak_data = models.ForeignKey(Streak , default= None,  on_delete=models.CASCADE)
+    streak_data = models.OneToOneField(Streak ,  null= True, blank= True,  on_delete=models.CASCADE)
     budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
 
     # Replaces the default django username with email for authentication
