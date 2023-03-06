@@ -6,6 +6,8 @@ from .user_manager import UserManager
 from django.core.validators import MaxLengthValidator
 from django.core.validators import MaxLengthValidator, MinValueValidator
 from .model_functions import *
+import datetime
+from random import randint
 
 TIMEFRAME = [
     ('/week', 'week'),
@@ -157,7 +159,8 @@ class Expenditure(models.Model):
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
 
 class RewardManager(models.Manager):
-    pass
+    def get_queryset(self):
+        return super().get_queryset().filter(expiry_date__gte = datetime.date.today())
 
 class Reward(models.Model):
     """Model for rewards"""
@@ -167,6 +170,18 @@ class Reward(models.Model):
     reward_id = models.CharField(max_length = 6, unique = True, blank = False)
     claim_code = models.CharField(max_length = 6)
     expiry_date = models.DateField(blank = False)
+
+    objects = RewardManager()
+
+    def save(self, *args, **kwargs):
+        if not self.reward_id:
+            self.reward_id = self._create_reward_id()
+        super(Reward, self).save(*args, **kwargs)
+
+    def _create_reward_id(self):
+        brand_code = self.brand_name[:3].replace(" ", "").upper()
+        random_digits = randint(0, 9).str() + randint(0, 9).str() + randint(0, 9).str()
+        return brand_code + random_digits
 
 
 
