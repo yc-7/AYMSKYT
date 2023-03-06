@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from minted.forms import *
 from minted.models import *
 from .general_user_views.login_view_functions import *
+from minted.views.expenditure_receipt_functions import handle_uploaded_file, delete_file
 from django.contrib import messages
 
 @login_required
@@ -17,6 +18,7 @@ def delete_expenditure(request, expenditure_id):
         expenditure = Expenditure.objects.get(pk=expenditure_id)
         category = expenditure.category
         if request.user == category.user:
+            delete_file(expenditure.receipt.path)
             expenditure.delete()
         return redirect('expenditures', category_name=category.name)
     return redirect('category_list')
@@ -28,9 +30,24 @@ def edit_expenditure(request, category_name, expenditure_id):
     if request.method == 'POST':
         form = ExpenditureForm(request.POST, instance=expenditure)
         if form.is_valid():
-            form.save()
+            expenditure = form.save(commit=False)
+            new_file = request.FILES.get('receipt')
+            # clear = request.POST.get('receipt-clear') # This is so broken
+            current_receipt = expenditure.receipt
+            update_file = new_file and current_receipt
+
+            if update_file:
+                delete_file(current_receipt.path)
+
+            if new_file:
+                receipt_path = handle_uploaded_file(request.FILES['receipt'])
+                expenditure.receipt = receipt_path
+
+            expenditure.save()
+
             return redirect('expenditures', category_name=category_name)
     return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })
+
 
 @login_required
 def add_expenditure(request, category_name):
@@ -39,9 +56,16 @@ def add_expenditure(request, category_name):
         form = ExpenditureForm(request.POST)
         if request.POST.get("addExpenditure"):
             if form.is_valid():
-                expenditure = form.save()
+                expenditure = form.save(commit=False)
+                file = request.FILES.get('receipt')
                 expenditure.category = category
+
+                if file:
+                    receipt_path = handle_uploaded_file(request.FILES['receipt'])
+                    expenditure.receipt = receipt_path
+                
                 expenditure.save()
+
                 return redirect('expenditures', category_name=category_name)
         elif request.POST.get("cancelAddition"):
             return redirect('expenditures', category_name=category_name)

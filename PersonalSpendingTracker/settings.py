@@ -128,6 +128,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #login url for redirecting user when not logged in
 LOGIN_URL = 'log_in'
 
+# Path for file uploads
+UPLOAD_DIR = 'uploads/'
+
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
 REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'dashboard'
