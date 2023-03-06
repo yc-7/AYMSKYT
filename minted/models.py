@@ -17,7 +17,7 @@ TIMEFRAME = [
 class SpendingLimit(models.Model):
     """Model for spending limits"""
 
-    budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
+    budget = models.DecimalField(max_digits = 12, decimal_places = 2, blank=False)
     timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=False)
 
     def __str__(self):
@@ -29,7 +29,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
-    budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
+    budget = models.OneToOneField(SpendingLimit, null=True, blank=True, on_delete=models.CASCADE)
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -125,4 +125,3 @@ class Expenditure(models.Model):
         ]
     )
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
-

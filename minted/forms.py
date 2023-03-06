@@ -119,7 +119,6 @@ class ExpenditureForm(forms.ModelForm):
 
         super().save(commit=False)
         return Expenditure.objects.create(
-                user = self.user,
                 category = self.category,
                 title = self.cleaned_data.get('title'),
                 price = self.cleaned_data.get('price'),
