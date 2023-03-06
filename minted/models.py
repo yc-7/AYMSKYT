@@ -156,3 +156,8 @@ class Expenditure(models.Model):
     )
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
 
+class Reward(models.Model):
+    """Model for rewards"""
+
+    brand_name = models.CharField(max_length = 50)
+

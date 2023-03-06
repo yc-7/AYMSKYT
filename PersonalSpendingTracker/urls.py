@@ -38,5 +38,5 @@ urlpatterns = [
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('profile/edit/change_password/', views.change_password, name='change_password'),
     path('budget_list/', views.budget_list, name = 'budget_list'),
-
+    path('rewards/', views.rewards_homepage, name='rewards'),
 ]
