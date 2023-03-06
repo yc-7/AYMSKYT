@@ -156,8 +156,18 @@ class Expenditure(models.Model):
     )
     receipt_image = models.FileField(upload_to='uploads/', blank = True)
 
+class RewardManager(models.Manager):
+    pass
+
 class Reward(models.Model):
     """Model for rewards"""
 
-    brand_name = models.CharField(max_length = 50)
+    brand_name = models.CharField(max_length = 50, blank = False)
+    points_required = models.IntegerField(blank = False, validators = [MinValueValidator(1)])
+    reward_id = models.CharField(max_length = 6, unique = True, blank = False)
+    claim_code = models.CharField(max_length = 6)
+    expiry_date = models.DateField(blank = False)
+
+
+
 
