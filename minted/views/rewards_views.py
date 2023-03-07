@@ -8,5 +8,6 @@ from django.contrib import messages
 
 @login_required
 def rewards_homepage(request):
-    return render(request, 'rewards/rewards_home.html')
+    rewards = Reward.objects.all()
+    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards })
 

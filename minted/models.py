@@ -168,8 +168,9 @@ class Reward(models.Model):
     brand_name = models.CharField(max_length = 50, blank = False)
     points_required = models.IntegerField(blank = False, validators = [MinValueValidator(1)])
     reward_id = models.CharField(max_length = 6, unique = True, blank = False)
-    claim_code = models.CharField(max_length = 6)
+    claim_code = models.CharField(max_length = 6, blank = True)
     expiry_date = models.DateField(blank = False)
+    description = models.TextField(max_length = 300, blank = False)
 
     objects = RewardManager()
 
@@ -180,8 +181,12 @@ class Reward(models.Model):
 
     def _create_reward_id(self):
         brand_code = self.brand_name[:3].replace(" ", "").upper()
-        random_digits = randint(0, 9).str() + randint(0, 9).str() + randint(0, 9).str()
+        random_digits = str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9))
         return brand_code + random_digits
+
+    def _create_claim_code(self):
+        pass
+
 
 
 
