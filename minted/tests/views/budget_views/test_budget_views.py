@@ -19,7 +19,7 @@ class BudgetListViewTestCase(TestCase):
         self.user = User.objects.get(pk=1)
         self.other_user = User.objects.get(pk=2)
         self.category = Category.objects.get(pk=2)
-        self.expenditure = Expenditure.objects.create(user=self.user, title="TFL", price= 10, date= date.today(), category = self.category)
+        self.expenditure = Expenditure.objects.create(title = "TFL", amount = 10, date = date.today(), category = self.category)
 
     def test_budget_list_url(self):
         self.assertEqual(self.url, '/budget_list/')
@@ -56,6 +56,6 @@ class BudgetListViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget_list.html')
-        self.assertEqual(len(Category.objects.filter(user = self.other_user)),1)
+        self.assertEqual(len(self.other_user.get_categories()),1)
         self.assertNotContains(response, 'Transportation')
         

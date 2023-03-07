@@ -33,25 +33,25 @@ class ExpenditureModelTestCase(TestCase):
         self.expenditure.title = 'a' * 51
         self._assert_expenditure_is_invalid()
 
-    def test_price_can_be_6_digits(self):
-        self.expenditure.price = 1234.56
+    def test_amount_can_be_6_digits(self):
+        self.expenditure.amount = 1234.56
         self._assert_expenditure_is_valid()
 
-    def test_price_not_more_than_6_digits(self):
-        self.expenditure.price = 1234567.12
+    def test_amount_not_more_than_6_digits(self):
+        self.expenditure.amount = 1234567.12
         self._assert_expenditure_is_invalid()
     
-    def test_price_not_more_than_2_decimal_places(self):
-        self.expenditure.price = 12.123
+    def test_amount_not_more_than_2_decimal_places(self):
+        self.expenditure.amount = 12.123
         self._assert_expenditure_is_invalid()
     
-    def test_price_not_less_than_2_decimal_places(self):
-        self.expenditure.price = 123456.1
+    def test_amount_not_less_than_2_decimal_places(self):
+        self.expenditure.amount = 123456.1
         self._assert_expenditure_is_invalid()
     
-    def test_date_can_be_blank(self):
+    def test_date_cannot_be_blank(self):
         self.expenditure.date = None
-        self._assert_expenditure_is_valid()
+        self._assert_expenditure_is_invalid()
 
     def test_description_can_be_200_chars(self):
         self.expenditure.description = 'a' * 200
@@ -66,7 +66,7 @@ class ExpenditureModelTestCase(TestCase):
         self._assert_expenditure_is_valid()
 
     def test_image_file_can_be_blank(self):
-        self.expenditure.receipt_image = None
+        self.expenditure.receipt = None
         self._assert_expenditure_is_valid()
 
     def test_expenditure_titles_can_be_identical(self):

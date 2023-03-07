@@ -1,18 +1,20 @@
 .navbar-brand {
-    color: #d462a1;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: 40px;
+  color: #d462a1;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
 
-  }
+}
 .custom-nav{
+  padding-left: 80px;
+  padding-right: 80px;
   color: #C8E3DF;
 }
 
 /* .navbar {
-  height: 80px;
-  padding: 10px;
-  font-size: 18px;
+height: 80px;
+padding: 10px;
+font-size: 18px;
 } */
 
 .nav-link{
@@ -29,7 +31,8 @@
 
 .custom-bg{
   background: #72e0ad;
-  height:100vh;
+  height:100%;
+  min-height:100vh;
 }
 
 .custom-button{
@@ -42,8 +45,6 @@
   flex-direction: column;
   height: 100%;
 }
-
-
 
 body{
   color: #47235e;

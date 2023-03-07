@@ -3,10 +3,9 @@
         "model": "minted.Expenditure",
         "pk": 1,
         "fields": {
-            "user": 1,
             "category": 1, 
             "title": "TFL",
-            "price": "14.28",
+            "amount": "14.28",
             "date": "2023-01-26"
         }
 
@@ -16,10 +15,9 @@
         "model": "minted.Expenditure",
         "pk": 2,
         "fields": {
-            "user": 1,
             "category": 2, 
             "title": "Cinema Tickets",
-            "price": "30.00",
+            "amount": "30.00",
             "date": "2023-01-09"
         }
 
@@ -29,10 +27,9 @@
         "model": "minted.Expenditure",
         "pk": 3,
         "fields": {
-            "user": 2,
             "category": 3, 
             "title": "Shoes",
-            "price": "100.00",
+            "amount": "100.00",
             "date": "2023-01-15"
         }
 

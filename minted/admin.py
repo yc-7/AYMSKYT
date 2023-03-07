@@ -17,7 +17,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Expenditure)
 class ExpenditureAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'user', 'category', 'title', 'price', 'date', 'description', 'receipt_image'
+        'id', 'category', 'title', 'amount', 'date', 'description', 'receipt'
     ]
 
 @admin.register(SpendingLimit)

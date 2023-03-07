@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from minted import views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,10 +28,10 @@ urlpatterns = [
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('analytics/', views.view_analytics, name='view_analytics'),
-    path('dashboard/', views.dashboard , name='dashboard'),
-    path('category_list/<str:category_name>/', views.category_expenditures, name='expenditures'),
+    path('category_list/<str:category_name>/', views.category_expenditures_view, name='category_expenditures'),
     path('category_list/<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),
     path('category_list/<str:category_name>/new_expenditure/', views.add_expenditure, name='add_expenditure'),
+    path('category_list/<int:expenditure_id>/delete', views.delete_expenditure, name='delete_expenditure'),
     path('create_category/', views.create_category, name = 'create_category'),
     path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
@@ -37,6 +40,6 @@ urlpatterns = [
     path('profile/edit/profile', views.edit_profile, name='edit_profile'),
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('profile/edit/change_password/', views.change_password, name='change_password'),
-    path('budget_list/', views.budget_list, name = 'budget_list'),
     path('rewards/', views.rewards_homepage, name='rewards'),
-]
+    path('budget_list/', views.budget_list, name = 'budget_list')
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
