@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from minted import views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,6 +40,5 @@ urlpatterns = [
     path('profile/edit/profile', views.edit_profile, name='edit_profile'),
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('profile/edit/change_password/', views.change_password, name='change_password'),
-    path('budget_list/', views.budget_list, name = 'budget_list'),
-
-]
+    path('budget_list/', views.budget_list, name = 'budget_list')
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
