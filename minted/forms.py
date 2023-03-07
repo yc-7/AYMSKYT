@@ -100,52 +100,7 @@ class ExpenditureForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs = {'rows': 3})
         }
-
-    date = forms.DateField(
-        label = "Date of Purchase",
-        widget = forms.DateInput(
-            format = ('%d/%m/%Y'),
-            attrs = {
-                'type': 'date',
-                'placeholder': '--',
-                'class': 'form-control'
-            }
-        )
-    )
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        self.category = Category.objects.filter(user=self.user).get(name=kwargs.pop('category'))
-        super(ExpenditureForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        super().clean()
-        description = self.cleaned_data.get('description') or None
-        receipt = self.cleaned_data.get('receipt') or None
-
-    def save(self):
-        """Create a new expenditure"""
-
-        super().save(commit=False)
-        return Expenditure.objects.create(
-                category = self.category,
-                title = self.cleaned_data.get('title'),
-                amount = self.cleaned_data.get('amount'),
-                date = self.cleaned_data.get('date'),
-                description = self.cleaned_data.get('description'),
-                receipt = self.cleaned_data.get('receipt')
-            )
-
-    def update(self, expenditure_id):
-        """Update an existing expenditure"""
-
-        expenditure = Expenditure.objects.get(id=expenditure_id)
-        expenditure.title = self.cleaned_data.get('title')
-        expenditure.amount = self.cleaned_data.get('amount')
-        expenditure.date = self.cleaned_data.get('date')
-        expenditure.description = self.cleaned_data.get('description')
-        expenditure.receipt = self.cleaned_data.get('receipt')
-        expenditure.save()
+    date = forms.DateField(widget=DateInput())
 
 class CategoryForm(forms.ModelForm):
     class Meta:

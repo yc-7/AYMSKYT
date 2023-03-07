@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 from django.contrib.messages import constants as message_constants
 
@@ -64,7 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.contrib.messages.context_processors.messages'
             ],
         },
     },
@@ -127,6 +128,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #login url for redirecting user when not logged in
 LOGIN_URL = 'log_in'
+
+# Path for file uploads
+UPLOAD_DIR = 'uploads/'
+UPLOAD_ROOT = os.path.join(BASE_DIR, UPLOAD_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
