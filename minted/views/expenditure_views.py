@@ -50,7 +50,7 @@ def edit_expenditure(request, category_name, expenditure_id):
                 delete_file(current_receipt.path)
 
             if new_file:
-                receipt_path = handle_uploaded_file(request.FILES['receipt'])
+                receipt_path = handle_uploaded_file(new_file)
                 expenditure.receipt = receipt_path
 
             expenditure.save()
@@ -71,7 +71,7 @@ def add_expenditure(request, category_name):
                 expenditure.category = category
 
                 if file:
-                    receipt_path = handle_uploaded_file(request.FILES['receipt'])
+                    receipt_path = handle_uploaded_file(file)
                     expenditure.receipt = receipt_path
                 
                 expenditure.save()

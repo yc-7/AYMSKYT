@@ -98,8 +98,7 @@ class ExpenditureForm(forms.ModelForm):
         model = Expenditure
         fields = ['title', 'amount', 'date', 'description', 'receipt']
         widgets = {
-            'description': forms.Textarea(attrs = {'rows': 3}),
-            'date': forms.DateInput()
+            'description': forms.Textarea(attrs = {'rows': 3})
         }
     date = forms.DateField(widget=DateInput())
 
