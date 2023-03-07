@@ -5,9 +5,14 @@ from minted.models import *
 from .general_user_views.login_view_functions import *
 from minted.views.expenditure_receipt_functions import handle_uploaded_file, delete_file
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
 
 @login_required
 def category_expenditures_view(request, category_name):
+    category_exists = Category.objects.filter(user=request.user, name=category_name).count() != 0
+    if not category_exists:
+        return redirect('category_list')
+
     category = Category.objects.get(user=request.user, name=category_name)
     expenditures = Expenditure.objects.filter(category=category).order_by('-date')
     return render(request, 'expenditures/expenditures_list.html', { 'expenditures': expenditures, 'category': category })
@@ -18,13 +23,18 @@ def delete_expenditure(request, expenditure_id):
         expenditure = Expenditure.objects.get(pk=expenditure_id)
         category = expenditure.category
         if request.user == category.user:
-            delete_file(expenditure.receipt.path)
+            if expenditure.receipt:
+                delete_file(expenditure.receipt.path)
             expenditure.delete()
-        return redirect('expenditures', category_name=category.name)
+        return redirect('category_expenditures', category_name=category.name)
     return redirect('category_list')
 
 @login_required
 def edit_expenditure(request, category_name, expenditure_id):
+    expenditure_exists = Expenditure.objects.filter(id=expenditure_id).count() != 0
+    if not expenditure_exists:
+        return redirect('category_list')
+    
     expenditure = Expenditure.objects.get(id=expenditure_id)
     form = ExpenditureForm(instance=expenditure)
     if request.method == 'POST':
@@ -45,7 +55,7 @@ def edit_expenditure(request, category_name, expenditure_id):
 
             expenditure.save()
 
-            return redirect('expenditures', category_name=category_name)
+            return redirect('category_expenditures', category_name=category_name)
     return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })
 
 
@@ -66,8 +76,8 @@ def add_expenditure(request, category_name):
                 
                 expenditure.save()
 
-                return redirect('expenditures', category_name=category_name)
+                return redirect('category_expenditures', category_name=category_name)
         elif request.POST.get("cancelAddition"):
-            return redirect('expenditures', category_name=category_name)
+            return redirect('category_expenditures', category_name=category_name)
     form = ExpenditureForm()
     return render(request, 'expenditures/add_expenditure.html', { 'form': form, 'category': category_name })

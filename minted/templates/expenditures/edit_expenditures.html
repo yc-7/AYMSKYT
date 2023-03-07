@@ -6,7 +6,7 @@
             {% csrf_token %}
             {% include 'partials/bootstrap_form.html' with form=form %}
             <input name="updateExpenditure" type="submit" value="Done" class="btn btn-lg custom-button">
-            <a name="cancelAddition" type="button" value="Cancel" class="btn btn-lg custom-button" href="{% url 'expenditures' expenditure.category.name %}">Cancel</a>
+            <a name="cancelAddition" type="button" value="Cancel" class="btn btn-lg custom-button" href="{% url 'category_expenditures' expenditure.category.name %}">Cancel</a>
         </form>
     </div>
 </div>
