@@ -36,6 +36,9 @@ def edit_expenditure(request, category_name, expenditure_id):
         return redirect('category_list')
     
     expenditure = Expenditure.objects.get(id=expenditure_id)
+    if request.user != expenditure.category.user:
+        return redirect('category_list')
+
     form = ExpenditureForm(instance=expenditure)
     if request.method == 'POST':
         form = ExpenditureForm(request.POST, instance=expenditure)

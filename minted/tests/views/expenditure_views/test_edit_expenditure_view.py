@@ -67,3 +67,12 @@ class ExpenditureEditViewTestCase(TestCase):
         redirect_url = reverse('category_list')
         response = self.client.post(self.url, self.form_input, follow=True)
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+    def test_redirect_on_edit_another_users_expenditure(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        expenditure_id_that_belongs_to_other_user = 3
+        self.url = reverse('edit_expenditure', kwargs={'category_name':self.category_name, 'expenditure_id':expenditure_id_that_belongs_to_other_user})
+
+        redirect_url = reverse('category_list')
+        response = self.client.post(self.url, self.form_input, follow=True)
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
