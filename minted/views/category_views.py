@@ -29,7 +29,7 @@ def delete_category(request, category_id):
             messages.add_message(request, messages.ERROR, "Category does not exist")
             return redirect('create_category')
         category = Category.objects.get(id=category_id)
-        SpendingLimit.objects.get(category=category).delete()
+        category.budget.delete()
         messages.add_message(request, messages.SUCCESS, "Category deleted successfully")
     return redirect('category_list')
 
