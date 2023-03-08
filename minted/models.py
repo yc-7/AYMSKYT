@@ -121,6 +121,13 @@ class Category(models.Model):
         daily_expenses = get_spending_for_days(all_days, expenses)
         
         return daily_expenses
+    
+class Points(models.Model):
+    """Model for user points"""
+    
+    user = models.ForeignKey(User, blank = False, on_delete=models.CASCADE)
+    points = models.IntegerField(default = 0, validators= [MinValueValidator(0)])
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 class Expenditure(models.Model):
     """Model for expenditures"""
