@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 from django.contrib.messages import constants as message_constants
+# import dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,7 +43,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'minted',
     'widget_tweaks',
+    'webpush',
 ]
+
+load_dotenv(find_dotenv())
+
+WEBPUSH_SETTINGS = {
+   "VAPID_PUBLIC_KEY": os.environ['VAPID_PUBLIC_KEY'],
+   "VAPID_PRIVATE_KEY": os.environ['VAPID_PRIVATE_KEY'],
+   "VAPID_ADMIN_EMAIL": os.environ['VAPID_ADMIN_EMAIL']
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
