@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Category, Expenditure, SpendingLimit, Points
+from .models import User, Category, Expenditure, SpendingLimit, Points, Streak
 
 # Register your models here.
 @admin.register(User)
@@ -30,4 +30,10 @@ class SpendingLimitAdmin(admin.ModelAdmin):
 class PointAdmin(admin.ModelAdmin):
     list_display = [
         'id','points', 'timestamp'
+    ]
+
+@admin.register(Streak)
+class StreakAdmin(admin.ModelAdmin):
+    list_display = [
+        'last_login_time', 'streak'
     ]
