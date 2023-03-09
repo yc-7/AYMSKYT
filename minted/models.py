@@ -32,6 +32,15 @@ class SpendingLimit(models.Model):
 
     def __str__(self):
         return ' £' + str(self.budget) + str(self.timeframe)
+    
+    
+class Points(models.Model):
+    """Model for the user points"""
+
+    points = models.IntegerField(default = 10, validators= [MinValueValidator(0)], blank=False)
+    timestamp = models.DateTimeField(auto_now=True)
+    
+
 
 class User(AbstractUser):
     """User model for authentication"""
@@ -41,6 +50,8 @@ class User(AbstractUser):
     email      = models.EmailField(unique=True, blank=False)
     streak_data = models.OneToOneField(Streak ,  null= True, blank= True,  on_delete=models.CASCADE)
     budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
+    points = models.OneToOneField(Points, null=True, blank=True, unique=True, on_delete=models.CASCADE)
+   
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -63,6 +74,7 @@ class User(AbstractUser):
         expenditures = Expenditure.objects.filter(category__user=self) 
         #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
+    
 
 class Category(models.Model):
     """Model for expenditure categories"""
@@ -122,12 +134,6 @@ class Category(models.Model):
         
         return daily_expenses
     
-class Points(models.Model):
-    """Model for user points"""
-    
-    user = models.ForeignKey(User, blank = False, on_delete=models.CASCADE)
-    points = models.IntegerField(default = 0, validators= [MinValueValidator(0)])
-    timestamp = models.DateTimeField(auto_now_add=True)
 
 class Expenditure(models.Model):
     """Model for expenditures"""
@@ -138,4 +144,6 @@ class Expenditure(models.Model):
     date = models.DateField()
     description = models.CharField(max_length = 200, blank = True)
     receipt = models.FileField(upload_to = 'uploads/', blank = True)
+
+
 

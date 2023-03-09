@@ -9,6 +9,7 @@ from minted.views.general_user_views.login_view_functions import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from datetime import datetime, timedelta
+from django.utils import timezone
 import pytz
 
 
@@ -22,6 +23,7 @@ def log_in(request):
             if user:
                 login(request, user)
                 check_streak(user)
+                reward_points_daily(request)
                 redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
                 return redirect(redirect_url)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
@@ -30,7 +32,21 @@ def log_in(request):
     return render(request, 'login.html', {'form': form, 'next': next_url})
     
 
+def reward_points_daily(request):
+    user = request.user
     
+    last_awarded = user.points.timestamp.date()
+    today = timezone.now().date()
+    if last_awarded < today:
+        current_user = request.user
+        current_user.points.points += 10  
+        current_user.points.save() 
+        user_points = current_user.points.points
+
+        #return render(request, 'dashboard.html', {'points': user_points})
+
+
+
 def check_streak(user):
     
     now = datetime.now(pytz.utc)
