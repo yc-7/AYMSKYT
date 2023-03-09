@@ -14,11 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from minted import views
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,5 +40,7 @@ urlpatterns = [
     path('profile/edit/profile', views.edit_profile, name='edit_profile'),
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('profile/edit/change_password/', views.change_password, name='change_password'),
-    path('budget_list/', views.budget_list, name = 'budget_list')
+    path('budget_list/', views.budget_list, name = 'budget_list'),
+    path('webpush/', include('webpush.urls')),
+    path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript'))
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
