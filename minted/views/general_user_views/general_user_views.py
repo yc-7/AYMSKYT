@@ -29,8 +29,6 @@ def log_in(request):
     next_url = request.GET.get('next') or request.POST.get('next') or ''
     return render(request, 'login.html', {'form': form, 'next': next_url})
     
-
-    
 def check_streak(user):
     
     now = datetime.now(pytz.utc)
@@ -43,12 +41,7 @@ def check_streak(user):
 
     user.streak_data.last_login_time = user.last_login
     user.streak_data.save()
-    
-    
-        
-        
-    
-
+      
 def log_out(request):
     logout(request)
     return redirect('home')
