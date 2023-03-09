@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, Streak
+from minted.models import User, SpendingLimit, Expenditure, Category, Streak, Points
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
@@ -56,7 +56,8 @@ class SignUpForm(forms.ModelForm):
             is_staff = False,
             is_superuser = False,
             budget = budget,
-            streak_data = Streak.objects.create()
+            streak_data = Streak.objects.create(),
+            points= Points.objects.create()
         )
 
 class SpendingLimitForm(forms.ModelForm):
