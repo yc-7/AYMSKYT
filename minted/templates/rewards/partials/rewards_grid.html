@@ -5,6 +5,9 @@
         <h5 class="card-title">{{ reward.brand_name }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{ reward.reward_id }}</h6>
         <p class="card-text">{{ reward.description }}</p>
+        <a type="button" class="btn btn-light" href="{% url 'view_reward' reward %}">
+             
+        </a>
       </div>
       <div class="card-footer">
         <small class="text-muted">Expires on {{ reward.expiry_date }}</small>

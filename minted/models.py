@@ -133,7 +133,6 @@ class Reward(models.Model):
     brand_name = models.CharField(max_length = 50, blank = False)
     points_required = models.IntegerField(blank = False, validators = [MinValueValidator(1)])
     reward_id = models.CharField(max_length = 6, unique = True, blank = False)
-    claim_code = models.CharField(max_length = 6, blank = True)
     expiry_date = models.DateField(blank = False)
     description = models.TextField(max_length = 300, blank = False)
 
@@ -149,10 +148,22 @@ class Reward(models.Model):
         random_digits = str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9))
         return brand_code + random_digits
 
-    def _create_claim_code(self):
+class RewardsClaimManager(models.Manager):
+    def get_queryset(self):
         pass
 
+class RewardClaim(models.Model):
+    """Model for reward claims made by users"""
 
+    claim_code = models.CharField(max_length = 6, blank = True)
+    reward_type = models.ForeignKey(Reward, blank = False, on_delete = models.CASCADE)
+    user = models.ForeignKey(User, blank = False, on_delete = models.CASCADE)
+    
+    def save(self, *args, **kwargs):
+        if not self.claim_code:
+            self.claim_code = self._create_claim_code()
+        super(RewardClaim, self).save(*args, **kwargs)
 
-
+    def _create_claim_code(self):
+        pass
 

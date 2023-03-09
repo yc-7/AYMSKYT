@@ -11,3 +11,6 @@ def rewards_homepage(request):
     rewards = Reward.objects.all()
     return render(request, 'rewards/rewards_home.html', { 'rewards': rewards })
 
+def view_reward(request, brand_name):
+    pass
+
