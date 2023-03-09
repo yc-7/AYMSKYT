@@ -16,7 +16,7 @@ TIMEFRAME = [
 class SpendingLimit(models.Model):
     """Model for spending limits"""
 
-    budget = models.DecimalField(default = None, max_digits = 12, decimal_places = 2, blank=False)
+    budget = models.DecimalField(max_digits = 12, decimal_places = 2, blank=False)
     timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=False)
 
     def __str__(self):
@@ -28,7 +28,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
-    budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
+    budget = models.OneToOneField(SpendingLimit, null=True, blank=True, on_delete=models.CASCADE)
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -42,13 +42,13 @@ class User(AbstractUser):
 
     def __str__(self):
         return  self.first_name+" "+self.last_name
-    
+
     def get_categories(self):
         categories = Category.objects.filter(user=self)
         return categories
-    
+
     def get_expenditures(self):
-        expenditures = Expenditure.objects.filter(category__user=self) 
+        expenditures = Expenditure.objects.filter(category__user=self)
         #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
 
@@ -61,7 +61,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def get_expenditures(self):
         expenditures = Expenditure.objects.filter(category=self)
         return expenditures
@@ -93,7 +93,7 @@ class Category(models.Model):
         monthly_expenses = get_spending_for_months(all_months, expenses)
 
         return monthly_expenses
-    
+
     def get_weekly_expenses_for_category(self, date_from, date_to):
         all_weeks = get_weeks_between_dates(date_from, date_to)
 
@@ -101,13 +101,13 @@ class Category(models.Model):
         weekly_expenses = get_spending_for_weeks(all_weeks, expenses)
 
         return weekly_expenses
-    
+
     def get_daily_expenses_for_category(self, date_from, date_to):
         all_days = get_days_between_dates(date_from, date_to)
 
         expenses = self.get_expenditures_between_dates(date_from, date_to)
         daily_expenses = get_spending_for_days(all_days, expenses)
-        
+
         return daily_expenses
 
 class Expenditure(models.Model):
@@ -119,4 +119,3 @@ class Expenditure(models.Model):
     date = models.DateField()
     description = models.CharField(max_length = 200, blank = True)
     receipt = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
-
