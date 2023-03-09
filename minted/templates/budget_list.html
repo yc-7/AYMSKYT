@@ -19,7 +19,11 @@
         {% for spendings in budget %}
           <tr>
               <td style="text-align:center">{{ spendings.name }}</td>
-              <td style="text-align:center">{{ spendings.spent_text }}</td>
+              {% if spendings.spent > spendings.budget %}
+                <td style="text-align:center; color: red">{{ spendings.spent_text }}</td>
+              {% else %}
+                <td style="text-align:center">{{ spendings.spent_text }}</td>
+              {% endif %}
               <td style="text-align:center">{{ spendings.start_date }}</td>
               <td style="text-align:center">{{ spendings.end_date }}</td>
           </tr>

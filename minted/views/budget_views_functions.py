@@ -9,19 +9,20 @@ class Budget:
     def __init__(self, name, spent, budget, start_date, end_date):
         self.name = name
         self.spent = spent
+        self.budget = budget
         self.spent_text = f"£ {str(spent)} out of £ {str(budget)} spent"
         self.start_date = start_date
         self.end_date = end_date
 
 def total_spending_limit(filtered_expenditures, budget, timeframe):
     if timeframe == '/week':
-        return filtered_expenditures.annotate(week=TruncWeek('date')).values('week').annotate(spent = Sum('price')).order_by('week')
+        return filtered_expenditures.annotate(week=TruncWeek('date')).values('week').annotate(spent = Sum('amount')).order_by('week')
     if timeframe == '/month':
-        return filtered_expenditures.annotate(month=TruncMonth('date')).values('month').annotate(spent = Sum('price')).order_by('month')
+        return filtered_expenditures.annotate(month=TruncMonth('date')).values('month').annotate(spent = Sum('amount')).order_by('month')
     if timeframe == '/quarter':
-        return filtered_expenditures.annotate(quarter=TruncQuarter('date')).values('quarter').annotate(spent = Sum('price')).order_by('quarter')
+        return filtered_expenditures.annotate(quarter=TruncQuarter('date')).values('quarter').annotate(spent = Sum('amount')).order_by('quarter')
     if timeframe == '/year':
-        return filtered_expenditures.annotate(year=TruncYear('date')).values('year').annotate(spent = Sum('price')).order_by('year')
+        return filtered_expenditures.annotate(year=TruncYear('date')).values('year').annotate(spent = Sum('amount')).order_by('year')
 
 def total_spending_limits_of_category(category):
     filtered_expenditures = Expenditure.objects.filter(category = category)
