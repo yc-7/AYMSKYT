@@ -135,5 +135,6 @@ class NotificationSubscriptionForm(forms.ModelForm):
     subscriptions = forms.ModelMultipleChoiceField(
         queryset = Subscription.objects.all(),
         label = "Subscriptions",
-        widget = forms.CheckboxSelectMultiple
+        widget = forms.CheckboxSelectMultiple,
+        required = False
     )
