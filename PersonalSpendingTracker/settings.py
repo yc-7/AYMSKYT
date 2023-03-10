@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'minted',
     'widget_tweaks',
     'webpush',
+    'django_crontab',
 ]
 
 load_dotenv(find_dotenv())
@@ -53,6 +54,12 @@ WEBPUSH_SETTINGS = {
    "VAPID_PRIVATE_KEY": os.environ['VAPID_PRIVATE_KEY'],
    "VAPID_ADMIN_EMAIL": os.environ['VAPID_ADMIN_EMAIL']
 }
+
+CRONJOBS = [
+    ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
+    ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
+    ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

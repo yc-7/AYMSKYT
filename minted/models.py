@@ -25,7 +25,6 @@ class SpendingLimit(models.Model):
 class Subscription(models.Model):
     """Model for subscription options"""
 
-    # budgets, friend requests, friend activity
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=200, blank=True)
 
