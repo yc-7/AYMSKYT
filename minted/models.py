@@ -12,8 +12,7 @@ class Streak(models.Model):
     streak = models.IntegerField(
         default = 0, 
         validators= [
-            MaxValueValidator(7),
-            MinValueValidator(0),
+            MinValueValidator(0)
         ]
     )
 
@@ -82,6 +81,7 @@ class Category(models.Model):
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
+    colour = models.CharField(max_length = 7, blank = True, null =True)
 
     def __str__(self):
         return self.name
