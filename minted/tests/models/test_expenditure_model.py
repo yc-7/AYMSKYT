@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from minted.models import Expenditure
 
-
 class ExpenditureModelTestCase(TestCase):
     """Unit tests for the Expenditure model"""
 
@@ -15,11 +14,15 @@ class ExpenditureModelTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.expenditure = Expenditure.objects.get(pk=1)
-        self.second_expenditure = Expenditure.objects.get(pk=2)
+        self.expenditure = Expenditure.objects.get(pk = 1)
+        self.second_expenditure = Expenditure.objects.get(pk = 2)
 
     def test_expenditure_is_valid(self):
         self._assert_expenditure_is_valid()
+
+    def test_expenditure_must_have_category(self):
+        self.expenditure.category = None
+        self._assert_expenditure_is_invalid()
 
     def test_title_cannot_be_blank(self):
         self.expenditure.title = ''
@@ -29,35 +32,35 @@ class ExpenditureModelTestCase(TestCase):
         self.expenditure.title = 'a' * 50
         self._assert_expenditure_is_valid()
 
-    def test_title_not_more_than_50_chars(self):
+    def test_title_cannot_contain_more_than_50_chars(self):
         self.expenditure.title = 'a' * 51
         self._assert_expenditure_is_invalid()
 
-    def test_amount_can_be_6_digits(self):
-        self.expenditure.amount = 1234.56
+    def test_titles_do_not_need_to_be_unqiue(self):
+        self.second_expenditure.title = self.expenditure.title
         self._assert_expenditure_is_valid()
 
-    def test_amount_not_more_than_6_digits(self):
-        self.expenditure.amount = 1234567.12
+    def test_amount_can_be_8_digits(self):
+        self.expenditure.amount = 123456.78
+        self._assert_expenditure_is_valid()
+
+    def test_amount_cannot_be_more_than_8_digits(self):
+        self.expenditure.amount = 1234567.89
         self._assert_expenditure_is_invalid()
     
     def test_amount_not_more_than_2_decimal_places(self):
         self.expenditure.amount = 12.123
         self._assert_expenditure_is_invalid()
     
-    def test_amount_not_less_than_2_decimal_places(self):
-        self.expenditure.amount = 123456.1
-        self._assert_expenditure_is_invalid()
-    
     def test_date_cannot_be_blank(self):
         self.expenditure.date = None
         self._assert_expenditure_is_invalid()
 
-    def test_description_can_be_200_chars(self):
+    def test_description_can_contain_200_chars(self):
         self.expenditure.description = 'a' * 200
         self._assert_expenditure_is_valid()
     
-    def test_description_not_more_than_200_chars(self):
+    def test_description_cannot_contain_more_than_200_chars(self):
         self.expenditure.description = 'a' * 201
         self._assert_expenditure_is_invalid()
 
@@ -69,9 +72,6 @@ class ExpenditureModelTestCase(TestCase):
         self.expenditure.receipt = None
         self._assert_expenditure_is_valid()
 
-    def test_expenditure_titles_can_be_identical(self):
-        self.second_expenditure.title = "TFL"
-        self._assert_expenditure_is_valid()
 
     def _assert_expenditure_is_valid(self):
         try:

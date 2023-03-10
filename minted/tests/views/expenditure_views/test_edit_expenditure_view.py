@@ -1,7 +1,12 @@
+import filecmp
 from django.test import TestCase
 from django.urls import reverse
-from minted.models import Category, Expenditure, User
+from minted.models import Expenditure, User
 import datetime
+from django.conf import settings
+import os
+import shutil
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class ExpenditureEditViewTestCase(TestCase):
     """Test suite for the expenditure edit view."""
@@ -15,6 +20,7 @@ class ExpenditureEditViewTestCase(TestCase):
     ]
 
     def setUp(self):
+        settings.UPLOAD_DIR = 'uploads_test/'
         self.expenditure_id = 1
         self.category_name = 'Entertainment'
         self.form_input = {
@@ -27,6 +33,20 @@ class ExpenditureEditViewTestCase(TestCase):
         self.url = reverse('edit_expenditure', kwargs={'category_name':self.category_name, 'expenditure_id':self.expenditure_id})
         self.user = User.objects.get(pk = 1)
 
+        # Create expenditure receipt
+        if not os.path.exists(settings.UPLOAD_DIR):
+            os.mkdir(settings.UPLOAD_DIR)
+        self.new_reciept_path = os.path.join(settings.UPLOAD_DIR, 'test_receipt.png')
+        with open(self.new_reciept_path, 'w') as f:
+            f.write("reciept_test_content")
+        expenditure = Expenditure.objects.get(pk=self.expenditure_id)
+        expenditure.receipt = self.new_reciept_path
+        expenditure.save()
+
+    def tearDown(self):
+        if os.path.exists(settings.UPLOAD_DIR):
+            shutil.rmtree(settings.UPLOAD_DIR)
+        
     def test_edit_expenditure_url(self):
         self.assertEqual(self.url,f"/category_list/{self.category_name}/edit_expenditure/{self.expenditure_id}/")
 
@@ -48,6 +68,29 @@ class ExpenditureEditViewTestCase(TestCase):
         self.assertEqual(expenditure.amount, self.form_input['amount'])
         self.assertEqual(expenditure.date, self.form_input['date'])
         self.assertEqual(expenditure.description, self.form_input['description'])
+        self.assertEqual(expenditure.receipt, self.new_reciept_path)
+
+    def test_successful_expenditure_edit_with_file(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        new_file = SimpleUploadedFile(
+            "example_receipt.png",
+            b"example receipt content"
+        )
+        self.form_input['receipt'] = new_file
+        num_files_in_folder_start_count = len([f for f in os.listdir(settings.UPLOAD_DIR)])
+
+        response = self.client.post(self.url, self.form_input, follow=True)
+        redirect_url = reverse('category_expenditures', kwargs={'category_name':self.category_name})
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        expenditure = response.context['expenditures'][0]
+        self.assertEqual(expenditure.title, self.form_input['title'])
+        self.assertEqual(expenditure.amount, self.form_input['amount'])
+        self.assertEqual(expenditure.date, self.form_input['date'])
+        self.assertEqual(expenditure.description, self.form_input['description'])
+
+        num_files_in_folder_end_count = len([f for f in os.listdir(settings.UPLOAD_DIR)])
+
+        self.assertEqual(num_files_in_folder_start_count, num_files_in_folder_end_count)
 
     def test_unsuccessful_expenditure_edit_rerenders_page(self):
         self.client.login(email = self.user.email, password = 'Password123')
