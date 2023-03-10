@@ -22,6 +22,24 @@ class SpendingLimit(models.Model):
     def __str__(self):
         return ' £' + str(self.budget) + str(self.timeframe)
 
+class Subscription(models.Model):
+    """Model for subscription options"""
+
+    # budgets, friend requests, friend activity
+    name = models.CharField(max_length=50, unique=True)
+    description = models.CharField(max_length=200, blank=True)
+
+class NotificationSubscription(models.Model):
+    """Model for user notification subscriptions"""
+    FREQUENCY_CHOICES = (
+        (1, 'Daily'),
+        (7, 'Weekly'),
+        (30, 'Monthly'),
+    )
+
+    frequency = models.IntegerField(choices=FREQUENCY_CHOICES, blank=True, null=True)
+    subscriptions = models.ManyToManyField(Subscription, blank=True)
+
 class User(AbstractUser):
     """User model for authentication"""
 
@@ -29,6 +47,7 @@ class User(AbstractUser):
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
     budget = models.OneToOneField(SpendingLimit, null=True, blank=True, on_delete=models.CASCADE)
+    notification_subscription = models.OneToOneField(NotificationSubscription, null=True, blank=True, on_delete=models.SET_NULL)
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -51,6 +70,8 @@ class User(AbstractUser):
         expenditures = Expenditure.objects.filter(category__user=self)
         #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
+
+
 
 class Category(models.Model):
     """Model for expenditure categories"""

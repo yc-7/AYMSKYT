@@ -33,8 +33,11 @@
     <div>
         <h1>Register Notifications</h1>
         <a>Current notification subscription status: {{ subscription_status }}</a><br>
+        <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg btn-info">
+            Change notification settings
+        </a>
         <a onclick="registerSw()" class="btn btn-lg btn-info">
-            Register
+            Refresh Subscription
         </a>
         <a id="error-message"></a>
 

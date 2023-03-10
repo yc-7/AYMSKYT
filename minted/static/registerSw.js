@@ -22,7 +22,7 @@ const initialiseState = (reg) => {
         return
     }
     if (Notification.permission === 'granted') {
-        warning.innerHTML = 'Registered';
+        window.location.reload()
     }
     subscribe(reg);
 }

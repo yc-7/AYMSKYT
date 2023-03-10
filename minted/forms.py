@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category
+from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
@@ -126,3 +126,14 @@ class TimeFrameForm(forms.Form):
         time_interval = self.cleaned_data.get('time_interval')
         if start_date > end_date:
             self.add_error('start_date', 'Start date must be earlier than end date.')
+
+class NotificationSubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = NotificationSubscription
+        fields = ['frequency', 'subscriptions']
+
+    subscriptions = forms.ModelMultipleChoiceField(
+        queryset = Subscription.objects.all(),
+        label = "Subscriptions",
+        widget = forms.CheckboxSelectMultiple
+    )
