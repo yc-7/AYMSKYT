@@ -11,7 +11,7 @@ class Budget:
         self.spent = spent
         self.budget = budget
         self.ninty_percentage_of_budget = round(float(budget) * 0.9, 2)
-        self.spent_text = f"£ {str(spent)} out of £ {str(budget)} spent"
+        self.spent_text = f"£{str(spent)} out of £{str(budget)} spent"
         self.start_date = start_date
         self.end_date = end_date
 
