@@ -113,9 +113,9 @@ class Category(models.Model):
 class Expenditure(models.Model):
     """Model for expenditures"""
 
-    category = models.ForeignKey(Category, null = True, blank = True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length = 50)
-    amount = models.DecimalField(default = 0, max_digits = 6, decimal_places = 2)
+    amount = models.DecimalField(max_digits = 8, decimal_places = 2)
     date = models.DateField()
     description = models.CharField(max_length = 200, blank = True)
     receipt = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
