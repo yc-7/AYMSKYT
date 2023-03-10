@@ -1,8 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from minted.forms import NotificationSubscriptionForm
-from minted.models import User, NotificationSubscription, Subscription
-from django.contrib import messages
 
 @login_required
 def create_notification_subscription(request):
@@ -19,7 +17,7 @@ def create_notification_subscription(request):
             user.notification_subscription = notification_subscription
             user.save()
 
-            return redirect('profile')    #temp       
+            return redirect('profile')      
     return render(request, 'notification_subscriptions/create_notification_subscription.html', {'form': notification_subscription_form})
 
 
