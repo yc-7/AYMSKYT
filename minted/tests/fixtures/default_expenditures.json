@@ -4,31 +4,29 @@
         "pk": 1,
         "fields": {
             "category": 1, 
-            "title": "TFL",
-            "amount": "14.28",
+            "title": "Cinema Tickets",
+            "amount": "15.50",
             "date": "2023-01-26"
         }
 
     },
-
     {
         "model": "minted.Expenditure",
         "pk": 2,
         "fields": {
             "category": 2, 
-            "title": "Cinema Tickets",
-            "amount": "30.00",
+            "title": "Train",
+            "amount": "10.00",
             "date": "2023-01-09"
         }
 
     },
-
     {
         "model": "minted.Expenditure",
         "pk": 3,
         "fields": {
             "category": 3, 
-            "title": "Shoes",
+            "title": "Arcade",
             "amount": "100.00",
             "date": "2023-01-15"
         }
