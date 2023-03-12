@@ -1,0 +1,28 @@
+[
+    {
+        "model": "minted.NotificationSubscription",
+        "pk": 1,
+        "fields": {
+            "frequency": 1,
+            "subscriptions": [1, 2]
+        }
+    }, 
+
+    {
+        "model": "minted.NotificationSubscription",
+        "pk": 2,
+        "fields": {
+            "frequency": 1,
+            "subscriptions": [2,3]
+        }
+    },
+
+    {
+        "model": "minted.NotificationSubscription",
+        "pk": 3,
+        "fields": {
+            "frequency": 1,
+            "subscriptions": [1]
+        }
+    }
+]
