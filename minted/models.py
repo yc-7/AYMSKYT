@@ -7,7 +7,9 @@ from .user_manager import UserManager
 from .model_functions import *
 import datetime
 from random import randint
+import random
 from django.conf import settings
+from string import ascii_uppercase
 
 TIMEFRAME = [
     ('/week', 'week'),
@@ -127,6 +129,10 @@ class RewardManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(expiry_date__gte = datetime.date.today())
 
+class RewardBrandManager(models.Manager):
+    def get_queryset(self, brand):
+        return super().get_queryset().filter(brand_name = brand)
+
 class Reward(models.Model):
     """Model for rewards"""
 
@@ -137,6 +143,7 @@ class Reward(models.Model):
     description = models.TextField(max_length = 300, blank = False)
 
     objects = RewardManager()
+    same_brand = RewardBrandManager()
 
     def save(self, *args, **kwargs):
         if not self.reward_id:
@@ -144,9 +151,12 @@ class Reward(models.Model):
         super(Reward, self).save(*args, **kwargs)
 
     def _create_reward_id(self):
-        brand_code = self.brand_name[:3].replace(" ", "").upper()
-        random_digits = str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9))
-        return brand_code + random_digits
+        brands = Reward.same_brand.get_queryset(self.brand_name).count()
+        next_id = brands + 1
+        format_id = f'{next_id:03}'
+        full_id = self.brand_name[:3].replace(" ", "").upper() + format_id
+        return full_id
+
 
 class RewardsClaimManager(models.Manager):
     def get_queryset(self):
@@ -155,15 +165,31 @@ class RewardsClaimManager(models.Manager):
 class RewardClaim(models.Model):
     """Model for reward claims made by users"""
 
-    claim_code = models.CharField(max_length = 6, blank = True)
+    claim_code = models.CharField(max_length = 10, blank = True, unique = True)
     reward_type = models.ForeignKey(Reward, blank = False, on_delete = models.CASCADE)
     user = models.ForeignKey(User, blank = False, on_delete = models.CASCADE)
-    
+
     def save(self, *args, **kwargs):
-        if not self.claim_code:
+        if not self.claim_id:
             self.claim_code = self._create_claim_code()
         super(RewardClaim, self).save(*args, **kwargs)
 
     def _create_claim_code(self):
-        pass
+        partial_id = str(0)
+        full_id = 'MINT' + self.choose_digits(randint(1,2)) + self.choose_letters(randint(1,3)) + str(randint(0,9))
+        return full_id
+
+    def choose_letters(self, num):
+        letters = ''
+        for n in num:
+            letters + random.choice(ascii_uppercase)
+        return letters
+
+    def choose_digits(self, num):
+        digits = ''
+        for n in num:
+            digits + str(randint(0, 9))
+        return digits
+
+
 
