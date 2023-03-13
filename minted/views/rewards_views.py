@@ -9,7 +9,7 @@ from django.contrib import messages
 @login_required
 def rewards_homepage(request):
     rewards = Reward.objects.all()
-    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards })
+    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'user': request.user })
 
 @login_required
 def claim_reward(request, brand_name, reward_id):
