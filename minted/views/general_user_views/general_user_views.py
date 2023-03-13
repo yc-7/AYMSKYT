@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 import pytz
 
+from django.conf import settings
+from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 
 
 @login_prohibited
@@ -33,6 +35,7 @@ def log_in(request):
 
 
 def log_out(request):
+    unsubscribe_user_from_push(request.user.id)
     logout(request)
     return redirect('home')
 
@@ -61,7 +64,13 @@ def dashboard(request):
       
 @login_required
 def profile(request):
-    return render(request, 'profile.html', {'user': request.user})
+    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+    user = request.user
+
+    webpush_subscription_status = 'Subscribed' if is_user_subscribed(user.id) else 'Not subscribed'
+    
+    return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 
 @login_required
 def edit_profile(request):
