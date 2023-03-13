@@ -41,6 +41,6 @@ urlpatterns = [
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('profile/edit/change_password/', views.change_password, name='change_password'),
     path('rewards/', views.rewards_homepage, name='rewards'),
-    path('rewards/<str:brand_name>/', views.view_reward, name='view_reward'),
+    path('rewards/<str:brand_name>/<str:reward_id>/', views.claim_reward, name='claim_reward'),
     path('budget_list/', views.budget_list, name = 'budget_list')
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

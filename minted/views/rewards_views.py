@@ -11,6 +11,9 @@ def rewards_homepage(request):
     rewards = Reward.objects.all()
     return render(request, 'rewards/rewards_home.html', { 'rewards': rewards })
 
-def view_reward(request, brand_name):
-    pass
+@login_required
+def claim_reward(request, brand_name, reward_id):
+    reward = Reward.objects.get(reward_id=reward_id)
+    reward_claim = RewardClaim.objects.create(reward_type=reward, user=request.user)
+    return render(request, 'rewards/rewards_claim.html', { 'reward': reward, 'reward_claim': reward_claim })
 

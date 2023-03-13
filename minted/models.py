@@ -8,6 +8,7 @@ from .model_functions import *
 import datetime
 from random import randint
 import random
+from django.db import IntegrityError
 from django.conf import settings
 from string import ascii_uppercase
 
@@ -141,6 +142,7 @@ class Reward(models.Model):
     reward_id = models.CharField(max_length = 6, unique = True, blank = False)
     expiry_date = models.DateField(blank = False)
     description = models.TextField(max_length = 300, blank = False)
+    cover_image = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
 
     objects = RewardManager()
     same_brand = RewardBrandManager()
@@ -157,6 +159,9 @@ class Reward(models.Model):
         full_id = self.brand_name[:3].replace(" ", "").upper() + format_id
         return full_id
 
+    def __str__(self):
+        return self.brand_name.lower().replace(" ", "-")
+
 
 class RewardsClaimManager(models.Manager):
     def get_queryset(self):
@@ -165,30 +170,35 @@ class RewardsClaimManager(models.Manager):
 class RewardClaim(models.Model):
     """Model for reward claims made by users"""
 
-    claim_code = models.CharField(max_length = 10, blank = True, unique = True)
+    claim_code = models.CharField(max_length = 10, blank = False, unique = True)
     reward_type = models.ForeignKey(Reward, blank = False, on_delete = models.CASCADE)
     user = models.ForeignKey(User, blank = False, on_delete = models.CASCADE)
 
     def save(self, *args, **kwargs):
-        if not self.claim_id:
-            self.claim_code = self._create_claim_code()
-        super(RewardClaim, self).save(*args, **kwargs)
+        unique = False
+        while (unique == False):
+            try:
+                if not self.claim_code:
+                    self.claim_code = self._create_claim_code()
+                super(RewardClaim, self).save(*args, **kwargs)
+                unique = True
+            except IntegrityError as e:
+                unique = False
 
     def _create_claim_code(self):
-        partial_id = str(0)
         full_id = 'MINT' + self.choose_digits(randint(1,2)) + self.choose_letters(randint(1,3)) + str(randint(0,9))
         return full_id
 
     def choose_letters(self, num):
         letters = ''
-        for n in num:
-            letters + random.choice(ascii_uppercase)
+        for n in range(num):
+            letters += random.choice(ascii_uppercase)
         return letters
 
     def choose_digits(self, num):
         digits = ''
-        for n in num:
-            digits + str(randint(0, 9))
+        for n in range(num):
+            digits += str(randint(0, 9))
         return digits
 
 

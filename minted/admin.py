@@ -28,8 +28,7 @@ class SpendingLimitAdmin(admin.ModelAdmin):
 
 @admin.register(Reward)
 class RewardAdmin(admin.ModelAdmin):
-    exclude = ['claim_code']
     readonly_fields = ['reward_id']
     list_display = [
-        'brand_name', 'points_required', 'expiry_date', 'description'
+        'brand_name', 'points_required', 'expiry_date', 'description', 'cover_image'
     ]
