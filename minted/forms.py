@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category
+from minted.models import User, SpendingLimit, Expenditure, Category, FriendRequest
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
@@ -151,6 +151,31 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         exclude = ['user', 'budget']
+
+# class FriendReqForm(forms.ModelForm):
+#     class Meta:
+#         model = FriendRequest
+#         fields = ['to_user']
+    
+class FriendReqForm(forms.Form):
+    from_user = forms.HiddenInput()
+    email = forms.EmailField()
+    is_active = forms.HiddenInput()
+
+    # def save(self):
+
+    #     email = self.cleaned_data.get('email')
+    #     from_user = self.cleaned_data.get('from_user')
+    #     is_active = self.cleaned_data.get('is_active')
+    #     if User.objects.filter(email=email).count() == 0:
+    #         self.add_error('email', 'Invalid user')
+    #     user = User.objects.get(email = email)
+    #     FriendRequest.objects.create(
+    #         from_user = from_user,
+    #         to_user = user,
+    #         is_active = False
+    #     )       
+
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())
