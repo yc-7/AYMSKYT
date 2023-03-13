@@ -6,26 +6,9 @@ import pytz
 
 def reward_points_daily(request):
     user = request.user
-    
-    last_awarded = user.points.timestamp.date()
-    today = timezone.now().date()
     points_rewarded = (user.streak_data.streak % 7) * 10
-    if last_awarded < today:
-        reward_custom_points(request, points_rewarded)
-
-        # if (user.streak_data.streak % 7 == 0):
-        #     reward_custom_points(request, 30)
-        # else:
-        #     reward_custom_points(request, 10)
-    
-    #return render(request, 'dashboard.html', {'points': user_points})
-
-        
-
-def reward_custom_points(request, input_points):
-    current_user = request.user
-    current_user.points.points += input_points 
-    current_user.points.save() 
+    user.points += points_rewarded 
+    user.save()
 
 
 
