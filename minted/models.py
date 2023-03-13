@@ -102,6 +102,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
     def get_expenditures(self):
         expenditures = Expenditure.objects.filter(category=self)
         return expenditures

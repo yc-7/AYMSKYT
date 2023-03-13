@@ -45,6 +45,7 @@ class CategoryModelTestCase(TestCase):
         self.category.user = None
         self._assert_category_is_invalid()
 
+
     def _assert_category_is_valid(self):
         try:
             self.category.full_clean()

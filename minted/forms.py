@@ -107,7 +107,7 @@ class ExpenditureForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        exclude = ['user', 'budget']
+        exclude = ['user', 'budget', 'colour']
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())

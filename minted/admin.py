@@ -1,9 +1,5 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import User, Category, Expenditure, SpendingLimit, Streak
-=======
-from .models import User, Category, Expenditure, SpendingLimit, Subscription, NotificationSubscription
->>>>>>> a3442697934d430998adcbb33368adf5645ffb91
+from .models import User, Category, Expenditure, SpendingLimit, Subscription, NotificationSubscription, Streak
 
 # Register your models here.
 @admin.register(User)

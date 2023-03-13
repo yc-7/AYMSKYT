@@ -52,6 +52,7 @@ def sign_up(request):
             spending = spending_form.save()
             user = form.save(spending)
             login(request, user)
+            update_streak(request, user)
             return redirect('dashboard')
     else:
         form = SignUpForm()

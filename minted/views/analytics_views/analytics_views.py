@@ -29,9 +29,13 @@ def view_analytics(request):
     
     if not categories:
         return render(request, 'analytics.html', {'form': form})
+    else:
+        colours = []
+        for category in categories:
+            colours.append(category.colour)
 
     category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date)
     category_line_chart_data = generate_category_line_chart_dataset(categories, start_date, end_date, time_interval)
     all_spending_line_chart_data = generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval)
     
-    return render(request, 'analytics.html', {'form': form, 'category_pie_chart_data': category_pie_chart_data, 'category_line_chart_data': category_line_chart_data, 'all_spending_line_chart_data': all_spending_line_chart_data})
+    return render(request, 'analytics.html', {'form': form, 'category_pie_chart_data': category_pie_chart_data, 'category_line_chart_data': category_line_chart_data, 'all_spending_line_chart_data': all_spending_line_chart_data, 'colours': colours})

@@ -4,6 +4,7 @@ from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *
 from django.contrib import messages
+import random
 
 @login_required
 def create_category(request):
@@ -15,6 +16,8 @@ def create_category(request):
             category = category_form.save(commit=False)
             category.user = request.user
             category.budget = spending
+            if not category.colour:
+                category.colour = '#' + '%06x' % random.randint(0, 0xFFFFFF)
             category.save()
             return redirect('category_list')           
     else:

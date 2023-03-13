@@ -1,11 +1,12 @@
 function create_bar_chart_config(data, labels, colours){
     var pie_chart_config = {
-      type: 'doughnut',
+      type: 'pie',
       data: {
         datasets: [{
           data: data,
           backgroundColor: colours,
-          label: 'Total'
+          label: 'Total',
+          hoverOffset: 5
         }],
         labels: labels,
       },
