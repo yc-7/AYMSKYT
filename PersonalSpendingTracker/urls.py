@@ -33,6 +33,7 @@ urlpatterns = [
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
     path('category_list/', views.category_list_view, name = 'category_list'),
     path('friend_request/', views.friend_request, name='friend_request'),
+    path('friend_list/', views.request_list_view, name='friend_list'),
     path('accept_request/<int:request_id>', views.accept_request, name='accept_request'),
     path('decline_request/<int:request_id>', views.decline_request, name='decline_request'),
     path('profile/', views.profile , name='profile'),

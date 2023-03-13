@@ -6,6 +6,7 @@ from .general_user_views.login_view_functions import *
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 
+@login_required
 def friend_request(request):
     form = FriendReqForm(initial={'from_user':request.user, 'is_active': True})
     if request.method == 'POST':
@@ -26,6 +27,7 @@ def friend_request(request):
         return redirect('profile') 
     return render(request, 'friend_request.html', {'form': form})
 
+@login_required
 def accept_request(request, request_id):
     if request.method == 'POST':
         friend_request = FriendRequest.objects.get(id = request_id)
@@ -36,6 +38,7 @@ def accept_request(request, request_id):
         friend_request.is_active = False
         friend_request.delete()
 
+@login_required
 def decline_request(request, request_id):
     if request.method == 'POST':
         friend_request = FriendRequest.objects.get(id = request_id)
@@ -43,7 +46,13 @@ def decline_request(request, request_id):
         friend_request.delete()
 
 
-            
+@login_required
+def request_list_view(request):
+    current_user = request.user
+    my_friends_list = User.objects.filter(current_user.friends)
+    context = {'user': current_user,'friends': my_friends_list}
+    return render(request, 'friend_list.html', context)
+
                 
 
     
