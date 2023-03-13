@@ -1,22 +1,48 @@
 {% extends 'base_content.html' %}
+{% load static %}
 {% block content %}
 
+<script src="{% static 'registerSw.js' %}" defer></script>
+<head>
+    <meta name="vapid-key" content="{{ vapid_key }}">
+    {% if user.id %}
+        <meta name="user_id" content="{{ user.id }}">
+    {% endif %}
+</head>
+
 <div class="container">
-    <h1>Profile</h1>
-    <p>First name: {{ user.first_name }}</p>
-    <p>Last name: {{ user.last_name }}</p>
-    <p>Email: {{ user.email }}</p>
-    <a href="{% url 'edit_profile' %}" class="btn btn-lg btn-info">
-        Edit Details
-    </a>
-    <br>
-    <br>
-    <h1>Budget</h1>
-    <p>Spending limit: {{ user.budget.budget }}</p>
-    <p>Timeframe: {{ user.budget.timeframe }}</p>
-    <a href="{% url 'edit_spending_limit' %}" class="btn btn-lg btn-info">
-        Edit Limits
-    </a>
+    <div>
+        <h1>Profile</h1>
+        <p>First name: {{ user.first_name }}</p>
+        <p>Last name: {{ user.last_name }}</p>
+        <p>Email: {{ user.email }}</p>
+        <a href="{% url 'edit_profile' %}" class="btn btn-lg btn-info">
+            Edit Details
+        </a>
+    </div>
+    
+    <div>
+        <h1>Budget</h1>
+        <p>Spending limit: {{ user.budget.budget }}</p>
+        <p>Timeframe: {{ user.budget.timeframe }}</p>
+        <a href="{% url 'edit_spending_limit' %}" class="btn btn-lg btn-info">
+            Edit Limits
+        </a>
+    </div>
+
+    <div>
+        <h1>Register Notifications</h1>
+        <a>Current notification subscription status: {{ subscription_status }}</a><br>
+        <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg btn-info">
+            Change notification settings
+        </a>
+        <a onclick="registerSw()" class="btn btn-lg btn-info">
+            Refresh Subscription
+        </a>
+        <a id="error-message"></a>
+
+    </div>
+
 </div>
 
 {% endblock %}

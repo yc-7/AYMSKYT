@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 from django.contrib.messages import constants as message_constants
+from dotenv import load_dotenv, find_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +28,8 @@ SECRET_KEY = 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fafb-62-254-68-117.eu.ngrok.io']
+# CSRF_TRUSTED_ORIGINS = ['https://fafb-62-254-68-117.eu.ngrok.io']
 
 
 # Application definition
@@ -40,6 +43,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'minted',
     'widget_tweaks',
+    'webpush',
+    'django_crontab',
+]
+
+load_dotenv(find_dotenv())
+
+WEBPUSH_SETTINGS = {
+   "VAPID_PUBLIC_KEY": os.environ['VAPID_PUBLIC_KEY'],
+   "VAPID_PRIVATE_KEY": os.environ['VAPID_PRIVATE_KEY'],
+   "VAPID_ADMIN_EMAIL": os.environ['VAPID_ADMIN_EMAIL']
+}
+
+CRONJOBS = [
+    ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
+    ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
+    ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
 ]
 
 MIDDLEWARE = [
@@ -64,7 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.contrib.messages.context_processors.messages'
             ],
         },
     },
@@ -127,6 +146,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #login url for redirecting user when not logged in
 LOGIN_URL = 'log_in'
+
+# Path for file uploads
+UPLOAD_DIR = 'uploads/'
+UPLOAD_ROOT = os.path.join(BASE_DIR, UPLOAD_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'

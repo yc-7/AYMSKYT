@@ -1,0 +1,28 @@
+[
+    {
+        "model": "minted.Subscription",
+        "pk": 1,
+        "fields": {
+            "name": "Budgets",
+            "description": "Alerts for staying on and going over budgets"
+        }
+    }, 
+
+    {
+        "model": "minted.Subscription",
+        "pk": 2,
+        "fields": {
+            "name": "Friend Requests",
+            "description": ""
+        }
+    },
+
+    {
+        "model": "minted.Subscription",
+        "pk": 3,
+        "fields": {
+            "name": "Friend Activity",
+            "description": ""
+        }
+    }
+]

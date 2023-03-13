@@ -7,9 +7,9 @@
             <a type="button" class="btn btn-light" href="{% url 'edit_expenditure' expenditure.category.name expenditure.id %}">
                 <i class="bi bi-pencil text-info"></i>
             </a>
-            <form action="{% url 'expenditures' expenditure.category.name %}" method="post">
+            <form action="{% url 'delete_expenditure' expenditure.id %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-light" value="{{ expenditure.id }}" name="id">
+                <button type="submit" class="btn btn-light">
                     <i class="bi bi-trash text-danger"></i>
                 </button>
             </form>
