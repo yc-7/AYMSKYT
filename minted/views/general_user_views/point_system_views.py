@@ -32,12 +32,15 @@ def check_streak(user):
     now = datetime.now(pytz.utc)
     window_start = now - timedelta(days=1)
     last_login = user.streak_data.last_login_time
+    print('last login:', last_login)
+    print('window start:', window_start)
 
-    if last_login is not None and last_login.date() < now.date() and last_login >= window_start:
-        user.streak_data.streak += 1
-    elif last_login.date() < now.date() and last_login < window_start:
+    if last_login is None or last_login.date() < now.date() and last_login < window_start:
         user.streak_data.streak = 1
-  
+        user.streak_data.last_login_time = user.last_login
+        
+    elif last_login.date() < now.date() and last_login >= window_start:
+        user.streak_data.streak += 1
+        user.streak_data.last_login_time = user.last_login
 
-    user.streak_data.last_login_time = user.last_login
     user.streak_data.save()
