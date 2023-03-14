@@ -9,6 +9,8 @@ from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
+import datetime
+
 
 
 from django.conf import settings

@@ -9,7 +9,7 @@ from django.conf import settings
 
 class Streak(models.Model):
         
-    last_login_time = models.DateTimeField(blank = True, null= True)
+    last_login_time = models.DateTimeField(auto_now = True, null = True, blank = True)
     streak = models.IntegerField(
         default = 0, 
         validators= [
