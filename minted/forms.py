@@ -3,14 +3,14 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category
+from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
 
 class DateInput(forms.DateInput):
     input_type = 'date'
-    
+
 class LogInForm(forms.Form):
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
@@ -62,13 +62,13 @@ class SpendingLimitForm(forms.ModelForm):
     class Meta:
         model = SpendingLimit
         fields = ['budget', 'timeframe']
-        
+
 class EditProfileForm(UserChangeForm):
     password = None
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email'] 
-        
+        fields = ['first_name', 'last_name', 'email']
+
 class PasswordForm(forms.Form):
     """Form enabling users to change their password."""
 
@@ -126,4 +126,15 @@ class TimeFrameForm(forms.Form):
         time_interval = self.cleaned_data.get('time_interval')
         if start_date > end_date:
             self.add_error('start_date', 'Start date must be earlier than end date.')
-        
+
+class NotificationSubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = NotificationSubscription
+        fields = ['frequency', 'subscriptions']
+
+    subscriptions = forms.ModelMultipleChoiceField(
+        queryset = Subscription.objects.all(),
+        label = "Subscriptions",
+        widget = forms.CheckboxSelectMultiple,
+        required = False
+    )

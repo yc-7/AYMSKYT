@@ -1,0 +1,12 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form action="{% url 'edit_notification_subscription' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Edit" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+{% endblock %}

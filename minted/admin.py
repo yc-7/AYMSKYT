@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import User, Category, Expenditure, SpendingLimit, Reward
+from .models import User, Category, Expenditure, Reward, SpendingLimit, Subscription, NotificationSubscription
 
 # Register your models here.
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'email', 'first_name', 'last_name', 'is_active', 'budget'
+        'id', 'email', 'first_name', 'last_name', 'is_active', 'budget', 'notification_subscription'
     ]
 
 @admin.register(Category)
@@ -31,4 +31,16 @@ class RewardAdmin(admin.ModelAdmin):
     readonly_fields = ['reward_id']
     list_display = [
         'brand_name', 'points_required', 'expiry_date', 'description', 'cover_image'
+    ]
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = [
+        'name', 'description'
+    ]
+
+@admin.register(NotificationSubscription)
+class NotificationSubscriptionAdmin(admin.ModelAdmin):
+    list_display = [
+        'frequency'
     ]

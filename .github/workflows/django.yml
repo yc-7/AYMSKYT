@@ -26,6 +26,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests/Coverage
+      env:
+        VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+        VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+        VAPID_ADMIN_EMAIL: ${{ secrets.VAPID_ADMIN_EMAIL }}
       run: |
         coverage run manage.py test
         coverage report
