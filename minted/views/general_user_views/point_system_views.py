@@ -29,18 +29,17 @@ def reward_custom_points(request, input_points):
 
 def check_streak(user):
     
-    now = datetime.now(pytz.utc)
-    window_start = now - timedelta(days=1)
-    last_login = user.streak_data.last_login_time
-    print('last login:', last_login)
-    print('window start:', window_start)
 
-    if last_login is None or last_login.date() < now.date() and last_login < window_start:
+    window_size=timedelta(days=1)
+    last_login = user.streak_data.last_login_time
+    time_since_last_login = datetime.now(pytz.utc) - last_login
+
+    if last_login is None or time_since_last_login >= 2 * window_size:
         user.streak_data.streak = 1
         user.streak_data.last_login_time = user.last_login
-        
-    elif last_login.date() < now.date() and last_login >= window_start:
+    elif window_size <= time_since_last_login < 2 * window_size:
         user.streak_data.streak += 1
         user.streak_data.last_login_time = user.last_login
+        
 
     user.streak_data.save()
