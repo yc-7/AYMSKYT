@@ -22,8 +22,8 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('log_in/', views.log_in, name='log_in'),
+    path('', views.home, name = 'home'),
+    path('log_in/', views.LogInView.as_view(), name = 'log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard, name='dashboard'),

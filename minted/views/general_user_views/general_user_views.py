@@ -1,31 +1,49 @@
-from django.contrib.auth import login, logout
+from django.contrib import messages
+from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, render
+from django.views import View
 from minted.forms import *
 from minted.models import *
-from django.contrib import messages
 from minted.decorators import login_prohibited
-from minted.views.general_user_views.login_view_functions import *
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.hashers import check_password
-from django.conf import settings
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
+from minted.views.general_user_views.login_view_functions import *
 
+class LogInView(View):
+    """View that handles log in"""
 
-@login_prohibited
-def log_in(request):
-    if request.method == 'POST':
+    http_method_name = ['get', 'post']
+
+    @method_decorator(login_prohibited)
+    def dispatch(self, request):
+        return super().dispatch(request)
+
+    def get(self, request):
+        """Display log in template"""
+
+        self.next = request.GET.get('next') or ''
+        return self.render()
+
+    def post(self, request):
+        """Handle log in attempt"""
+
         form = LogInForm(request.POST)
-        if form.is_valid():
-            user = get_user(form)
-            if user:
-                login(request, user)
-                redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
-                return redirect(redirect_url)
-        messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
-    form = LogInForm()
-    next_url = request.GET.get('next') or request.POST.get('next') or ''
-    return render(request, 'login.html', {'form': form, 'next': next_url})
+        user = get_user(form)
+        self.next = request.POST.get('next')
+        if user is not None:
+            login(request, user)
+            self.next = request.POST.get('next') or get_redirect_url_for_user(user)
+            return redirect(self.next)
+        messages.add_message(request, messages.ERROR, "Log in credentials were invalid!")
+        return self.render()
+
+    def render(self):
+        """Render log in template with blank log in form"""
+
+        form = LogInForm()
+        return render(self.request, 'login.html', {'form': form, 'next': self.next})
 
 def log_out(request):
     unsubscribe_user_from_push(request.user.id)

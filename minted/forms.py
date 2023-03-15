@@ -6,15 +6,16 @@ from django.core.validators import RegexValidator
 from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserChangeForm
 
 class DateInput(forms.DateInput):
     input_type = 'date'
 
 class LogInForm(forms.Form):
-    email = forms.CharField(label="Email")
-    password = forms.CharField(label="Password", widget=forms.PasswordInput())
-
+    email = forms.CharField(label = "Email")
+    password = forms.CharField(label = "Password", widget = forms.PasswordInput())
+    
 class SignUpForm(forms.ModelForm):
     """Form to allow unregistered users to sign up"""
 
