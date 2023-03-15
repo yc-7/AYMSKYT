@@ -3,14 +3,14 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, Streak, Points
+from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Points
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
 
 class DateInput(forms.DateInput):
     input_type = 'date'
-    
+
 class LogInForm(forms.Form):
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
@@ -64,13 +64,13 @@ class SpendingLimitForm(forms.ModelForm):
     class Meta:
         model = SpendingLimit
         fields = ['budget', 'timeframe']
-        
+
 class EditProfileForm(UserChangeForm):
     password = None
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email'] 
-        
+        fields = ['first_name', 'last_name', 'email']
+
 class PasswordForm(forms.Form):
     """Form enabling users to change their password."""
 
@@ -102,52 +102,7 @@ class ExpenditureForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs = {'rows': 3})
         }
-
-    date = forms.DateField(
-        label = "Date of Purchase",
-        widget = forms.DateInput(
-            format = ('%d/%m/%Y'),
-            attrs = {
-                'type': 'date',
-                'placeholder': '--',
-                'class': 'form-control'
-            }
-        )
-    )
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        self.category = Category.objects.filter(user=self.user).get(name=kwargs.pop('category'))
-        super(ExpenditureForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        super().clean()
-        description = self.cleaned_data.get('description') or None
-        receipt = self.cleaned_data.get('receipt') or None
-
-    def save(self):
-        """Create a new expenditure"""
-
-        super().save(commit=False)
-        return Expenditure.objects.create(
-                category = self.category,
-                title = self.cleaned_data.get('title'),
-                amount = self.cleaned_data.get('amount'),
-                date = self.cleaned_data.get('date'),
-                description = self.cleaned_data.get('description'),
-                receipt = self.cleaned_data.get('receipt')
-            )
-
-    def update(self, expenditure_id):
-        """Update an existing expenditure"""
-
-        expenditure = Expenditure.objects.get(id=expenditure_id)
-        expenditure.title = self.cleaned_data.get('title')
-        expenditure.amount = self.cleaned_data.get('amount')
-        expenditure.date = self.cleaned_data.get('date')
-        expenditure.description = self.cleaned_data.get('description')
-        expenditure.receipt = self.cleaned_data.get('receipt')
-        expenditure.save()
+    date = forms.DateField(widget=DateInput())
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -173,4 +128,15 @@ class TimeFrameForm(forms.Form):
         time_interval = self.cleaned_data.get('time_interval')
         if start_date > end_date:
             self.add_error('start_date', 'Start date must be earlier than end date.')
-        
+
+class NotificationSubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = NotificationSubscription
+        fields = ['frequency', 'subscriptions']
+
+    subscriptions = forms.ModelMultipleChoiceField(
+        queryset = Subscription.objects.all(),
+        label = "Subscriptions",
+        widget = forms.CheckboxSelectMultiple,
+        required = False
+    )
