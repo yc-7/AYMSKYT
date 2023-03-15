@@ -2,8 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from minted.forms import TimeFrameForm
 from minted.models import Category
-from minted.views.analytics_views.analytics_view_functions import generate_category_line_chart_dataset, generate_category_pie_chart_dataset, generate_all_spending_line_chart_dataset
+from minted.views.analytics_views.analytics_view_functions import generate_category_line_chart_dataset, generate_category_pie_chart_dataset, generate_all_spending_line_chart_dataset, generate_all_spending_pie_chart_dataset
 import datetime
+
 
 @login_required
 def view_analytics(request):
@@ -13,6 +14,7 @@ def view_analytics(request):
     start_date = date_one_year_ago
     end_date = datetime.date.today()
     time_interval = 'monthly'
+    budget = request.user.budget.budget
     form = TimeFrameForm(initial={
         'start_date': start_date, 
         'end_date': end_date, 
@@ -30,8 +32,28 @@ def view_analytics(request):
     if not categories:
         return render(request, 'analytics.html', {'form': form})
 
-    category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date)
+    category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date,float(budget))
     category_line_chart_data = generate_category_line_chart_dataset(categories, start_date, end_date, time_interval)
     all_spending_line_chart_data = generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval)
     
     return render(request, 'analytics.html', {'form': form, 'category_pie_chart_data': category_pie_chart_data, 'category_line_chart_data': category_line_chart_data, 'all_spending_line_chart_data': all_spending_line_chart_data})
+
+def dashboard_analytics(request):
+    now = datetime.date.today()
+    beginning_of_month = datetime.date(now.year, now.month, 1)
+
+    # Defaults
+    start_date = beginning_of_month
+    end_date = datetime.date.today()
+    budget = request.user.budget.budget
+
+    categories = Category.objects.filter(user = request.user)
+    
+    if not categories:
+        return render(request, 'dashboard.html')
+    
+
+    spend_this_month_data = generate_all_spending_pie_chart_dataset(categories, start_date, end_date, float(budget))
+    
+    return render(request, 'dashboard.html', {'spend_this_month_data': spend_this_month_data})
+

@@ -1,6 +1,6 @@
 
 var build_random_colours = function(numberOfColours){
-    colours = [];
+    var colours = [];
     for (var i = 0; i<numberOfColours; i++){
       r = Math.floor(Math.random() * 255);
       g = Math.floor(Math.random() * 255);

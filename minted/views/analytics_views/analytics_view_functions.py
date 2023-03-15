@@ -39,15 +39,26 @@ def create_line_dataset(categories, time_interval, start_date, end_date):
         })
     return line_dataset
 
-def generate_category_pie_chart_dataset(categories, start_date, end_date):
+def generate_category_pie_chart_dataset(categories, start_date, end_date, budget):
     pie_labels = []
     pie_data = []
+    total_spending = 0
 
     for category in categories:
         total_expenses_for_category = float(category.get_total_expenses_for_category(date_from=start_date, date_to=end_date))
+        total_spending += total_expenses_for_category
+
 
         pie_labels.append(category.name)
         pie_data.append(total_expenses_for_category)
+        
+    remaining_budget = budget - total_spending
+
+    remaining_budget = max(remaining_budget, 0)
+
+    pie_labels.append('Remaining Budget')
+    pie_data.append(remaining_budget)
+
     
     category_pie_chart_data = {
         'labels': pie_labels,
@@ -86,6 +97,27 @@ def generate_all_spending_line_chart_dataset(categories, start_date, end_date, t
         'datasets': [data_points]
     }
     return all_spending_line_chart_data
+
+def generate_all_spending_pie_chart_dataset(categories, start_date, end_date, budget):
+    total_spending = 0
+
+    for category in categories:
+        total_expenses_for_category = float(category.get_total_expenses_for_category(date_from=start_date, date_to=end_date))
+        total_spending += total_expenses_for_category
+
+    remaining_budget = budget - total_spending
+
+    remaining_budget = max(remaining_budget, 0)
+
+    pie_labels = ['Total Spending', 'Remaining Budget']
+    pie_data = [total_spending, remaining_budget]
+
+    all_spending_pie_chart_data = {
+        'labels': pie_labels,
+        'data': pie_data,
+    }
+
+    return all_spending_pie_chart_data
 
 
 def generate_category_line_chart_dataset(categories, start_date, end_date, time_interval):

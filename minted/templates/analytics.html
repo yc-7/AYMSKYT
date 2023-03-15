@@ -29,7 +29,9 @@
   var category_line_chart_data = JSON.parse(document.getElementById('lineChartData').textContent);
   var all_spending_line_chart_data = JSON.parse(document.getElementById('allSpendingLineChartData').textContent);
 
-  var colours = build_random_colours(category_pie_chart_data.data.length);
+
+  var numberOfCategories = category_pie_chart_data.data.length - 1;
+  var colours = build_random_colours(numberOfCategories);
   
   var pie_chart_config = create_bar_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
   var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours)

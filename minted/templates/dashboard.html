@@ -1,8 +1,107 @@
 {% extends 'base_content.html' %}
 {% block content %}
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'random_colour_generator.js' %}"></script>
+<script src="{% static 'chartjs_chart_generators.js' %}"></script>
+
 
 <body>
-    <h1 class="p-4"> login success </h1>
+    <h1 class="p-4" id="welcome" data-username="{{ user.first_name }}"> </h1>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeMessageElement = document.getElementById('welcome');
+            const currentTime = new Date();
+            const currentHour = currentTime.getHours();
+            const userName = welcomeMessageElement.dataset.username;
+        
+            let welcomeMessage;
+        
+            if (currentHour >= 5 && currentHour < 12) {
+                welcomeMessage = 'Good morning';
+            } else if (currentHour >= 12 && currentHour < 18) {
+                welcomeMessage = 'Good afternoon';
+            } else if (currentHour >= 18 && currentHour < 22) {
+                welcomeMessage = 'Good evening';
+            } else {
+                welcomeMessage = 'Good night';
+            }
+
+            welcomeMessage += `, ${userName}!`;
+            welcomeMessageElement.textContent = welcomeMessage;
+        });
+        
+    </script>
+
+    <div class="container" style="width: 50%;">
+        {{ spend_this_month_data|json_script:"spendThisMonthData" }}
+        <canvas id="over-view-chart"></canvas>
+
+
+    </div>
+   
+    <script>
+        var spend_this_month_data = JSON.parse(document.getElementById('spendThisMonthData').textContent);
+        var colours = build_random_colours(1);
+
+        var spend_this_month_config = create_bar_chart_config(spend_this_month_data.data, spend_this_month_data.labels, colours)
+        
+
+        window.onload = function() {
+            var this_month_spend_chart = document.getElementById('over-view-chart').getContext('2d');
+            window.myLine = new Chart(this_month_spend_chart, spend_this_month_config);
+        }
+
+    </script>
+    
+    <section class="p-5">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-md">
+                    <div class="card bg-light text-light">
+                        <div class="card-body text-center">
+                            <div class="h1 mb-3">
+                                <i class=" bi-calendar-month-fill" style="color:#d462a1"></i>
+                            </div>
+                            <h3 class="card-title mb-3" style="color:#602385;">
+                                Budgets
+                            </h3>
+                            <p class="card-text" style="color:#602385;">
+                                Set monthly budgets for your total spending as well as specific categories.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md"><div class="card bg-light text-light">
+                    <div class="card-body text-center">
+                        <div class="h1 mb-3">
+                            <i class=" bi-bell-fill" style="color:#d462a1;"></i>
+                        </div>
+                        <h3 class="card-title mb-3" style="color:#602385;">
+                            Notifications
+                        </h3>
+                        <p class="card-text" style="color:#602385;">
+                            Get notified when you go over your budgets.
+                        </p>
+                    </div>
+                </div></div>
+                <div class="col-md"><div class="card bg-light text-light">
+                    <div class="card-body text-center">
+                        <div class="h1 mb-3">
+                            <i class=" bi-people-fill" style="color: #d462a1;"></i>
+                        </div>
+                        <h3 class="card-title mb-3" style="color:#602385;">
+                            Friends
+                        </h3>
+                        <p class="card-text" style="color:#602385;">
+                            See how good <em>(or bad)</em> your friends have been with their money this month.
+                        </p>
+                    </div>
+                </div></div>
+            </div>
+        </div>
+    </section>
 </body>
 
 {% endblock %}

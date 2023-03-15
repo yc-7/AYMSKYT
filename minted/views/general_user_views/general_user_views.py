@@ -10,6 +10,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from django.conf import settings
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
+from minted.views.analytics_views.analytics_views import dashboard_analytics 
 
 
 @login_prohibited
@@ -53,7 +54,7 @@ def sign_up(request):
 
 @login_required
 def dashboard(request):
-    return render(request,'dashboard.html')
+    return dashboard_analytics(request)
       
 @login_required
 def profile(request):
