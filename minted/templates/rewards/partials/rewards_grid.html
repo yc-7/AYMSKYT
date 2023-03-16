@@ -5,18 +5,22 @@
         <h5 class="card-title">{{ reward.brand_name }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{ reward.points_required }} points</h6>
         <p class="card-text">{{ reward.description }}</p>
-        {% if rewards.claimed == False %}
-        <a type="button" class="btn btn-light" href="{% url 'claim_reward' reward reward.reward_id %}">
+        {% if reward.claimed == False %}
+        <a type="button" class="btn btn-light mt-auto" href="{% url 'claim_reward' reward reward.reward_id %}">
             Claim
         </a>
         {% else %}
-        <a type="button" class="btn btn-light">
-            Already Claimed
+        <a type="button" class="btn btn-dark mt-auto" href="{% url 'claim_reward' reward reward.reward_id %}">
+            View Code
         </a>
         {% endif %}
       </div>
       <div class="card-footer">
+        {% if reward.expiry_date == date %}
+        <small class="text-muted">Last Day to Use</small>
+        {% else %}
         <small class="text-muted">Expires on {{ reward.expiry_date }}</small>
+        {% endif %}
       </div>
     </div>
 </div>

@@ -5,7 +5,7 @@
         <div class="card-body">
             <h3 class="card-title" style="margin-top: 0.5rem; margin-left: 0.5rem"><b>My Rewards</b></h3>
             {% for reward in claimed_rewards %}
-                {% include 'rewards/partials/my_reward_layout.html' with reward=reward %}
+                {% include 'rewards/partials/my_reward_layout.html' with reward=reward date=date %}
             {% endfor %}            
         </div>
     </div>
