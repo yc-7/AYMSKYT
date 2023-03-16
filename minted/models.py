@@ -3,8 +3,17 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
+from django.core.validators import MinValueValidator
 from .model_functions import *
 from django.conf import settings
+
+class Streak(models.Model):
+        
+    last_login_time = models.DateTimeField(blank = True, null= True, auto_now = True)
+    streak = models.IntegerField(
+        default = 1, 
+        validators= [MinValueValidator(0),]
+    )
 
 TIMEFRAME = [
     ('/week', 'week'),
@@ -42,13 +51,16 @@ class NotificationSubscription(models.Model):
     frequency = models.IntegerField(choices=FREQUENCY_CHOICES, blank=True, null=True)
     subscriptions = models.ManyToManyField(Subscription, blank=True)
 
+
 class User(AbstractUser):
     """User model for authentication"""
 
     first_name = models.CharField(max_length=50)
     last_name  = models.CharField(max_length=50)
     email      = models.EmailField(unique=True, blank=False)
-    budget = models.OneToOneField(SpendingLimit, null=True, blank=True, on_delete=models.CASCADE)
+    streak_data = models.OneToOneField(Streak ,  null= True, blank= True,  on_delete=models.CASCADE)
+    budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
+    points = models.IntegerField(default = 10, validators= [MinValueValidator(0)], blank=False)
     notification_subscription = models.OneToOneField(NotificationSubscription, null=True, blank=True, on_delete=models.SET_NULL)
 
     # Replaces the default django username with email for authentication
@@ -73,14 +85,13 @@ class User(AbstractUser):
         #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
 
-
-
 class Category(models.Model):
     """Model for expenditure categories"""
 
     user = models.ForeignKey(User, blank = False, on_delete= models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
+    colour = models.CharField(max_length = 7, blank = True, null =True)
 
     def __str__(self):
         return self.name
@@ -132,6 +143,7 @@ class Category(models.Model):
         daily_expenses = get_spending_for_days(all_days, expenses)
 
         return daily_expenses
+    
 
 class Expenditure(models.Model):
     """Model for expenditures"""
