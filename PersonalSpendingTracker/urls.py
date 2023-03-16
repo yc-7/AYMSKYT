@@ -19,6 +19,8 @@ from minted import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from django.contrib.auth import views as auth_views
+from minted.forms import NewPasswordForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -50,5 +52,20 @@ urlpatterns = [
     path('notification_subscription/edit', views.edit_notification_subscription, name='edit_notification_subscription'),
     
     path('webpush/', include('webpush.urls')),
-    path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript'))
+    path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript')),
+
+    path('reset_password/', auth_views.PasswordResetView.as_view(
+        email_template_name="password_reset/password_reset_email.html", 
+        template_name="password_reset/password_reset_form.html"
+    ), name="password_reset"),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(
+        template_name="password_reset/password_reset_sent.html"
+    ), name="password_reset_done"),
+    path('reset_password/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name="password_reset/password_reset_confirm.html",
+        form_class=NewPasswordForm,
+    ), name="password_reset_confirm"),
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
+        template_name="password_reset/password_reset_done.html"
+    ), name="password_reset_complete"),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
