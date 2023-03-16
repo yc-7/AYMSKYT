@@ -64,6 +64,8 @@ def edit_expenditure(request, category_name, expenditure_id):
 
 @login_required
 def add_expenditure(request, category_name):
+    if Category.objects.filter(user=request.user, name=category_name).exists() == False:
+        return redirect('create_category')
     if request.method == 'POST':
         category = Category.objects.get(user=request.user, name=category_name) # Need to make sure there are no duplicate categories with same name
         form = ExpenditureForm(request.POST)

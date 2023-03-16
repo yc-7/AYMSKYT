@@ -8,7 +8,6 @@
             "budget": "1"
         }
     }, 
-
     {
         "model": "minted.Category",
         "pk": 2,
@@ -18,7 +17,6 @@
             "budget": "2"
         }
     },
-
     {
         "model": "minted.Category",
         "pk": 3,
