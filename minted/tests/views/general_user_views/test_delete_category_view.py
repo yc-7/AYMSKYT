@@ -14,11 +14,12 @@ class DeleteCategoryViewTest(TestCase):
     ]
 
     def setUp(self):
-        self.url = reverse('delete_category', kwargs={'category_id': 1})
+        self.category_id = 3
+        self.url = reverse('delete_category', kwargs={'category_id': self.category_id})
         self.user = User.objects.get(pk = 1)
 
     def test_delete_category_url(self):
-        self.assertEqual(self.url,'/category/1/delete')
+        self.assertEqual(self.url,f'/category/{self.category_id}/delete')
     
     def test_successful_deletion(self):        
         self.client.login(email = self.user.email, password = 'Password123')
