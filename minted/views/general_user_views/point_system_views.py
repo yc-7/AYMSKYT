@@ -43,19 +43,23 @@ def reward_budget_points(request):
 
 def update_streak(request, user):
     
-    now = datetime.now(pytz.utc)
-    window_start = now - timedelta(days=1)
+
+    window_size=timedelta(days=1)
     last_login = user.streak_data.last_login_time
+    time_since_last_login = datetime.now(pytz.utc) - last_login
 
-    if (last_login is None) or (last_login.date() < now.date() and last_login < window_start):
+    if last_login is None or time_since_last_login >= 2 * window_size:
         user.streak_data.streak = 1
+        user.streak_data.last_login_time = user.last_login
         reward_points_daily(request)
         reward_budget_points(request)
-    elif last_login.date() < now.date() and last_login >= window_start:
+    elif window_size <= time_since_last_login < 2 * window_size:
         user.streak_data.streak += 1
+        user.streak_data.last_login_time = user.last_login
         reward_points_daily(request)
         reward_budget_points(request)
-
+        
+    
     reward_budget_points(request)
 
     user.streak_data.save()

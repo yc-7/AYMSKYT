@@ -26,8 +26,6 @@ class SpendingLimitAdmin(admin.ModelAdmin):
         'budget', 'timeframe'
     ]
 
-
-
 @admin.register(Streak)
 class StreakAdmin(admin.ModelAdmin):
     list_display = [

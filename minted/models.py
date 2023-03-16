@@ -3,7 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .user_manager import UserManager
-from django.core.validators import MaxLengthValidator, MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from .model_functions import *
 from django.conf import settings
 
@@ -55,6 +55,15 @@ class NotificationSubscription(models.Model):
     frequency = models.IntegerField(choices=FREQUENCY_CHOICES, blank=True, null=True)
     subscriptions = models.ManyToManyField(Subscription, blank=True)
 
+    
+class Points(models.Model):
+    """Model for the user points"""
+
+    points = models.IntegerField(default = 10, validators= [MinValueValidator(0)], blank=False)
+    timestamp = models.DateTimeField(auto_now=True)
+    
+
+
 class User(AbstractUser):
     """User model for authentication"""
 
@@ -87,9 +96,6 @@ class User(AbstractUser):
         expenditures = Expenditure.objects.filter(category__user=self)
         #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
-    
-
-
 
 class Category(models.Model):
     """Model for expenditure categories"""

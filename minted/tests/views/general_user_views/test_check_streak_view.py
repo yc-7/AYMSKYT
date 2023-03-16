@@ -40,6 +40,14 @@ class CheckStreakTestCase(TestCase):
         request.user = self.user
         update_streak(request, self.user)
         self.assertEqual(self.user.streak_data.streak, 1)
+        
+    def test_maintain_streak(self):
+        now = datetime.now(pytz.utc)
+        self.user.streak_data.last_login_time = now - timedelta(hours=12)
+        self.user.streak_data.streak = 4
+        self.user.streak_data.save()
+        check_streak(self.user)
+        self.assertEqual(self.user.streak_data.streak, 4)
 
    
 
