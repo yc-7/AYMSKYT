@@ -30,15 +30,6 @@ class SpendingLimit(models.Model):
 
     def __str__(self):
         return ' £' + str(self.budget) + str(self.timeframe)
-    
-    
-class Points(models.Model):
-    """Model for the user points"""
-
-    points = models.IntegerField(default = 10, validators= [MinValueValidator(0)], blank=False)
-    timestamp = models.DateTimeField(auto_now=True)
-    
-
 
 class Subscription(models.Model):
     """Model for subscription options"""
