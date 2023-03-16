@@ -69,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
 ]
 
 ROOT_URLCONF = 'PersonalSpendingTracker.urls'
@@ -163,3 +164,7 @@ MESSAGE_TAGS={
 
 # User model for authentication and login purposes
 AUTH_USER_MODEL = 'minted.User'
+
+# Session settings configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'minted_session'

@@ -1,6 +1,6 @@
 function create_bar_chart_config(data, labels, colours){
     var pie_chart_config = {
-      type: 'pie',
+      type: 'doughnut',
       data: {
         datasets: [{
           data: data,
@@ -15,7 +15,7 @@ function create_bar_chart_config(data, labels, colours){
       }
     };
     return pie_chart_config
-  }
+}
 
 function create_line_chart_config(datasets, labels, colours){
     for (var i=0; i< datasets.length; i++){

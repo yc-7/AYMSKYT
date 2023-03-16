@@ -11,7 +11,7 @@ class Streak(models.Model):
         
     last_login_time = models.DateTimeField(auto_now = True, null = True, blank = True)
     streak = models.IntegerField(
-        default = 0, 
+        default = 1, 
         validators= [
             MinValueValidator(0)
         ]
