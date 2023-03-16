@@ -13,7 +13,8 @@ def rewards_homepage(request):
     user_claims = RewardClaim.objects.filter(user=request.user).values_list('reward_type__reward_id', flat=True)
     rewards = Reward.objects.all().annotate(claimed=Q(reward_id__in=list(user_claims)))
     date = datetime.date.today()
-    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date })
+    brands = Reward.objects.all().values_list('brand_name', flat=True).distinct()
+    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date, 'brands': brands })
 
 @login_required
 def claim_reward(request, brand_name, reward_id):
@@ -35,5 +36,17 @@ def my_rewards(request):
     claimed_rewards = Reward.objects.filter(Q(reward_id__in=list(user_claims)))
     date = datetime.date.today()
     return render(request, 'rewards/my_rewards.html', { 'claimed_rewards': claimed_rewards, 'date': date })
+
+@login_required
+def filtered_rewards(request, brand_name):
+    if Reward.objects.filter(brand_name=brand_name).count() == 0:
+        return redirect('rewards')
+    user_claims = RewardClaim.objects.filter(user=request.user).values_list('reward_type__reward_id', flat=True)
+    rewards = Reward.objects.filter(brand_name=brand_name).annotate(claimed=Q(reward_id__in=list(user_claims)))
+    date = datetime.date.today()
+    brands = Reward.objects.exclude(brand_name=brand_name).values_list('brand_name', flat=True).distinct()
+    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date , 'brands': brands, 'brand_name': brand_name })
+
+
     
 

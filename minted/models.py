@@ -152,7 +152,7 @@ class Expenditure(models.Model):
 class RewardManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(expiry_date__gte = datetime.date.today())
-        
+
 class RewardBrandManager(models.Manager):
     def get_queryset(self, brand):
         return super().get_queryset().filter(brand_name = brand)
@@ -184,6 +184,10 @@ class Reward(models.Model):
 
     def __str__(self):
         return self.brand_name.lower().replace(" ", "-")
+
+class RewardClaimManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(reward_type__expiry_date__gte=datetime.date.today())
 
 class RewardClaim(models.Model):
     """Model for reward claims made by users"""
