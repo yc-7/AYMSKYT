@@ -2,23 +2,18 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, render
 from django.views import View
 from minted.forms import *
 from minted.models import *
-from minted.decorators import login_prohibited
+from minted.mixins import LoginProhibitedMixin
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 from minted.views.general_user_views.login_view_functions import *
-
-class LogInView(View):
+        
+class LogInView(LoginProhibitedMixin, View):
     """View that handles log in"""
 
     http_method_name = ['get', 'post']
-
-    @method_decorator(login_prohibited)
-    def dispatch(self, request):
-        return super().dispatch(request)
 
     def get(self, request):
         """Display log in template"""
@@ -50,11 +45,11 @@ def log_out(request):
     logout(request)
     return redirect('home')
 
-@login_prohibited
+#@login_prohibited
 def home(request):
     return render(request, 'homepage.html')
 
-@login_prohibited
+#@login_prohibited
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
