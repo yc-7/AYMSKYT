@@ -2,9 +2,8 @@ import pytz
 from datetime import datetime, timedelta
 from django.test import TestCase
 from minted.models import User
-from minted.models import Streak
-from minted.views import check_streak
-from django.urls import reverse
+from minted.views import update_streak
+
 
 
 class CheckStreakTestCase(TestCase):
@@ -23,25 +22,22 @@ class CheckStreakTestCase(TestCase):
         window_start = now - timedelta(days=1)
         self.user.streak_data.last_login_time = window_start
         self.user.streak_data.streak = 1
-        self.user.streak_data.save()
-        check_streak(self.user)
+        update_streak(self.user)
         self.assertEqual(self.user.streak_data.streak, 2)
 
     def test_reset_streak(self):
         now = datetime.now(pytz.utc)
         window_start = now - timedelta(days=7)
-        self.user.streak_data.last_login_time = window_start
         self.user.streak_data.streak = 3
-        self.user.streak_data.save()
-        check_streak(self.user)
+        self.user.streak_data.last_login_time = window_start
+        update_streak(self.user)
         self.assertEqual(self.user.streak_data.streak, 1)
         
     def test_maintain_streak(self):
         now = datetime.now(pytz.utc)
         self.user.streak_data.last_login_time = now - timedelta(hours=12)
         self.user.streak_data.streak = 4
-        self.user.streak_data.save()
-        check_streak(self.user)
+        update_streak(self.user)
         self.assertEqual(self.user.streak_data.streak, 4)
 
    

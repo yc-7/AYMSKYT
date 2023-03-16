@@ -9,15 +9,6 @@
   },
 
   {
-    "model": "minted.Points",
-    "pk": 2,
-    "fields": {
-      "points": "10",
-      "timestamp": "2023-03-10T12:00:00Z"
-    }
-  },
-  
-  {
     "model": "minted.User",
     "pk": 2,
     "fields": {
@@ -29,7 +20,7 @@
       "is_staff": true,
       "is_superuser": true,
       "budget": "2",
-      "points": 2,
+      "points": "1",
       "streak_data": 2
     }
   }

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Category, Expenditure, SpendingLimit, Subscription, NotificationSubscription, Points, Streak
+from .models import User, Category, Expenditure, SpendingLimit, Subscription, NotificationSubscription, Streak
 
 # Register your models here.
 @admin.register(User)
@@ -26,6 +26,14 @@ class SpendingLimitAdmin(admin.ModelAdmin):
         'budget', 'timeframe'
     ]
 
+
+
+@admin.register(Streak)
+class StreakAdmin(admin.ModelAdmin):
+    list_display = [
+        'last_login_time', 'streak'
+    ]
+    
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = [
@@ -36,16 +44,4 @@ class SubscriptionAdmin(admin.ModelAdmin):
 class NotificationSubscriptionAdmin(admin.ModelAdmin):
     list_display = [
         'frequency'
-    ]
-
-@admin.register(Points)
-class PointAdmin(admin.ModelAdmin):
-    list_display = [
-        'id','points', 'timestamp'
-    ]
-
-@admin.register(Streak)
-class StreakAdmin(admin.ModelAdmin):
-    list_display = [
-        'last_login_time', 'streak'
     ]

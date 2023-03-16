@@ -9,16 +9,6 @@
   },
 
   {
-    "model": "minted.Points",
-    "pk": 1,
-    "fields": {
-      "points": "10",
-      "timestamp": "2023-03-10T12:00:00Z"
-    }
-  },
-  
-
-  {
     "model": "minted.User",
     "pk": 1,
     "fields": {
@@ -28,7 +18,7 @@
       "password": "pbkdf2_sha256$390000$8p9uNEZYtB5CTxES2VQe1Z$lSv0dmsmcM7V7yH54yReh/qbV3NQMl5koEfCMjPUGB4=",
       "is_active": true,
       "budget": "1",
-      "points": 1,
+      "points": "1",
       "streak_data": 1
     }
   }
