@@ -3,7 +3,12 @@ from minted.notifications import send_push, is_user_subscribed
 from minted.views.budget_views_functions import current_user_limit
 from minted.models import Subscription
 
-def send_budget_notifications(frequency):
+def send_budget_notifications(frequency: int):
+	"""
+	Send budget notifications to all users that are subscribed to this frequency and budgets
+	
+	:param frequency: The frequency of which users should be subscribed to; to receive this notification
+	"""
 	users = User.objects.all()
 	for user in users:
 		if not is_user_subscribed(user.id):
@@ -29,10 +34,13 @@ def send_budget_notifications(frequency):
 			send_push(head, body, user_id)
 
 def send_daily_notifications():
+	""" Send budget notifications to all users subscribed to daily and budget notifications """
 	send_budget_notifications(frequency=1)
 
 def send_weekly_notifications():
+	""" Send budget notifications to all users subscribed to weekly and budget notifications """
 	send_budget_notifications(frequency=7)
 
 def send_monthly_notifications():
+	""" Send budget notifications to all users subscribed to monthly and budget notifications """
 	send_budget_notifications(frequency=30)
