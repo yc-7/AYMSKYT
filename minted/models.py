@@ -73,8 +73,6 @@ class User(AbstractUser):
         #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
 
-
-
 class Category(models.Model):
     """Model for expenditure categories"""
 

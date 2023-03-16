@@ -38,10 +38,10 @@ urlpatterns = [
     path('category_list/<str:category_name>/new_expenditure/', views.add_expenditure, name='add_expenditure'),
     path('category_list/<int:expenditure_id>/delete', views.delete_expenditure, name='delete_expenditure'),
 
+    path('category_list/', views.CategoryListView.as_view(), name = 'category_list'),
     path('create_category/', views.create_category, name = 'create_category'),
     path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
-    path('category_list/', views.category_list_view, name = 'category_list'),
     
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('budget_list/', views.budget_list, name = 'budget_list'),

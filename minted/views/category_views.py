@@ -1,9 +1,27 @@
+from django.contrib import messages
 from django.shortcuts import redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView
 from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *
-from django.contrib import messages
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    """View that displays a user's categories"""
+
+    model = Category
+    template_name = 'category_list.html'
+    context_object_name = 'categories'
+    
+    def get_context_data(self, *args, **kwargs):
+        """Generate content to be displayed in the template"""
+
+        context = super().get_context_data(*args, **kwargs)
+        current_user = self.request.user
+        context['user'] = current_user
+        context['categories'] = Category.objects.filter(user = current_user)
+        return context
 
 @login_required
 def create_category(request):
@@ -32,13 +50,6 @@ def delete_category(request, category_id):
         SpendingLimit.objects.get(category=category).delete()
         messages.add_message(request, messages.SUCCESS, "Category deleted successfully")
     return redirect('category_list')
-
-@login_required
-def category_list_view(request):
-    current_user = request.user
-    my_categories = Category.objects.filter(user = current_user)
-    context = {'user': current_user,'categories': my_categories}
-    return render(request, 'category_list.html', context)
 
 @login_required
 def edit_category(request, category_id):
