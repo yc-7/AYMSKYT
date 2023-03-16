@@ -48,6 +48,7 @@ urlpatterns = [
 
     path('rewards/', views.rewards_homepage, name='rewards'),
     path('rewards/<str:brand_name>/<str:reward_id>/', views.claim_reward, name='claim_reward'),
+    path('rewards/my_rewards/', views.my_rewards, name='my_rewards'),
     
     path('notification_subscription/create', views.create_notification_subscription, name='create_notification_subscription'),
     path('notification_subscription/edit', views.edit_notification_subscription, name='edit_notification_subscription'),

@@ -152,7 +152,7 @@ class Expenditure(models.Model):
 class RewardManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(expiry_date__gte = datetime.date.today())
-
+        
 class RewardBrandManager(models.Manager):
     def get_queryset(self, brand):
         return super().get_queryset().filter(brand_name = brand)

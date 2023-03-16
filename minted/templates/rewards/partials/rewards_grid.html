@@ -5,7 +5,7 @@
         <h5 class="card-title">{{ reward.brand_name }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{ reward.points_required }} points</h6>
         <p class="card-text">{{ reward.description }}</p>
-        {% if reward.claimed == False %}
+        {% if rewards.claimed == False %}
         <a type="button" class="btn btn-light" href="{% url 'claim_reward' reward reward.reward_id %}">
             Claim
         </a>

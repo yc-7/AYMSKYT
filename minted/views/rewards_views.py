@@ -28,5 +28,8 @@ def claim_reward(request, brand_name, reward_id):
 
 @login_required
 def my_rewards(request):
-    pass
+    user_claims = RewardClaim.objects.filter(user=request.user).values_list('reward_type__reward_id', flat=True)
+    claimed_rewards = Reward.objects.filter(Q(reward_id__in=list(user_claims)))
+    return render(request, 'rewards/my_rewards.html', { 'claimed_rewards': claimed_rewards })
+    
 
