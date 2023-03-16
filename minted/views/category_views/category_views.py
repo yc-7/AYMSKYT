@@ -58,7 +58,6 @@ def edit_category(request, category_id):
         return redirect('create_category')
 
     category = Category.objects.get(id=category_id)
-    print(category)
     spending = SpendingLimit.objects.get(category=category)
 
     if request.user != category.user and not request.user.is_superuser:
