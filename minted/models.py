@@ -73,8 +73,8 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
 
-    def __str__(self):
-        return  self.first_name+" "+self.last_name
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     def get_categories(self):
         categories = Category.objects.filter(user=self)
