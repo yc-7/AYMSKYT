@@ -8,6 +8,9 @@ from .model_functions import *
 import datetime
 from random import randint
 import random
+from django.core.files import File
+from io import BytesIO
+import segno
 from django.db import IntegrityError
 from django.conf import settings
 from string import ascii_uppercase
@@ -160,12 +163,18 @@ class RewardBrandManager(models.Manager):
 class Reward(models.Model):
     """Model for rewards"""
 
+    CODE_TYPE_CHOICES = [
+        ('qr', 'QR Code'),
+        ('random', 'Randomly Generated Code')
+    ]
+
     brand_name = models.CharField(max_length = 50, blank = False)
     points_required = models.IntegerField(blank = False, validators = [MinValueValidator(1)])
     reward_id = models.CharField(max_length = 6, unique = True, blank = False)
     expiry_date = models.DateField(blank = False)
     description = models.TextField(max_length = 300, blank = False)
     cover_image = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
+    code_type = models.CharField(max_length = 6, choices = CODE_TYPE_CHOICES, blank=False, default = 'random')
 
     objects = RewardManager()
     same_brand = RewardBrandManager()
@@ -192,20 +201,34 @@ class RewardClaimManager(models.Manager):
 class RewardClaim(models.Model):
     """Model for reward claims made by users"""
 
-    claim_code = models.CharField(max_length = 10, blank = False, unique = True)
+    claim_code = models.CharField(max_length = 10, blank = True, null = True, unique = True)
+    claim_qr = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
     reward_type = models.ForeignKey(Reward, blank = False, on_delete = models.CASCADE)
     user = models.ForeignKey(User, blank = False, on_delete = models.CASCADE)
 
     def save(self, *args, **kwargs):
-        unique = False
-        while (unique == False):
-            try:
-                if not self.claim_code:
-                    self.claim_code = self._create_claim_code()
-                super(RewardClaim, self).save(*args, **kwargs)
-                unique = True
-            except IntegrityError as e:
-                unique = False
+        if self.reward_type.code_type == 'qr':
+            self.claim_qr = self._create_claim_qr()
+            super(RewardClaim, self).save(*args, **kwargs)
+        else:
+            unique = False
+            while (unique == False):
+                try:
+                    if not self.claim_code:
+                        self.claim_code = self._create_claim_code()
+                        super(RewardClaim, self).save(*args, **kwargs)
+                        unique = True
+                except IntegrityError as e:
+                    unique = False
+    
+    def _create_claim_qr(self):
+        qr_name = f'{self._create_claim_code}{self.reward_type.reward_id}_qr'
+        qr = segno.make_qr(qr_name)
+        qr_buffer = BytesIO()
+        qr.save(qr_buffer, scale=10, kind='svg')
+        qr_file = File(qr_buffer, name=f"{qr_name}.svg")
+        qr_file.seek(0)
+        return qr_file
 
     def _create_claim_code(self):
         full_id = 'MINT' + self.choose_digits(randint(1,2)) + self.choose_letters(randint(1,3)) + str(randint(0,9))

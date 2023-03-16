@@ -9,7 +9,11 @@
                 <br>
                 <h6 class="card-body">Enter this code at checkout to benefit from the discount</h6>
                 <div class="card text-center">
+                    {% if reward_claim.claim_code is None %}
+                    <img src="{{ reward_claim.claim_qr.url }}" width="300" height="300" style="display: block; margin: auto;">
+                    {% else %}
                     <h3 class="card-body">{{ reward_claim.claim_code }}</h3>
+                    {% endif %}
                 </div>
                 <br>
                 <h6 class="card-body">This code will be stored in your profile</h6>
