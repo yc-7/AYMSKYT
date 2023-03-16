@@ -79,7 +79,7 @@ class AddExpenditureViewTestCase(TestCase):
 
         redirect_url = reverse('category_expenditures', kwargs = {'category_name': self.category_name})
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code= 200)
-        self.assertTemplateUsed(response, 'expenditures/expenditures_list.html')
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
 
     def test_successful_expenditure_creation_with_no_file(self):
         self.client.login(email = self.user.email, password = 'Password123')
@@ -95,7 +95,7 @@ class AddExpenditureViewTestCase(TestCase):
 
         redirect_url = reverse('category_expenditures', kwargs = {'category_name': self.category_name})
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'expenditures/expenditures_list.html')
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
     
     def test_unsuccessful_expenditure_creation(self):
         self.client.login(email = self.user.email, password = 'Password123')
@@ -116,5 +116,5 @@ class AddExpenditureViewTestCase(TestCase):
         redirect_url = reverse('category_expenditures', kwargs = {'category_name': self.category_name})
 
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'expenditures/expenditures_list.html')
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
 

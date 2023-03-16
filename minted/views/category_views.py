@@ -20,7 +20,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
         current_user = self.request.user
         context['user'] = current_user
-        context['categories'] = Category.objects.filter(user = current_user)
+        context['categories'] = current_user.get_categories
         return context
 
 @login_required

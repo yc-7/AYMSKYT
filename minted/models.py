@@ -65,12 +65,11 @@ class User(AbstractUser):
         return  self.first_name+" "+self.last_name
 
     def get_categories(self):
-        categories = Category.objects.filter(user=self)
+        categories = Category.objects.filter(user = self)
         return categories
 
     def get_expenditures(self):
-        expenditures = Expenditure.objects.filter(category__user=self)
-        #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
+        expenditures = Expenditure.objects.filter(category__user = self)
         return expenditures
 
 class Category(models.Model):
