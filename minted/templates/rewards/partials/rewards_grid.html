@@ -6,9 +6,15 @@
         <h6 class="card-subtitle mb-2 text-muted">{{ reward.points_required }} points</h6>
         <p class="card-text">{{ reward.description }}</p>
         {% if reward.claimed == False %}
-        <a type="button" class="btn btn-light mt-auto" href="{% url 'claim_reward' reward reward.reward_id %}">
-            Claim
-        </a>
+            {% if user.points >= reward.points_required %}
+            <a type="button" class="btn btn-light mt-auto" href="{% url 'claim_reward' reward reward.reward_id %}">
+                Claim
+            </a>
+            {% else %}
+            <a type="button" class="btn btn-secondary mt-auto">
+                Not Enough Points
+            </a>
+            {% endif %}
         {% else %}
         <a type="button" class="btn btn-dark mt-auto" href="{% url 'claim_reward' reward reward.reward_id %}">
             View Code

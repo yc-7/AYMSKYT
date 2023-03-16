@@ -14,7 +14,7 @@ def rewards_homepage(request):
     rewards = Reward.objects.all().annotate(claimed=Q(reward_id__in=list(user_claims)))
     date = datetime.date.today()
     brands = Reward.objects.all().values_list('brand_name', flat=True).distinct()
-    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date, 'brands': brands })
+    return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date, 'brands': brands, 'user': request.user })
 
 @login_required
 def claim_reward(request, brand_name, reward_id):
@@ -27,7 +27,13 @@ def claim_reward(request, brand_name, reward_id):
         reward_claim = RewardClaim.objects.get(user=request.user, reward_type__reward_id=reward_id)
         return render(request, 'rewards/rewards_claim.html', { 'reward': reward, 'reward_claim': reward_claim })
     
+    user = request.user
+    if reward.points_required > user.points:
+        return redirect('rewards')
+    
     reward_claim = RewardClaim.objects.create(reward_type=reward, user=request.user)
+    user.points = user.points - reward.points_required
+    user.save()
     return render(request, 'rewards/rewards_claim.html', { 'reward': reward, 'reward_claim': reward_claim })
 
 @login_required
