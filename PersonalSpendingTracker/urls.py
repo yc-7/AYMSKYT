@@ -48,6 +48,11 @@ urlpatterns = [
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('budget_list/', views.budget_list, name = 'budget_list'),
 
+    path('rewards/', views.rewards_homepage, name='rewards'),
+    path('rewards/<str:brand_name>/<str:reward_id>/', views.claim_reward, name='claim_reward'),
+    path('rewards/my_rewards/', views.my_rewards, name='my_rewards'),
+    path('rewards/<str:brand_name>/', views.filtered_rewards, name='filtered_rewards'),
+    
     path('notification_subscription/create', views.create_notification_subscription, name='create_notification_subscription'),
     path('notification_subscription/edit', views.edit_notification_subscription, name='edit_notification_subscription'),
     

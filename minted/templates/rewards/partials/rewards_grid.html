@@ -1,0 +1,32 @@
+<div class="col">
+    <div class="card">
+      <img src="{{ reward.cover_image.url }}" class="card-img-top">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ reward.brand_name }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ reward.points_required }} points</h6>
+        <p class="card-text">{{ reward.description }}</p>
+        {% if reward.claimed == False %}
+            {% if user.points >= reward.points_required %}
+            <a type="button" class="btn btn-light mt-auto" href="{% url 'claim_reward' reward reward.reward_id %}">
+                Claim
+            </a>
+            {% else %}
+            <a type="button" class="btn btn-secondary mt-auto">
+                Not Enough Points
+            </a>
+            {% endif %}
+        {% else %}
+        <a type="button" class="btn btn-dark mt-auto" href="{% url 'claim_reward' reward reward.reward_id %}">
+            View Code
+        </a>
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        {% if reward.expiry_date == date %}
+        <small class="text-muted">Last Day to Use</small>
+        {% else %}
+        <small class="text-muted">Expires on {{ reward.expiry_date }}</small>
+        {% endif %}
+      </div>
+    </div>
+</div>

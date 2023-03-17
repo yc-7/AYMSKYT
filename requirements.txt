@@ -17,6 +17,7 @@ pytz==2022.7.1
 python-dotenv==1.0.0
 pywebpush==1.9.4
 requests==2.28.2
+segno==1.5.2
 six==1.16.0
 
 sqlparse==0.4.3
