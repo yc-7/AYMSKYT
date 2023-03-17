@@ -25,7 +25,7 @@ def log_in(request):
             user = get_user(form)
             if user:
                 login(request, user)
-                update_streak(request, user)
+                update_streak(user)
                 redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
                 return redirect(redirect_url)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
