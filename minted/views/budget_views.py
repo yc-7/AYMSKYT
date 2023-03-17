@@ -1,10 +1,10 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from minted.decorators import merged_decorator
 from ..models import *
 from django.contrib import messages
 from .budget_views_functions import *
-    
-@login_required
+
+@merged_decorator
 def budget_list(request):
     current_user = request.user
     categories = current_user.get_categories()

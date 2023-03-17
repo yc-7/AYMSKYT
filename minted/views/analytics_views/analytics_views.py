@@ -1,11 +1,11 @@
-from django.contrib.auth.decorators import login_required
+from minted.decorators import merged_decorator
 from django.shortcuts import render
 from minted.forms import TimeFrameForm
 from minted.models import Category
 from minted.views.analytics_views.analytics_view_functions import generate_category_line_chart_dataset, generate_category_pie_chart_dataset, generate_all_spending_line_chart_dataset
 import datetime
 
-@login_required
+@merged_decorator
 def view_analytics(request):
     date_one_year_ago = datetime.date.today() - datetime.timedelta(days=365)
 

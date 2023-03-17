@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 urlpatterns = [
+    path('admin', admin.site.index, name='admin'),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('log_in/', views.log_in, name='log_in'),

@@ -1,10 +1,9 @@
 from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from minted.forms import *
 from minted.models import *
 from django.contrib import messages
-from minted.decorators import login_prohibited
+from minted.decorators import login_prohibited, merged_decorator
 from minted.views.general_user_views.login_view_functions import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
@@ -51,11 +50,11 @@ def sign_up(request):
         spending_form = SpendingLimitForm()
     return render(request, 'signup.html', {'form': form, 'spending_form': spending_form})
 
-@login_required
+@merged_decorator
 def dashboard(request):
     return render(request,'dashboard.html')
       
-@login_required
+@merged_decorator
 def profile(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
@@ -65,7 +64,7 @@ def profile(request):
     
     return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 
-@login_required
+@merged_decorator
 def edit_profile(request):
     if request.method == 'POST':
         form = EditProfileForm(request.POST, instance=request.user)
@@ -79,7 +78,7 @@ def edit_profile(request):
         form = EditProfileForm(instance= request.user)
     return render(request, 'edit_profile.html', {'form': form})
 
-@login_required
+@merged_decorator
 def edit_spending_limit(request):
     if request.method == 'POST':
         form = SpendingLimitForm(request.POST, instance=request.user.budget)
@@ -93,7 +92,7 @@ def edit_spending_limit(request):
         form = SpendingLimitForm(instance= request.user.budget)
     return render(request, 'edit_spending_limit.html', {'form': form})
     
-@login_required
+@merged_decorator
 def change_password(request):
     current_user = request.user
     if request.method == 'POST':

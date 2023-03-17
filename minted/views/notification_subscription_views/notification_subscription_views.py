@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from minted.decorators import merged_decorator
 from minted.forms import NotificationSubscriptionForm
 
-@login_required
+@merged_decorator
 def create_notification_subscription(request):
     if request.user.notification_subscription != None:
         return redirect('edit_notification_subscription')
@@ -21,7 +21,7 @@ def create_notification_subscription(request):
     return render(request, 'notification_subscriptions/create_notification_subscription.html', {'form': notification_subscription_form})
 
 
-@login_required
+@merged_decorator
 def edit_notification_subscription(request):
     user = request.user
     notification_subscription_exists = user.notification_subscription != None
