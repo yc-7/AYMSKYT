@@ -1,7 +1,9 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Profile
+{% endblock %}
 {% load static %}
 {% block content %}
-
 <script src="{% static 'registerSw.js' %}" defer></script>
 <head>
     <meta name="vapid-key" content="{{ vapid_key }}">
@@ -44,5 +46,4 @@
     </div>
 
 </div>
-
 {% endblock %}

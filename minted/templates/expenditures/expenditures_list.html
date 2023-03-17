@@ -1,4 +1,7 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| {{ category.name }} Expenditures
+{% endblock %}
 {% block content %}
 <div class="container vh-100">
     <a href="{% url 'category_list' %}">All Categories</a>
