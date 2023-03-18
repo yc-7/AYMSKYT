@@ -28,7 +28,7 @@ def log_in(request):
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
     form = LogInForm()
     next_url = request.GET.get('next') or request.POST.get('next') or ''
-    return render(request, 'login.html', {'form': form, 'next': next_url})
+    return render(request, 'account/login.html', {'form': form, 'next': next_url})
 
 
 def log_out(request):
@@ -54,7 +54,7 @@ def sign_up(request):
     else:
         form = SignUpForm()
         spending_form = SpendingLimitForm()
-    return render(request, 'signup.html', {'form': form, 'spending_form': spending_form})
+    return render(request, 'account/signup.html', {'form': form, 'spending_form': spending_form})
 
 @login_required
 def dashboard(request):

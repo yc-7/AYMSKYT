@@ -195,6 +195,10 @@ class Reward(models.Model):
         if not self.reward_id:
             self.reward_id = self._create_reward_id()
         super(Reward, self).save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        self.cover_image.delete()
+        super(Reward, self).delete(*args, **kwargs)
 
     def _create_reward_id(self):
         brands = Reward.same_brand.get_queryset(self.brand_name).count()
@@ -235,6 +239,11 @@ class RewardClaim(models.Model):
                             unique = True
                     except IntegrityError as e:
                         unique = False
+    
+    def delete(self, *args, **kwargs):
+        if self.claim_qr == True:
+            self.claim_qr.delete()
+        super(Reward, self).delete(*args, **kwargs)
     
     def _create_claim_qr(self):
         qr_name = f'{self._create_claim_code}{self.reward_type.reward_id}_qr'
