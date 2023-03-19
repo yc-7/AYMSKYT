@@ -42,6 +42,7 @@ def home(request):
 
 @login_prohibited
 def sign_up(request):
+    all_fields = SignUpForm.base_fields
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         spending_form = SpendingLimitForm(request.POST)

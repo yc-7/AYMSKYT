@@ -65,6 +65,8 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = '/'
 
+ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm'}
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
