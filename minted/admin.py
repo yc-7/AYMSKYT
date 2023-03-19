@@ -33,8 +33,6 @@ class RewardAdmin(admin.ModelAdmin):
         'brand_name', 'points_required', 'expiry_date', 'description', 'cover_image'
     ]
 
-
-
 @admin.register(Streak)
 class StreakAdmin(admin.ModelAdmin):
     list_display = [

@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak
+from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
@@ -165,3 +165,17 @@ class NotificationSubscriptionForm(forms.ModelForm):
         widget = forms.CheckboxSelectMultiple,
         required = False
     )
+
+class RewardForm(forms.ModelForm):
+    class Meta:
+        model = Reward
+        exclude = ['reward_id', 'user_limit']
+        widgets = {
+            'description': forms.Textarea(attrs = {'rows': 3})
+        }
+    expiry_date = forms.DateField(widget=DateInput())
+
+class RewardUserLimitForm(forms.ModelForm):
+    class Meta:
+        model = Reward
+        fields = ['user_limit']

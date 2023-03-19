@@ -31,10 +31,16 @@ def claim_reward(request, brand_name, reward_id):
     if reward.points_required > user.points:
         return redirect('rewards')
     
-    reward_claim = RewardClaim.objects.create(reward_type=reward, user=request.user)
-    user.points = user.points - reward.points_required
-    user.save()
-    return render(request, 'rewards/rewards_claim.html', { 'reward': reward, 'reward_claim': reward_claim })
+    if reward.user_limit == None or reward.user_limit and reward.user_limit > 0:
+        reward_claim = RewardClaim.objects.create(reward_type=reward, user=request.user)
+        user.points = user.points - reward.points_required
+        user.save()
+        if reward.user_limit:
+            reward.user_limit = reward.user_limit - 1
+            reward.save()
+        return render(request, 'rewards/rewards_claim.html', { 'reward': reward, 'reward_claim': reward_claim })
+    else:
+        return redirect('rewards')
 
 @login_required
 def my_rewards(request):
@@ -53,6 +59,53 @@ def filtered_rewards(request, brand_name):
     brands = Reward.objects.exclude(brand_name=brand_name).values_list('brand_name', flat=True).distinct()
     return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date , 'brands': brands, 'brand_name': brand_name })
 
+@login_required
+def add_rewards(request):
+    if request.method == 'POST':
+        form = RewardForm(request.POST)
+        limit_form = RewardUserLimitForm(request.POST)
+        if form.is_valid() and limit_form.is_valid():
+            reward = form.save(commit=False)
+            reward.user_limit = limit_form.cleaned_data['user_limit']
+            reward.save()
+            messages.add_message(request, messages.SUCCESS, "Reward successfully created")
+            return redirect('rewards_list') 
+    else:
+        form = RewardForm()
+        limit_form = RewardUserLimitForm()
+    return render(request, 'rewards/add_rewards.html', {'form': form, 'limit_form': limit_form})
+
+@login_required
+def rewards_list(request):
+    if request.method == 'POST':
+        if request.POST.get("delete"):
+            reward_id = request.POST.get("delete")
+            Reward.objects.get(id=reward_id).delete()
+            messages.add_message(request, messages.SUCCESS, "Reward deleted successfully")
+        return redirect('rewards_list')
+    rewards = Reward.objects.all()
+    return render(request, 'rewards/rewards_list.html', {'rewards': rewards})
+
+@login_required
+def edit_rewards(request, reward_id):
+    if len(Reward.objects.filter(id=reward_id)) == 0:
+        return redirect('rewards_list')
+    
+    reward = Reward.objects.get(id=reward_id)
+
+    if request.method == 'POST':
+        form = RewardForm(request.POST, instance = reward)
+        limit_form = RewardUserLimitForm(request.POST)
+        if form.is_valid() and limit_form.is_valid():
+            messages.add_message(request, messages.SUCCESS, "Reward updated!")
+            reward = form.save(commit=False)
+            reward.user_limit = limit_form.cleaned_data['user_limit']
+            reward.save()
+            return redirect('rewards_list')
+    else:
+        form = RewardForm(instance = reward)
+        limit_form = RewardUserLimitForm(instance = reward)
+    return render(request, 'rewards/edit_rewards.html', {'form': form, 'limit_form': limit_form, 'reward_id': reward.id})
 
     
 
