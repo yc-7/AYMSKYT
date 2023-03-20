@@ -45,9 +45,18 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'webpush',
     'django_crontab',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 load_dotenv(find_dotenv())
+
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_PORT = os.environ['EMAIL_PORT']
+EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 
 WEBPUSH_SETTINGS = {
    "VAPID_PUBLIC_KEY": os.environ['VAPID_PUBLIC_KEY'],
@@ -149,7 +158,9 @@ LOGIN_URL = 'log_in'
 
 # Path for file uploads
 UPLOAD_DIR = 'uploads/'
+REWARDS_DIR = 'rewards/'
 UPLOAD_ROOT = os.path.join(BASE_DIR, UPLOAD_DIR)
+REWARDS_ROOT = os.path.join(BASE_DIR, REWARDS_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'

@@ -30,6 +30,11 @@ jobs:
         VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
         VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
         VAPID_ADMIN_EMAIL: ${{ secrets.VAPID_ADMIN_EMAIL }}
+        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+        EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+        EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+        EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+        EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
       run: |
         coverage run manage.py test
         coverage report
