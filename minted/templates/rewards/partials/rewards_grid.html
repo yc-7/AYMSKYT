@@ -1,6 +1,8 @@
 <div class="col">
     <div class="card">
+      {% if reward.cover_image == True %}
       <img src="{{ reward.cover_image.url }}" class="card-img-top">
+      {% endif %}
       <div class="card-body d-flex flex-column">
         <h5 class="card-title">{{ reward.brand_name }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{ reward.points_required }} points</h6>

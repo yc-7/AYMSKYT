@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'webpush',
     'django_crontab',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -157,7 +158,9 @@ LOGIN_URL = 'log_in'
 
 # Path for file uploads
 UPLOAD_DIR = 'uploads/'
+REWARDS_DIR = 'rewards/'
 UPLOAD_ROOT = os.path.join(BASE_DIR, UPLOAD_DIR)
+REWARDS_ROOT = os.path.join(BASE_DIR, REWARDS_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
