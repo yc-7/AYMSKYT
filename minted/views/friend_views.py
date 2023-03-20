@@ -82,7 +82,6 @@ def request_list_view(request):
 def unfriend_view(request,friend_id):
     if request.method == 'POST':
         user_to_unfriend = User.objects.get(id=friend_id)
-        friend_request = FriendRequest.objects.filter(from_user=request.user, to_user=user_to_unfriend).first()
-        friend_request.to_user.friends.remove(friend_request.from_user)
-        friend_request.from_user.friends.remove(friend_request.to_user)
+        request.user.friends.remove(user_to_unfriend)
+        user_to_unfriend.friends.remove(request.user)
         return redirect('friend_list')
