@@ -5,6 +5,7 @@ from minted.models import *
 from .general_user_views.login_view_functions import *
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from minted.notifications import send_push
 
 @login_required
 def friend_request(request):
@@ -33,10 +34,11 @@ def friend_request(request):
             
             user = User.objects.get(email = email)
             new_friend = FriendRequest.objects.create(
-            from_user = from_user,
-            to_user = user,
-            is_active = True)
-            new_friend.save()
+                from_user = from_user,
+                to_user = user,
+                is_active = True
+            )
+            # new_friend.save()
         return redirect('profile') 
     
     return render(request, 'friend_request.html', {'form': form})
@@ -44,14 +46,35 @@ def friend_request(request):
 @login_required
 def accept_request(request, friend_request_id):
     if request.method == 'POST':
+        if FriendRequest.objects.filter(id = friend_request_id).count() == 0:
+            messages.add_message(request, messages.ERROR, "Invalid request!")
+            return redirect('request_list')
+
+
         friend_request = FriendRequest.objects.get(id = friend_request_id)
+
+        from_user = friend_request.from_user
+        to_user = friend_request.to_user
         #add who sent the request to the recipient's friend list
-        friend_request.to_user.friends.add(friend_request.from_user)
+        to_user.friends.add(from_user)
         #add the recipient to the sender's friend list
-        friend_request.from_user.friends.add(friend_request.to_user)
+        from_user.friends.add(to_user)
         friend_request.is_active = False
         friend_request.delete()
         messages.add_message(request, messages.SUCCESS, "Friend request accepted!")
+
+        friend_subscription = Subscription.objects.get(name="Friend Requests")
+        if not to_user.notification_subscription:
+            return redirect('request_list')
+
+        notification_subscription = to_user.notification_subscription
+        subscriptions = notification_subscription.subscriptions.all()
+
+        if friend_subscription in subscriptions:
+            head = "Your friend request has been accepted!"
+            body = f"You and {to_user.first_name} are now friends!"
+            send_push(head, body, from_user.id)
+
         return redirect('request_list')
 
 @login_required
