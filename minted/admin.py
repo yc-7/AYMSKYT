@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Category, Expenditure, SpendingLimit, Subscription, NotificationSubscription
+from .models import User, Category, Expenditure, SpendingLimit, Subscription, NotificationSubscription, Streak, Reward
 
 # Register your models here.
 @admin.register(User)
@@ -26,6 +26,21 @@ class SpendingLimitAdmin(admin.ModelAdmin):
         'budget', 'timeframe'
     ]
 
+@admin.register(Reward)
+class RewardAdmin(admin.ModelAdmin):
+    readonly_fields = ['reward_id']
+    list_display = [
+        'brand_name', 'points_required', 'expiry_date', 'description', 'cover_image'
+    ]
+
+
+
+@admin.register(Streak)
+class StreakAdmin(admin.ModelAdmin):
+    list_display = [
+        'last_login_time', 'streak'
+    ]
+    
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = [
