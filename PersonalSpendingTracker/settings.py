@@ -47,7 +47,15 @@ INSTALLED_APPS = [
     'django_crontab',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 load_dotenv(find_dotenv())
+
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_PORT = os.environ['EMAIL_PORT']
+EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 
 WEBPUSH_SETTINGS = {
    "VAPID_PUBLIC_KEY": os.environ['VAPID_PUBLIC_KEY'],
@@ -59,6 +67,7 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
+    ('0 0 * * *', 'minted.cron.give_budget_rewards'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [

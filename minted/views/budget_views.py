@@ -14,9 +14,6 @@ def generate_budget_list(user, categories):
 
     return all_budgets
 
-
-
-
 @login_required
 def budget_list(request):
     current_user = request.user

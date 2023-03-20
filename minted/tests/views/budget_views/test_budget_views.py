@@ -40,7 +40,7 @@ class BudgetListViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget_list.html')
-        end_date = date.today() - timedelta(days=date.today().isocalendar().weekday) + relativedelta(days =+ 7)
+        end_date = date.today() - timedelta(days=date.today().weekday()) + relativedelta(days =+ 6)
         start_date = end_date - relativedelta(days =+ 6)
         self.assertEqual(len(response.context['budget']), 3)
         self.assertContains(response, 'Overall')

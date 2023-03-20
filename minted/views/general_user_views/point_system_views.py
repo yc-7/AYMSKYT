@@ -1,12 +1,16 @@
-from minted.models import *
 from minted.views.budget_views import *  
+from minted.models import *
 import datetime
 from datetime import datetime, timedelta
 from django.utils import timezone
 import pytz
 import math
 
-def reward_points_daily(user):
+def reward_login_points(user):
+    user.points += 5
+    user.save()
+ 
+def reward_streak_points(user):
     points_rewarded = (user.streak_data.streak % 7) * 10
     user.points += points_rewarded 
     user.save()
@@ -43,52 +47,49 @@ def calculate_budget_points(user, all_budgets, category):
     points_reward = math.ceil(weighting_of_category * total_budget_reward)
     return points_reward
 
-def is_today_a_end_date(user):
-    categories = user.get_categories()
-    all_budgets = generate_budget_list(user, categories)
-    today = datetime.now().date()
-    ends_today = []
-    for category in all_budgets:
-        today = False
-        if today == category.end_date:
-            today = True
-        ends_today.append(today)
-    return ends_today
-
-
 def reward_budget_points(user):
     categories = user.get_categories()
     all_budgets = generate_budget_list(user, categories)
     now = str(timezone.now().date())
     if (all_budgets is not None) and (len(all_budgets) > 1):
         for category in all_budgets[:-1]:
-            #if category.spent <= category.budget and now == category.end_date:
-            if category.spent <= category.budget:
+            if category.spent <= category.budget and now == category.end_date:
                 reward_points = calculate_budget_points(user, all_budgets, category)
                 user.points += reward_points
                 user.save()
 
-       
+def is_today_a_end_date(user):
+    categories = user.get_categories()
+    all_budgets = generate_budget_list(user, categories)
+    today = datetime.now().date()
+    ends_today = []
+    for category in all_budgets:
+        is_today = False
+        if today == category.end_date:
+            is_today = True
+        ends_today.append(is_today)
+    return ends_today
 
-def update_streak(user):  
+
+def reward_login_and_streak_points(user):
+    last_login = user.streak_data.last_login_time
+    
+    if last_login.date() < datetime.now().date() and (not user.is_superuser):
+        reward_login_points(user)
+        reward_streak_points(user)
+    
+
+
+def update_streak(user):
+    if user.is_superuser:
+        return
     window_size=timedelta(days=1)
     last_login = user.streak_data.last_login_time
     time_since_last_login = datetime.now(pytz.utc) - last_login
 
-    if last_login is None or time_since_last_login >= 2 * window_size:
+    user_has_missed_day = last_login is None or time_since_last_login >= 2 * window_size
+    if user_has_missed_day:
         user.streak_data.streak = 1
-        user.streak_data.last_login_time = user.last_login
-        reward_points_daily(user)
-        ends_today = is_today_a_end_date(user)
-        if ends_today.contains(True):
-            reward_budget_points(user)
     elif window_size <= time_since_last_login < 2 * window_size:
         user.streak_data.streak += 1
-        user.streak_data.last_login_time = user.last_login
-        reward_points_daily(user)
-        ends_today = is_today_a_end_date(user)
-        if ends_today.contains(True):
-            reward_budget_points(user)
-    
-    reward_budget_points(user)
     user.streak_data.save()
