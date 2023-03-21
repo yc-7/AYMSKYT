@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from minted.decorators import staff_prohibited, staff_required
 from minted.forms import *
 from minted.models import *
 from .general_user_views.login_view_functions import *
@@ -8,7 +8,7 @@ from django.db.models import Q
 import datetime
 
 
-@login_required
+@staff_prohibited
 def rewards_homepage(request):
     user_claims = RewardClaim.objects.filter(user=request.user).values_list('reward_type__reward_id', flat=True)
     rewards = Reward.objects.all().annotate(claimed=Q(reward_id__in=list(user_claims)))
@@ -16,7 +16,7 @@ def rewards_homepage(request):
     brands = Reward.objects.all().values_list('brand_name', flat=True).distinct()
     return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date, 'brands': brands, 'user': request.user })
 
-@login_required
+@staff_prohibited
 def claim_reward(request, brand_name, reward_id):
     if reward_id not in Reward.objects.all().values_list('reward_id', flat=True):
         return redirect('rewards')
@@ -42,14 +42,14 @@ def claim_reward(request, brand_name, reward_id):
     else:
         return redirect('rewards')
 
-@login_required
+@staff_prohibited
 def my_rewards(request):
     user_claims = RewardClaim.objects.filter(user=request.user).values_list('reward_type__reward_id', flat=True)
     claimed_rewards = Reward.objects.filter(Q(reward_id__in=list(user_claims)))
     date = datetime.date.today()
     return render(request, 'rewards/my_rewards.html', { 'claimed_rewards': claimed_rewards, 'date': date })
 
-@login_required
+@staff_prohibited
 def filtered_rewards(request, brand_name):
     if Reward.objects.filter(brand_name=brand_name).count() == 0:
         return redirect('rewards')
@@ -59,7 +59,7 @@ def filtered_rewards(request, brand_name):
     brands = Reward.objects.exclude(brand_name=brand_name).values_list('brand_name', flat=True).distinct()
     return render(request, 'rewards/rewards_home.html', { 'rewards': rewards, 'date': date , 'brands': brands, 'brand_name': brand_name })
 
-@login_required
+@staff_required
 def add_rewards(request):
     if request.method == 'POST':
         form = RewardForm(request.POST)
@@ -75,7 +75,7 @@ def add_rewards(request):
         limit_form = RewardUserLimitForm()
     return render(request, 'rewards/add_rewards.html', {'form': form, 'limit_form': limit_form})
 
-@login_required
+@staff_required
 def rewards_list(request):
     if request.method == 'POST':
         if request.POST.get("delete"):
@@ -86,7 +86,7 @@ def rewards_list(request):
     rewards = Reward.objects.all()
     return render(request, 'rewards/rewards_list.html', {'rewards': rewards})
 
-@login_required
+@staff_required
 def edit_rewards(request, reward_id):
     if len(Reward.objects.filter(id=reward_id)) == 0:
         return redirect('rewards_list')
@@ -95,7 +95,7 @@ def edit_rewards(request, reward_id):
 
     if request.method == 'POST':
         form = RewardForm(request.POST, instance = reward)
-        limit_form = RewardUserLimitForm(request.POST)
+        limit_form = RewardUserLimitForm(request.POST, instance=reward)
         if form.is_valid() and limit_form.is_valid():
             messages.add_message(request, messages.SUCCESS, "Reward updated!")
             reward = form.save(commit=False)

@@ -24,15 +24,15 @@ class Streak(models.Model):
         validators= [MinValueValidator(0),]
     )
 
-TIMEFRAME = [
+class SpendingLimit(models.Model):
+    """Model for spending limits"""
+
+    TIMEFRAME = [
     ('/week', 'week'),
     ('/month', 'month'),
     ('/quarter', 'quarter'),
     ('/year', 'year'),
 ]
-
-class SpendingLimit(models.Model):
-    """Model for spending limits"""
 
     budget = models.DecimalField(max_digits = 12, decimal_places = 2, blank=False)
     timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=False)

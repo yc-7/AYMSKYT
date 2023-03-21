@@ -20,7 +20,7 @@
             Edit Details
         </a>
     </div>
-    
+    {% if not request.user.is_staff %}
     <div>
         <h1>Budget</h1>
         <p>Spending limit: {{ user.budget.budget }}</p>
@@ -42,6 +42,7 @@
         <a id="error-message"></a>
 
     </div>
+    {% endif %}
 
 </div>
 

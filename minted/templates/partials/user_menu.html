@@ -1,5 +1,10 @@
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
+    {% if request.user.is_staff %}
+    <div class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <a class="nav-link" href="{% url 'rewards_list' %}">Rewards List</a>
+    </div> 
+    {% else %}
     <div class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown">
             <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rewards</a>
@@ -18,6 +23,7 @@
         <a class="nav-link text-black">Points: {{request.user.points}}</a>
         {% endif %}
     </div>
+    {% endif %}
 
     <ul class="navbar-nav">
         <li class="nav-item dropdown">

@@ -23,6 +23,7 @@ from django.contrib.auth import views as auth_views
 from minted.forms import NewPasswordForm
 
 urlpatterns = [
+    path('admin', admin.site.index, name='admin'),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('log_in/', views.log_in, name='log_in'),
