@@ -1,12 +1,20 @@
 {% extends 'base_content.html' %}
+{% load socialaccount %}
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-6 offset-md-3">
                 <div class="h1 mb-5" style="font-weight: 800;">Sign Up</div>
+                <form action="{% provider_login_url 'google' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-lg custom-button" type="submit">Continue with Google</button>
+                </form>
+                <div class="d-flex" style="height: 200px;">
+                    <div class="vr"></div>
+                </div>
                 <form action="{% url 'sign_up' %}" method="post">
                     {% csrf_token %}
-                    {% include 'partials/bootstrap_form.html' with form=form.email %}
+                    {% include 'partials/bootstrap_form.html' with form=form %}
                     <br>
                     <div class="h1 mb-5" style="font-weight: 800;">Set your spending limit</div>
                     {% include 'partials/bootstrap_form.html' with form=spending_form %}

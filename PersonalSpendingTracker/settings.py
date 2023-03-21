@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'webpush',
     'django_crontab',
     'django.contrib.sites',
+    'django_cleanup.apps.CleanupConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -61,6 +62,8 @@ load_dotenv(find_dotenv())
 SITE_ID = 2
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = '/'
