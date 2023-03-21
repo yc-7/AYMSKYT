@@ -1,9 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views import View
+from django.views.generic.edit import UpdateView
 from minted.forms import *
 from minted.models import *
 from minted.mixins import LoginProhibitedMixin
@@ -78,19 +81,24 @@ def profile(request):
     
     return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 
-@login_required
-def edit_profile(request):
-    if request.method == 'POST':
-        form = EditProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your details were successfully updated!')
-            return redirect('profile')
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = EditProfileForm(instance= request.user)
-    return render(request, 'edit_profile.html', {'form': form})
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    """"View that handles updating a logged-in user's profile"""
+
+    model = EditProfileForm
+    template_name = 'edit_profile.html'
+    form_class = EditProfileForm
+
+    def get_object(self):
+        """Return the object (user) to be updated"""
+
+        user = self.request.user
+        return user
+
+    def get_success_url(self):
+        """Return the redirect URL after successful update"""
+
+        messages.add_message(self.request, messages.SUCCESS, 'Profile updated')
+        return reverse('profile')
 
 @login_required
 def edit_spending_limit(request):
