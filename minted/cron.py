@@ -41,7 +41,6 @@ def send_monthly_notifications():
 def give_budget_points():
 	all_users = User.objects.all()
 	for user in all_users:
-		if not user.is_superuser:
 			budget_ends_today = is_today_a_end_date(user)
 			if budget_ends_today.contains(True):
 				reward_budget_points(user)

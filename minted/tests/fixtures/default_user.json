@@ -17,8 +17,8 @@
       "email": "johndoe@example.org",
       "password": "pbkdf2_sha256$390000$8p9uNEZYtB5CTxES2VQe1Z$lSv0dmsmcM7V7yH54yReh/qbV3NQMl5koEfCMjPUGB4=",
       "is_active": true,
-      "budget": "1",
-      "points": "1",
+      "budget": 1,
+      "points": "0",
       "streak_data": 1
     }
   }

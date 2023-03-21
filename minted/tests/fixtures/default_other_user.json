@@ -20,7 +20,7 @@
       "is_active": true,
       "is_staff": true,
       "is_superuser": true,
-      "budget": "2",
+      "budget": 2,
       "points": "1",
       "streak_data": 2
     }

@@ -30,5 +30,16 @@
             "budget": "3",
             "colour": "#0000FF"
         }
+    },
+
+    {
+        "model": "minted.Category",
+        "pk": 4,
+        "fields": {
+            "user": 3 ,
+            "name": "Other",
+            "budget": "4",
+            "colour": "#0000FF"
+        }
     }
 ]
