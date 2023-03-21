@@ -1,0 +1,13 @@
+{% extends 'base_content.html' %}
+{% block content %}
+
+<div class="container">
+    <h1>Create new reward</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+{% endblock %}
