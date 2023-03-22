@@ -20,7 +20,9 @@
         <a class="nav-link" href="{% url 'budget_list' %}">Budgets</a>
         <a class="nav-link" href="{% url 'view_analytics' %}">Analytics</a>
         {% if request.user.points %}
-        <a class="nav-link text-black">Points: {{request.user.points}}</a>
+            <a class="nav-link text-black">Points: {{request.user.points}}</a>
+        {% else %}
+            <a class="nav-link text-black">Points: 0</a>
         {% endif %}
     </div>
     {% endif %}

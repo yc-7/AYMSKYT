@@ -142,6 +142,10 @@ class CategoryForm(forms.ModelForm):
         super().clean()
         if Category.objects.filter(user=self.user, name=self.cleaned_data.get('name')).exists():
             self.add_error('name', 'You already have a category with this name.')
+    
+class FriendReqForm(forms.Form):
+    email = forms.EmailField()
+    is_active = forms.HiddenInput
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())

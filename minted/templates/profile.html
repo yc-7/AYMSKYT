@@ -10,6 +10,7 @@
     {% endif %}
 </head>
 
+<<<<<<< HEAD
 <div class="container">
     <div>
         <h1>Profile</h1>
@@ -44,6 +45,71 @@
     </div>
     {% endif %}
 
+=======
+<div class="row justify-content-center">
+    <div class="float-start container my-auto text-center" style="width:400px" >
+        <div class="card bg-light">
+            <div class="card-body">
+                <i class=" bi-person-fill" style="font-size:50px; color:#d462a1"></i>
+                <div>
+                    <h1>Profile</h1>
+                    <p>First name: {{ user.first_name }}</p>
+                    <p>Last name: {{ user.last_name }}</p>
+                    <p>Email: {{ user.email }}</p>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-lg btn-info">
+                        Edit Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div class ="float-end container" style="width:750px">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div>
+                    <i class="bi-credit-card-fill" style="font-size:35px; color:#d462a1"></i>
+                    <h1>Budget</h1>
+                    <p>Spending limit: {{ user.budget.budget }}</p>
+                    <p>Timeframe: {{ user.budget.timeframe }}</p>
+                    <a href="{% url 'edit_spending_limit' %}" class="btn btn-lg btn-info">
+                        Edit Limits
+                    </a>
+                </div><br>
+    
+                <div>
+                    <i class="bi-bell-fill" style="font-size:35px; color:#d462a1"></i>
+                    <h1>Register Notifications</h1>
+                    <a>Current notification subscription status: {{ subscription_status }}</a><br>
+                    <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg btn-info m-1">
+                        Change notification settings
+                    </a>
+                    <a onclick="registerSw()" class="btn btn-lg btn-info">
+                        Refresh Subscription
+                    </a>
+                    <a id="error-message"></a>
+            
+                </div><br>
+    
+                <div>
+                    <i class="bi-people-fill" style="font-size:35px; color:#d462a1"></i>
+                    <h1>Manage Friends</h1>
+                    <a href="{% url 'request_list' %}" class = "btn btn-lg btn-info m-1">
+                        View pending friend requests
+                    </a>
+                    <a href="{% url 'friend_list' %}" class = "btn btn-lg btn-info m-1">
+                        View your friends list
+                    </a>
+                    <a href="{% url 'friend_request' %}" class = "btn btn-lg btn-info m-1">
+                        Add a friend
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+>>>>>>> 721b5aa0f1e4bab39555c94e7ea157c533d4ee91
 </div>
+
+    
 
 {% endblock %}
