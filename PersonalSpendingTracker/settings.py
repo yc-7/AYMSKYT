@@ -117,18 +117,18 @@ DATABASES = {
 if not DEBUG:
     if 'DATABASE_NAME' in os.environ:
         DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ['DATABASE_NAME'],
-            'USER': os.environ['DATABASE_USER'],
-            'PASSWORD': os.environ['DATABASE_PASSWORD'],
-            'HOST': os.environ['DATABASE_HOST'],
-            'PORT': os.environ['DATABASE_PORT'],
-            'OPTIONS': {
-                'ssl': {'ca': os.environ['SSL_CERT_PATH']}
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.environ['DATABASE_NAME'],
+                'USER': os.environ['DATABASE_USER'],
+                'PASSWORD': os.environ['DATABASE_PASSWORD'],
+                'HOST': os.environ['DATABASE_HOST'],
+                'PORT': os.environ['DATABASE_PORT'],
+                'OPTIONS': {
+                    'ssl': {'ca': os.environ['SSL_CERT_PATH']}
+                }
             }
-    }
-}
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
