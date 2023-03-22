@@ -16,6 +16,7 @@ class Command(BaseCommand):
         Subscription.objects.create(
             name = 'Friend Activity'
         )
+        print("Created subscriptions")
 
 
 
