@@ -44,6 +44,13 @@ urlpatterns = [
     path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
     path('category_list/', views.category_list_view, name = 'category_list'),
+
+    path('friend_request/', views.friend_request, name='friend_request'),
+    path('friend_list/', views.friend_list_view, name='friend_list'),
+    path('request_list/', views.request_list_view, name='request_list'),
+    path('unfriend/<int:friend_id>', views.unfriend_view, name='unfriend'),
+    path('accept_request/<int:friend_request_id>', views.accept_request, name='accept_request'),
+    path('decline_request/<int:friend_request_id>', views.decline_request, name='decline_request'),
     
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('budget_list/', views.budget_list, name = 'budget_list'),

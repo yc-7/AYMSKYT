@@ -134,6 +134,12 @@ class CategoryForm(forms.ModelForm):
         model = Category
         exclude = ['user', 'budget']
 
+    
+class FriendReqForm(forms.Form):
+    email = forms.EmailField()
+    is_active = forms.HiddenInput
+
+
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())
     end_date = forms.DateField(widget=DateInput())

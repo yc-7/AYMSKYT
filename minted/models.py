@@ -72,6 +72,8 @@ class User(AbstractUser):
     budget = models.OneToOneField(SpendingLimit, null= True, blank= True, on_delete=models.CASCADE)
     points = models.IntegerField(default = 10, validators= [MinValueValidator(0)], blank=False)
     notification_subscription = models.OneToOneField(NotificationSubscription, null=True, blank=True, on_delete=models.SET_NULL)
+    friends = models.ManyToManyField('self', symmetrical ='False', blank = True)
+
 
     # Replaces the default django username with email for authentication
     username   = None
@@ -95,6 +97,13 @@ class User(AbstractUser):
         #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
         return expenditures
 
+
+class FriendRequest(models.Model):
+	from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
+	to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
+	is_active = models.BooleanField(blank = False, null = False, default = True)
+
+    
 class Category(models.Model):
     """Model for expenditure categories"""
 
