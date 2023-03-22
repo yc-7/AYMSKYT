@@ -17,12 +17,17 @@ class CategoryModelTestCase(TestCase):
         self.second_user = User.objects.get(email = 'janedoe@example.org')
         self.category = Category.objects.get(pk=1)
         self.second_category = Category.objects.get(pk=2)
+        self.third_category = Category.objects.get(pk=3)
     
     def test_category_is_valid(self):
         self._assert_category_is_valid()
 
-    def test_category_name_need_not_be_unique(self):
+    def test_category_name_should_be_unique_for_each_user(self):
         self.category.name = 'Transportation'
+        self._assert_category_is_invalid()
+        self.category.name = 'Groceries'
+        self._assert_category_is_valid()
+        self.third_category.name = 'Transportation'
         self._assert_category_is_valid()
 
     def test_category_name_must_not_be_blank(self):

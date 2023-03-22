@@ -65,7 +65,7 @@ def edit_expenditure(request, category_name, expenditure_id):
 @staff_prohibited
 def add_expenditure(request, category_name):
     if request.method == 'POST':
-        category = Category.objects.get(user=request.user, name=category_name) # Need to make sure there are no duplicate categories with same name
+        category = Category.objects.get(user=request.user, name=category_name)
         form = ExpenditureForm(request.POST)
         if request.POST.get("addExpenditure"):
             if form.is_valid():

@@ -134,6 +134,15 @@ class CategoryForm(forms.ModelForm):
         model = Category
         exclude = ['user', 'budget']
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if Category.objects.filter(user=self.user, name=self.cleaned_data.get('name')).exists():
+            self.add_error('name', 'You already have a category with this name.')
+
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())
     end_date = forms.DateField(widget=DateInput())

@@ -8,7 +8,7 @@ from django.contrib import messages
 @staff_prohibited
 def create_category(request):
     if request.method == 'POST':
-        category_form = CategoryForm(request.POST)
+        category_form = CategoryForm(request.POST, user=request.user)
         spending_form = SpendingLimitForm(request.POST)
         if category_form.is_valid() and spending_form.is_valid():
             spending = spending_form.save()
@@ -18,7 +18,7 @@ def create_category(request):
             category.save()
             return redirect('category_list')           
     else:
-        category_form = CategoryForm(initial={'user': request.user})
+        category_form = CategoryForm(user=request.user)
         spending_form = SpendingLimitForm()
     return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
 

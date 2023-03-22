@@ -103,6 +103,9 @@ class Category(models.Model):
     budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
     colour = models.CharField(max_length = 7, blank = True, null =True)
 
+    class Meta:
+        unique_together = ('user', 'name')
+
     def __str__(self):
         return self.name
 
@@ -224,19 +227,15 @@ class RewardClaim(models.Model):
     user = models.ForeignKey(User, blank = False, on_delete = models.CASCADE)
 
     def save(self, *args, **kwargs):
-        #if self.claim_qr == True or self.claim_code is not None:
-            #super(RewardClaim, self).save(*args, **kwargs)
         if self.claim_qr != True or self.claim_code is None:
             if self.reward_type.code_type == 'qr':
                 self.claim_qr = self._create_claim_qr()
-                #super(RewardClaim, self).save(*args, **kwargs)
             else:
                 unique = False
                 while (unique == False):
                     try:
                         if not self.claim_code:
                             self.claim_code = self._create_claim_code()
-                            #super(RewardClaim, self).save(*args, **kwargs)
                             unique = True
                     except IntegrityError as e:
                         unique = False
@@ -251,7 +250,6 @@ class RewardClaim(models.Model):
         qr_file.seek(0)
         return qr_file
 
-    #what if too many codes for there to be a new unique one?
     def _create_claim_code(self):
         full_id = 'MINT' + self.choose_digits(randint(1,2)) + self.choose_letters(randint(1,3)) + str(randint(0,9))
         return full_id
