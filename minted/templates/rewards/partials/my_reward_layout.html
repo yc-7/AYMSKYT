@@ -9,11 +9,7 @@
         <div class="card-body">
           <h5 class="card-title">{{ reward.brand_name }}</h5>
           <p class="card-text">{{ reward.description }}</p>
-<<<<<<< HEAD
-          <a type="button" class=" bottom-0 btn btn-block btn-dark" style="margin-bottom: 1rem;" href="{% url 'claim_reward' reward reward.reward_id %}">View Code</a>
-=======
           <a type="button" class="bottom-0 btn btn-block btn-dark" style="margin-bottom: 1rem;" href="{% url 'claim_reward' reward reward.reward_id %}">View Code</a>
->>>>>>> 721b5aa0f1e4bab39555c94e7ea157c533d4ee91
           <div class="card-text">
             {% if reward.expiry_date == date %}
             <small class="text-muted">Last Day to Use</small>

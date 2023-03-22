@@ -10,42 +10,6 @@
     {% endif %}
 </head>
 
-<<<<<<< HEAD
-<div class="container">
-    <div>
-        <h1>Profile</h1>
-        <p>First name: {{ user.first_name }}</p>
-        <p>Last name: {{ user.last_name }}</p>
-        <p>Email: {{ user.email }}</p>
-        <a href="{% url 'edit_profile' %}" class="btn btn-lg btn-info">
-            Edit Details
-        </a>
-    </div>
-    {% if not request.user.is_staff %}
-    <div>
-        <h1>Budget</h1>
-        <p>Spending limit: {{ user.budget.budget }}</p>
-        <p>Timeframe: {{ user.budget.timeframe }}</p>
-        <a href="{% url 'edit_spending_limit' %}" class="btn btn-lg btn-info">
-            Edit Limits
-        </a>
-    </div>
-
-    <div>
-        <h1>Register Notifications</h1>
-        <a>Current notification subscription status: {{ subscription_status }}</a><br>
-        <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg btn-info">
-            Change notification settings
-        </a>
-        <a onclick="registerSw()" class="btn btn-lg btn-info">
-            Refresh Subscription
-        </a>
-        <a id="error-message"></a>
-
-    </div>
-    {% endif %}
-
-=======
 <div class="row justify-content-center">
     <div class="float-start container my-auto text-center" style="width:400px" >
         <div class="card bg-light">
@@ -107,7 +71,6 @@
             </div>
         </div>
     </div>
->>>>>>> 721b5aa0f1e4bab39555c94e7ea157c533d4ee91
 </div>
 
     
