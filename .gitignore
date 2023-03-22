@@ -4,6 +4,7 @@
 uploads/
 rewards/
 .env
+static/
 
 ### Django ###
 *.log
