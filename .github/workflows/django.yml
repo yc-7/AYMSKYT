@@ -36,5 +36,6 @@ jobs:
         EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
         EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
       run: |
+        python3 manage.py collectstatic
         coverage run manage.py test
         coverage report
