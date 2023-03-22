@@ -6,8 +6,6 @@
     <form action="{% url 'edit_rewards' reward_id%}" method="post">
         {% csrf_token %}
         {% include 'partials/bootstrap_form.html' with form=form %}
-        <h2>Optional:</h2>
-        {% include 'partials/bootstrap_form.html' with form=limit_form %}
         <input type="submit" value="Submit" class="btn btn-primary">
     </form>
 </div>

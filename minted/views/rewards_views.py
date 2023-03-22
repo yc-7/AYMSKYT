@@ -63,17 +63,13 @@ def filtered_rewards(request, brand_name):
 def add_rewards(request):
     if request.method == 'POST':
         form = RewardForm(request.POST)
-        limit_form = RewardUserLimitForm(request.POST)
-        if form.is_valid() and limit_form.is_valid():
-            reward = form.save(commit=False)
-            reward.user_limit = limit_form.cleaned_data['user_limit']
-            reward.save()
+        if form.is_valid():
+            reward = form.save()
             messages.add_message(request, messages.SUCCESS, "Reward successfully created")
             return redirect('rewards_list') 
     else:
         form = RewardForm()
-        limit_form = RewardUserLimitForm()
-    return render(request, 'rewards/add_rewards.html', {'form': form, 'limit_form': limit_form})
+    return render(request, 'rewards/add_rewards.html', {'form': form})
 
 @staff_required
 def rewards_list(request):
@@ -95,17 +91,13 @@ def edit_rewards(request, reward_id):
 
     if request.method == 'POST':
         form = RewardForm(request.POST, instance = reward)
-        limit_form = RewardUserLimitForm(request.POST, instance=reward)
-        if form.is_valid() and limit_form.is_valid():
+        if form.is_valid():
             messages.add_message(request, messages.SUCCESS, "Reward updated!")
-            reward = form.save(commit=False)
-            reward.user_limit = limit_form.cleaned_data['user_limit']
-            reward.save()
+            reward = form.save()
             return redirect('rewards_list')
     else:
         form = RewardForm(instance = reward)
-        limit_form = RewardUserLimitForm(instance = reward)
-    return render(request, 'rewards/edit_rewards.html', {'form': form, 'limit_form': limit_form, 'reward_id': reward.id})
+    return render(request, 'rewards/edit_rewards.html', {'form': form, 'reward_id': reward.id})
 
     
 

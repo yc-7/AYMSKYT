@@ -169,13 +169,8 @@ class NotificationSubscriptionForm(forms.ModelForm):
 class RewardForm(forms.ModelForm):
     class Meta:
         model = Reward
-        exclude = ['reward_id', 'user_limit']
+        exclude = ['reward_id']
         widgets = {
             'description': forms.Textarea(attrs = {'rows': 3})
         }
     expiry_date = forms.DateField(widget=DateInput())
-
-class RewardUserLimitForm(forms.ModelForm):
-    class Meta:
-        model = Reward
-        fields = ['user_limit']
