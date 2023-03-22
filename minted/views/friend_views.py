@@ -38,7 +38,6 @@ def friend_request(request):
                 to_user = user,
                 is_active = True
             )
-            # new_friend.save()
         return redirect('profile') 
     
     return render(request, 'friend_request.html', {'form': form})
@@ -55,6 +54,7 @@ def accept_request(request, friend_request_id):
 
         from_user = friend_request.from_user
         to_user = friend_request.to_user
+
         #add who sent the request to the recipient's friend list
         to_user.friends.add(from_user)
         #add the recipient to the sender's friend list
