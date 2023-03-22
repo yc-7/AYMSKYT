@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minted-aymskyt.azurewebsites.net']
-# CSRF_TRUSTED_ORIGINS = ['https://fafb-62-254-68-117.eu.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://minted-aymskyt.azurewebsites.net']
 
 
 # Application definition
@@ -111,6 +111,18 @@ DATABASES = {
     }
 }
 
+if not DEBUG:
+    if 'DATABASE_NAME' in os.environ:
+        DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ['DATABASE_NAME'],
+            'USER': os.environ['DATABASE_USER'],
+            'PASSWORD': os.environ['DATABASE_PASSWORD'],
+            'HOST': os.environ['DATABASE_HOST'],
+            'PORT': os.environ['DATABASE_PORT'],
+            }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
