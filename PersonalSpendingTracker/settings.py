@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fafb-62-254-68-117.eu.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minted-aymskyt.azurewebsites.net']
 # CSRF_TRUSTED_ORIGINS = ['https://fafb-62-254-68-117.eu.ngrok.io']
 
 

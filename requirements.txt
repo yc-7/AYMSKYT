@@ -23,4 +23,3 @@ six==1.16.0
 
 sqlparse==0.4.3
 urllib3==1.26.14
-uuid==1.30
