@@ -8,6 +8,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserChangeForm
+from .mixins import NewPasswordMixin
 
 PASSWORD_REGEX_VALIDATOR = RegexValidator(
     regex = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
@@ -21,7 +22,7 @@ class LogInForm(forms.Form):
     email = forms.CharField(label = "Email")
     password = forms.CharField(label = "Password", widget = forms.PasswordInput())
     
-class SignUpForm(forms.ModelForm):
+class SignUpForm(NewPasswordMixin, forms.ModelForm):
     """Form to allow unregistered users to sign up"""
 
     class Meta:
@@ -29,23 +30,6 @@ class SignUpForm(forms.ModelForm):
 
         model = User
         fields = ['first_name', 'last_name', 'email']
-
-    new_password = forms.CharField(
-        label = 'Password',
-        widget = forms.PasswordInput(),
-        validators = [PASSWORD_REGEX_VALIDATOR]
-    )
-
-    password_confirmation = forms.CharField(label = 'Password confirmation', widget = forms.PasswordInput())
-
-    def clean(self):
-        """Clean data and generate error messages"""
-
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
-        if new_password != password_confirmation:
-            self.add_error('password_confirmation', 'Password does not match')
 
     def save(self, budget):
         """Creates a new user"""
@@ -74,27 +58,12 @@ class EditProfileForm(UserChangeForm):
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-class PasswordForm(forms.Form):
+class PasswordForm(NewPasswordMixin):
     """Form enabling users to change their password."""
 
     password = forms.CharField(label='Current password', widget=forms.PasswordInput())
-    new_password = forms.CharField(
-        label='Password',
-        widget=forms.PasswordInput(),
-        validators=[PASSWORD_REGEX_VALIDATOR]
-    )
-    password_confirmation = forms.CharField(label='Password confirmation', widget=forms.PasswordInput())
 
-    def clean(self):
-        """Clean the data and generate messages for any errors."""
-
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
-        if new_password != password_confirmation:
-            self.add_error('password_confirmation', 'Confirmation does not match password.')
-
-class NewPasswordForm(forms.Form):
+class NewPasswordForm(NewPasswordMixin):
     """Form for password resets"""
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -108,13 +77,6 @@ class NewPasswordForm(forms.Form):
             label='Password confirmation',
             widget=forms.PasswordInput()
         )
-
-    def clean(self):
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
-        if new_password != password_confirmation:
-            self.add_error('password_confirmation', 'Confirmation does not match password.')
 
     def save(self):
         new_password = self.cleaned_data.get('new_password')
