@@ -124,8 +124,11 @@ if not DEBUG:
             'PASSWORD': os.environ['DATABASE_PASSWORD'],
             'HOST': os.environ['DATABASE_HOST'],
             'PORT': os.environ['DATABASE_PORT'],
+            'OPTIONS': {
+                'ssl': {'ca': os.environ['SSL_CERT_PATH']}
             }
-        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
