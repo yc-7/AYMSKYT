@@ -16,6 +16,7 @@ from minted.views.general_user_views.point_system_views import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from django.conf import settings
+from minted.decorators import login_prohibited
 from minted.mixins import LoginProhibitedMixin
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 from minted.views.general_user_views.login_view_functions import *
@@ -56,11 +57,11 @@ def log_out(request):
     logout(request)
     return redirect('home')
 
-#@login_prohibited
+@login_prohibited
 def home(request):
     return render(request, 'homepage.html')
 
-#@login_prohibited
+@login_prohibited
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)

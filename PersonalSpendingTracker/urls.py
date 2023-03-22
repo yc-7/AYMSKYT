@@ -44,7 +44,6 @@ urlpatterns = [
     path('create_category/', views.create_category, name = 'create_category'),
     path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
-    path('category_list/', views.category_list_view, name = 'category_list'),
 
     path('friend_request/', views.friend_request, name='friend_request'),
     path('friend_list/', views.friend_list_view, name='friend_list'),
