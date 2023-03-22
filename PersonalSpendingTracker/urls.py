@@ -23,6 +23,7 @@ from django.contrib.auth import views as auth_views
 from minted.forms import NewPasswordForm
 
 urlpatterns = [
+    path('admin', admin.site.index, name='admin'),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('log_in/', views.log_in, name='log_in'),
@@ -59,6 +60,9 @@ urlpatterns = [
     path('rewards/<str:brand_name>/<str:reward_id>/', views.claim_reward, name='claim_reward'),
     path('rewards/my_rewards/', views.my_rewards, name='my_rewards'),
     path('rewards/<str:brand_name>/', views.filtered_rewards, name='filtered_rewards'),
+    path('rewards/add', views.add_rewards, name='add_rewards'),
+    path('rewards/admin', views.rewards_list, name='rewards_list'),
+    path('rewards/<int:reward_id>/edit', views.edit_rewards, name='edit_rewards'),
     
     path('notification_subscription/create', views.create_notification_subscription, name='create_notification_subscription'),
     path('notification_subscription/edit', views.edit_notification_subscription, name='edit_notification_subscription'),

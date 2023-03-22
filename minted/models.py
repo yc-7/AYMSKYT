@@ -25,15 +25,15 @@ class Streak(models.Model):
         validators= [MinValueValidator(0),]
     )
 
-TIMEFRAME = [
+class SpendingLimit(models.Model):
+    """Model for spending limits"""
+
+    TIMEFRAME = [
     ('/week', 'week'),
     ('/month', 'month'),
     ('/quarter', 'quarter'),
     ('/year', 'year'),
 ]
-
-class SpendingLimit(models.Model):
-    """Model for spending limits"""
 
     budget = models.DecimalField(max_digits = 12, decimal_places = 2, blank=False)
     timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=False)
@@ -112,6 +112,9 @@ class Category(models.Model):
     budget = models.OneToOneField(SpendingLimit, blank = False, on_delete=models.CASCADE)
     colour = models.CharField(max_length = 7, blank = True, null =True)
 
+    class Meta:
+        unique_together = ('user', 'name')
+
     def __str__(self):
         return self.name
 
@@ -174,6 +177,7 @@ class Expenditure(models.Model):
     description = models.CharField(max_length = 200, blank = True)
     receipt = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
 
+
 class RewardManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(expiry_date__gte = datetime.date.today())
@@ -187,7 +191,7 @@ class Reward(models.Model):
 
     CODE_TYPE_CHOICES = [
         ('qr', 'QR Code'),
-        ('random', 'Randomly Generated Code')
+        ('random', 'Randomly Generated Code'),
     ]
 
     brand_name = models.CharField(max_length = 50, blank = False)
@@ -197,6 +201,8 @@ class Reward(models.Model):
     description = models.TextField(max_length = 300, blank = False)
     cover_image = models.FileField(upload_to = settings.REWARDS_DIR, blank = True)
     code_type = models.CharField(max_length = 6, choices = CODE_TYPE_CHOICES, blank=False, default = 'random')
+    user_limit = models.IntegerField(blank = True, null = True, validators = [MinValueValidator(0)])
+
 
     objects = RewardManager()
     same_brand = RewardBrandManager()
@@ -204,7 +210,7 @@ class Reward(models.Model):
     def save(self, *args, **kwargs):
         if not self.reward_id:
             self.reward_id = self._create_reward_id()
-        super(Reward, self).save(*args, **kwargs)
+        return super(Reward, self).save(*args, **kwargs)
 
     def _create_reward_id(self):
         brands = Reward.same_brand.get_queryset(self.brand_name).count()
@@ -215,6 +221,7 @@ class Reward(models.Model):
 
     def __str__(self):
         return self.brand_name.lower().replace(" ", "-")
+
 
 class RewardClaimManager(models.Manager):
     def get_queryset(self):
@@ -229,22 +236,19 @@ class RewardClaim(models.Model):
     user = models.ForeignKey(User, blank = False, on_delete = models.CASCADE)
 
     def save(self, *args, **kwargs):
-        if self.claim_qr == True or self.claim_code is not None:
-            super(RewardClaim, self).save(*args, **kwargs)
-        else:
+        if self.claim_qr != True or self.claim_code is None:
             if self.reward_type.code_type == 'qr':
                 self.claim_qr = self._create_claim_qr()
-                super(RewardClaim, self).save(*args, **kwargs)
             else:
                 unique = False
                 while (unique == False):
                     try:
                         if not self.claim_code:
                             self.claim_code = self._create_claim_code()
-                            super(RewardClaim, self).save(*args, **kwargs)
                             unique = True
                     except IntegrityError as e:
                         unique = False
+        return super(RewardClaim, self).save(*args, **kwargs)
     
     def _create_claim_qr(self):
         qr_name = f'{self._create_claim_code}{self.reward_type.reward_id}_qr'

@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
 from .general_user_views.login_view_functions import *
@@ -7,7 +7,7 @@ from minted.views.expenditure_receipt_functions import handle_uploaded_file, del
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 
-@login_required
+@staff_prohibited
 def category_expenditures_view(request, category_name):
     category_exists = Category.objects.filter(user=request.user, name=category_name).count() != 0
     if not category_exists:
@@ -17,7 +17,7 @@ def category_expenditures_view(request, category_name):
     expenditures = Expenditure.objects.filter(category=category).order_by('-date')
     return render(request, 'expenditures/expenditures_list.html', { 'expenditures': expenditures, 'category': category })
 
-@login_required
+@staff_prohibited
 def delete_expenditure(request, expenditure_id):
     if request.method == 'POST':
         expenditure = Expenditure.objects.get(pk=expenditure_id)
@@ -29,7 +29,7 @@ def delete_expenditure(request, expenditure_id):
         return redirect('category_expenditures', category_name=category.name)
     return redirect('category_list')
 
-@login_required
+@staff_prohibited
 def edit_expenditure(request, category_name, expenditure_id):
     expenditure_exists = Expenditure.objects.filter(id=expenditure_id).count() != 0
     if not expenditure_exists:
@@ -62,10 +62,10 @@ def edit_expenditure(request, category_name, expenditure_id):
     return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })
 
 
-@login_required
+@staff_prohibited
 def add_expenditure(request, category_name):
     if request.method == 'POST':
-        category = Category.objects.get(user=request.user, name=category_name) # Need to make sure there are no duplicate categories with same name
+        category = Category.objects.get(user=request.user, name=category_name)
         form = ExpenditureForm(request.POST)
         if request.POST.get("addExpenditure"):
             if form.is_valid():
