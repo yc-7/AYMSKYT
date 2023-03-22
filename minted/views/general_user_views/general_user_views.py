@@ -9,10 +9,17 @@ from django.views import View
 from django.views.generic.edit import UpdateView
 from minted.forms import *
 from minted.models import *
+from django.contrib import messages
+from minted.decorators import login_prohibited
+from minted.views.general_user_views.login_view_functions import *
+from minted.views.general_user_views.point_system_views import *
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
+from django.conf import settings
 from minted.mixins import LoginProhibitedMixin
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 from minted.views.general_user_views.login_view_functions import *
-        
+
 class LogInView(LoginProhibitedMixin, View):
     """View that handles log in"""
 
@@ -43,6 +50,7 @@ class LogInView(LoginProhibitedMixin, View):
         form = LogInForm()
         return render(self.request, 'login.html', {'form': form, 'next': self.next})
 
+
 def log_out(request):
     unsubscribe_user_from_push(request.user.id)
     logout(request)
@@ -60,6 +68,7 @@ def sign_up(request):
         if form.is_valid() and spending_form.is_valid():
             spending = spending_form.save()
             user = form.save(spending)
+            update_streak(user)
             login(request, user)
             return redirect('dashboard')
     else:
@@ -70,7 +79,7 @@ def sign_up(request):
 @login_required
 def dashboard(request):
     return render(request,'dashboard.html')
-      
+
 @login_required
 def profile(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
@@ -78,7 +87,7 @@ def profile(request):
     user = request.user
 
     webpush_subscription_status = 'Subscribed' if is_user_subscribed(user.id) else 'Not subscribed'
-    
+
     return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -113,7 +122,7 @@ def edit_spending_limit(request):
     else:
         form = SpendingLimitForm(instance= request.user.budget)
     return render(request, 'edit_spending_limit.html', {'form': form})
-    
+
 @login_required
 def change_password(request):
     current_user = request.user
@@ -130,7 +139,3 @@ def change_password(request):
                 return redirect('profile')
     form = PasswordForm()
     return render(request, 'change_password.html', {'form': form})
-
-    
-    
-

@@ -1,5 +1,14 @@
 [
   {
+    "model": "minted.Streak",
+    "pk": 2,
+    "fields": {
+      "last_login_time": "2023-03-10T12:00:00Z",
+      "streak": 3
+    }
+  },
+
+  {
     "model": "minted.User",
     "pk": 2,
     "fields": {
@@ -10,7 +19,9 @@
       "is_active": true,
       "is_staff": true,
       "is_superuser": true,
-      "budget": "2"
+      "budget": "2",
+      "points": "1",
+      "streak_data": 2
     }
   }
 ]

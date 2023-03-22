@@ -1,6 +1,6 @@
 function create_bar_chart_config(data, labels, colours){
     var pie_chart_config = {
-      type: 'pie',
+      type: 'doughnut',
       data: {
         datasets: [{
           data: data,

@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fafb-62-254-68-117.eu.ngrok.io']
-# CSRF_TRUSTED_ORIGINS = ['https://fafb-62-254-68-117.eu.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minted-aymskyt.azurewebsites.net']
+CSRF_TRUSTED_ORIGINS = ['https://minted-aymskyt.azurewebsites.net']
 
 
 # Application definition
@@ -45,9 +45,18 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'webpush',
     'django_crontab',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 load_dotenv(find_dotenv())
+
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_PORT = os.environ['EMAIL_PORT']
+EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 
 WEBPUSH_SETTINGS = {
    "VAPID_PUBLIC_KEY": os.environ['VAPID_PUBLIC_KEY'],
@@ -63,6 +72,7 @@ CRONJOBS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'PersonalSpendingTracker.urls'
 
@@ -102,6 +114,21 @@ DATABASES = {
     }
 }
 
+if not DEBUG:
+    if 'DATABASE_NAME' in os.environ:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.environ['DATABASE_NAME'],
+                'USER': os.environ['DATABASE_USER'],
+                'PASSWORD': os.environ['DATABASE_PASSWORD'],
+                'HOST': os.environ['DATABASE_HOST'],
+                'PORT': os.environ['DATABASE_PORT'],
+                'OPTIONS': {
+                    'ssl': {'ca': os.environ['SSL_CERT_PATH']}
+                }
+            }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -138,6 +165,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -149,7 +177,9 @@ LOGIN_URL = 'log_in'
 
 # Path for file uploads
 UPLOAD_DIR = 'uploads/'
+REWARDS_DIR = 'rewards/'
 UPLOAD_ROOT = os.path.join(BASE_DIR, UPLOAD_DIR)
+REWARDS_ROOT = os.path.join(BASE_DIR, REWARDS_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
