@@ -7,8 +7,9 @@ from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *
+from minted.mixins import AdminProhitbitedMixin
 
-class CategoryListView(LoginRequiredMixin, ListView):
+class CategoryListView(LoginRequiredMixin, AdminProhitbitedMixin, ListView):
     """View that displays a user's categories"""
 
     model = Category
