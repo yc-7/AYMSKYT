@@ -1,0 +1,40 @@
+[
+    {
+        "model": "minted.Reward",
+        "pk": 1,
+        "fields": {
+            "brand_name": "Apple",
+            "points_required": "20",
+            "reward_id": "APP001",
+            "expiry_date": "2023-03-30",
+            "description": "20% off AirPods Max",
+            "code_type": "random"
+        }
+    },
+
+    {
+        "model": "minted.Reward",
+        "pk": 2,
+        "fields": {
+            "brand_name": "Apple",
+            "points_required": "1",
+            "reward_id": "APP002",
+            "expiry_date": "2023-03-26",
+            "description": "6 months free Apple Music",
+            "code_type": "random"
+        }
+    },
+
+    {
+        "model": "minted.Reward",
+        "pk": 3,
+        "fields": {
+            "brand_name": "Nando's",
+            "points_required": "40",
+            "reward_id": "NAN001",
+            "expiry_date": "2023-06-02",
+            "description": "2 meals for the price of 1",
+            "code_type": "qr"
+        }
+    }
+]

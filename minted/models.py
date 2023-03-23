@@ -12,6 +12,7 @@ import random
 from django.core.files import File
 from io import BytesIO
 import segno
+import os
 from django.db import IntegrityError
 from django.conf import settings
 from string import ascii_uppercase
@@ -185,7 +186,7 @@ class Reward(models.Model):
     reward_id = models.CharField(max_length = 6, unique = True, blank = False)
     expiry_date = models.DateField(blank = False)
     description = models.TextField(max_length = 300, blank = False)
-    cover_image = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
+    cover_image = models.FileField(upload_to = settings.REWARDS_DIR, blank = True)
     code_type = models.CharField(max_length = 6, choices = CODE_TYPE_CHOICES, blank=False, default = 'random')
 
     objects = RewardManager()
@@ -218,7 +219,7 @@ class RewardClaim(models.Model):
     """Model for reward claims made by users"""
 
     claim_code = models.CharField(max_length = 10, blank = True, null = True, unique = True)
-    claim_qr = models.FileField(upload_to = settings.UPLOAD_DIR, blank = True)
+    claim_qr = models.FileField(upload_to = settings.REWARDS_DIR, blank = True)
     reward_type = models.ForeignKey(Reward, blank = False, on_delete = models.CASCADE)
     user = models.ForeignKey(User, blank = False, on_delete = models.CASCADE)
 

@@ -64,9 +64,12 @@ SITE_ID = 2
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CHOICE_SESSION_KEY = None
+#ACCOUNT_ADAPTER = 'minted.views.general_user_views.adapter.SocialAdapter'
 
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'spending_signup'
 LOGOUT_REDIRECT_URL = '/'
+#ACCOUNT_SIGNUP_REDIRECT_URL = 'spending_signup'
 
 ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm'}
 
@@ -188,7 +191,9 @@ LOGIN_URL = 'log_in'
 
 # Path for file uploads
 UPLOAD_DIR = 'uploads/'
+REWARDS_DIR = 'rewards/'
 UPLOAD_ROOT = os.path.join(BASE_DIR, UPLOAD_DIR)
+REWARDS_ROOT = os.path.join(BASE_DIR, REWARDS_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'

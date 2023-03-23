@@ -32,6 +32,7 @@ urlpatterns = [
     path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
+    path('sign_up/spending/', views.spending_signup, name='spending_signup'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/edit/profile', views.edit_profile, name='edit_profile'),
     path('profile/edit/change_password/', views.change_password, name='change_password'),
