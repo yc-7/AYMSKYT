@@ -9,24 +9,34 @@ def create_new_file_name(file):
     file_name = file_name + file_type
     return file_name
 
-def handle_uploaded_file(file):
+def handle_uploaded_receipt_file(file):
     if not file:
         return
 
     if 'AZURE_ACCOUNT_NAME' in os.environ:
         link = handle_azure_file_upload(file)
         return link
-    
     else:
-        path = handle_local_file_upload(file)
+        path = handle_local_file_upload(file, settings.UPLOAD_DIR)
+        return path
+    
+def handle_uploaded_reward_file(file):
+    if not file:
+        return
+
+    if 'AZURE_ACCOUNT_NAME' in os.environ:
+        link = handle_azure_file_upload(file)
+        return link
+    else:
+        path = handle_local_file_upload(file, settings.REWARDS_DIR)
         return path
 
-def handle_local_file_upload(file):
+def handle_local_file_upload(file, upload_directory):
     file_name = create_new_file_name(file)
-    path = os.path.join(settings.UPLOAD_DIR, file_name)
+    path = os.path.join(upload_directory, file_name)
 
-    if not os.path.exists(settings.UPLOAD_DIR):
-        os.mkdir(settings.UPLOAD_DIR)
+    if not os.path.exists(upload_directory):
+        os.mkdir(upload_directory)
 
     with open(path, 'wb+') as destination:
         for chunk in file.chunks():
@@ -51,4 +61,4 @@ def handle_azure_file_deletion(path):
 
 def handle_local_file_deletion(path):
     if os.path.exists(path):
-            os.remove(path)
+        os.remove(path)

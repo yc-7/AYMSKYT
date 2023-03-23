@@ -3,7 +3,7 @@ from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
 from .general_user_views.login_view_functions import *
-from minted.views.expenditure_receipt_functions import handle_uploaded_file, delete_file
+from minted.views.expenditure_receipt_functions import handle_uploaded_receipt_file, delete_file
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 
@@ -52,7 +52,7 @@ def edit_expenditure(request, category_name, expenditure_id):
                 delete_file(current_receipt)
 
             if new_file:
-                receipt_path = handle_uploaded_file(new_file)
+                receipt_path = handle_uploaded_receipt_file(new_file)
                 expenditure.receipt = receipt_path
 
             expenditure.save()
@@ -73,7 +73,7 @@ def add_expenditure(request, category_name):
                 expenditure.category = category
 
                 if file:
-                    receipt_path = handle_uploaded_file(file)
+                    receipt_path = handle_uploaded_receipt_file(file)
                     expenditure.receipt = receipt_path
                 
                 expenditure.save()
