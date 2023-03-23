@@ -44,18 +44,18 @@ class BudgetListViewTestCase(TestCase):
         start_date = end_date - relativedelta(days =+ 6)
         self.assertEqual(len(response.context['budget']), 3)
         self.assertContains(response, 'Overall')
-        self.assertContains(response, '£140 out of £' + str(self.user.budget.budget) + ' remaining')
+        self.assertContains(response, f'£{self.expenditure.amount} out of £{self.user.budget.budget} spent')
         self.assertContains(response, str(start_date))
         self.assertContains(response, str(end_date))
         self.assertContains(response, 'Transportation')
-        self.assertContains(response, '£90 out of £' + str(self.category.budget.budget) + ' remaining')
+        self.assertContains(response, f'£{self.expenditure.amount} out of £{self.category.budget.budget} spent')
         self.assertContains(response, 'Entertainment')
 
     def test_budget_list_does_not_show_other_user_budgets(self):
-        self.client.login(email=self.other_user.email, password='Password123')
+        self.client.login(email=self.user.email, password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget_list.html')
-        self.assertEqual(len(self.other_user.get_categories()),1)
-        self.assertNotContains(response, 'Transportation')
+        self.assertEqual(len(self.user.get_categories()),2)
+        self.assertNotContains(response, 'Food')
         

@@ -24,8 +24,8 @@
         "pk": 3,
         "fields": {
             "user": 2 ,
-            "name": "Entertainment",
-            "budget": 3
+            "name": "Food",
+            "budget": "3"
         }
     }
 ]

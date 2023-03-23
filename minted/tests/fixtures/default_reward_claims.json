@@ -1,0 +1,30 @@
+[
+    {
+        "model": "minted.RewardClaim",
+        "pk": 1,
+        "fields": {
+            "claim_code": "MINT9B1",
+            "reward_type": 1,
+            "user": 1
+        }
+    },
+
+    {
+        "model": "minted.RewardClaim",
+        "pk": 2,
+        "fields": {
+            "claim_code": "MINT53ZXT3",
+            "reward_type": 2,
+            "user": 1
+        }
+    },
+
+    {
+        "model": "minted.RewardClaim",
+        "pk": 3,
+        "fields": {
+            "reward_type": 3,
+            "user": 2
+        }
+    }
+]

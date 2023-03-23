@@ -1,0 +1,23 @@
+<div class="card mb-3">
+    <div class="row g-0">
+      <div class="col-md-4">
+        {% if reward.cover_image %}
+        <img src="{{ reward.cover_image.url }}" class="img-fluid rounded-start" style="object-fit: cover">
+        {% endif %}
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ reward.brand_name }}</h5>
+          <p class="card-text">{{ reward.description }}</p>
+          <a type="button" class="bottom-0 btn btn-block btn-dark" style="margin-bottom: 1rem;" href="{% url 'claim_reward' reward reward.reward_id %}">View Code</a>
+          <div class="card-text">
+            {% if reward.expiry_date == date %}
+            <small class="text-muted">Last Day to Use</small>
+            {% else %}
+            <small class="text-muted">Expires on {{ reward.expiry_date }}</small>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

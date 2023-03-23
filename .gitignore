@@ -2,6 +2,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,django,venv,macos,linux,windows,sublimetext,visualstudio,visualstudiocode,xcode,pycharm+all
 
 uploads/
+rewards/
+.env
+static/
 
 ### Django ###
 *.log

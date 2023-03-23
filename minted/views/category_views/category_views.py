@@ -1,14 +1,16 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *
 from django.contrib import messages
 from .category_view_functions import *
-@login_required
+
+
+@staff_prohibited
 def create_category(request):
     if request.method == 'POST':
-        category_form = CategoryForm(request.POST)
+        category_form = CategoryForm(request.POST, user=request.user)
         spending_form = SpendingLimitForm(request.POST)
 
         valid_forms = category_form.is_valid() and spending_form.is_valid()
@@ -24,11 +26,11 @@ def create_category(request):
             category.save()
             return redirect('category_list')           
     else:
-        category_form = CategoryForm(initial={'user': request.user})
+        category_form = CategoryForm(user=request.user)
         spending_form = SpendingLimitForm()
     return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
 
-@login_required
+@staff_prohibited
 def delete_category(request, category_id):
     if request.method == 'POST':
         if Category.objects.filter(id=category_id).count() == 0:
@@ -39,14 +41,14 @@ def delete_category(request, category_id):
         messages.add_message(request, messages.SUCCESS, "Category deleted successfully")
     return redirect('category_list')
 
-@login_required
+@staff_prohibited
 def category_list_view(request):
     current_user = request.user
     my_categories = Category.objects.filter(user = current_user)
     context = {'user': current_user,'categories': my_categories}
     return render(request, 'category_list.html', context)
 
-@login_required
+@staff_prohibited
 def edit_category(request, category_id):
     if not category_id:
         return redirect('category_list')

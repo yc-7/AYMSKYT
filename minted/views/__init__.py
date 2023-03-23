@@ -4,3 +4,7 @@ from minted.views.category_views.category_views import *
 from .category_views.category_views import * 
 from .expenditure_views import *
 from .budget_views import *
+from minted.views.notification_subscription_views.notification_subscription_views import *
+from .friend_views import *
+from .rewards_views import *
+
