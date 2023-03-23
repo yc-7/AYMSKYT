@@ -30,7 +30,7 @@ urlpatterns = [
     path('sign_up/', views.sign_up, name='sign_up'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/edit/profile/', views.ProfileUpdateView.as_view(), name = 'edit_profile'),
-    path('profile/edit/change_password/', views.change_password, name='change_password'),
+    path('profile/edit/change_password/', views.PasswordView.as_view(), name = 'change_password'),
     path('profile/', views.profile , name='profile'),
 
     path('analytics/', views.view_analytics, name='view_analytics'),
