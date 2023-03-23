@@ -185,7 +185,7 @@ REWARDS_ROOT = os.path.join(BASE_DIR, REWARDS_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
-REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'dashboard'
+REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'rewards_list'
 
 # Message level tags should use Bootstrap terms
 MESSAGE_TAGS={

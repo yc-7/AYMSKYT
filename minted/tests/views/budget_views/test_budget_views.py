@@ -54,10 +54,10 @@ class BudgetListViewTestCase(TestCase):
         self.assertContains(response, 'Entertainment')
 
     def test_budget_list_does_not_show_other_user_budgets(self):
-        self.client.login(email=self.other_user.email, password='Password123')
+        self.client.login(email=self.user.email, password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget_list.html')
-        self.assertEqual(len(self.other_user.get_categories()),1)
-        self.assertNotContains(response, 'Transportation')
+        self.assertEqual(len(self.user.get_categories()),2)
+        self.assertNotContains(response, 'Food')
         

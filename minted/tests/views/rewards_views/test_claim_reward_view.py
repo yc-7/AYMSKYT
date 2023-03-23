@@ -19,7 +19,8 @@ class ClaimRewardViewTestCase(TestCase):
         self.url = reverse('claim_reward', kwargs={ 'brand_name': self.reward.brand_name, 'reward_id': self.reward.reward_id })
         self.user = User.objects.get(pk=1)
         self.claim = RewardClaim.objects.get(pk=1)
-        self.other_user = User.objects.get(pk=2)
+        self.other_reward = Reward.objects.get(pk=3)
+        self.limited_reward = Reward.objects.get(pk=4)
 
     def test_claim_reward_url(self):
         self.assertEqual(self.url, f'/rewards/{self.reward.brand_name}/{self.reward.reward_id}/')
@@ -48,9 +49,18 @@ class ClaimRewardViewTestCase(TestCase):
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
     
     def test_get_claim_reward_redirects_if_user_does_not_have_enough_points(self):
-        self.client.login(email = self.other_user.email, password = 'Password123')
+        self.client.login(email = self.user.email, password = 'Password123')
         redirect_url = reverse('rewards')
-        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.reward.brand_name, 'reward_id': self.reward.reward_id  })
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.other_reward.brand_name, 'reward_id': self.other_reward.reward_id  })
+
+        response = self.client.get(self.url, follow=True)
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+    def test_get_claim_reward_redirects_if_reward_is_at_user_limit(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        redirect_url = reverse('rewards')
+        self.limited_reward.user_limit = 0
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.limited_reward.brand_name, 'reward_id': self.limited_reward.reward_id  })
 
         response = self.client.get(self.url, follow=True)
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
