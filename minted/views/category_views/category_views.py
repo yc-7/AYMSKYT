@@ -4,13 +4,19 @@ from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *
 from django.contrib import messages
-
+from .category_view_functions import *
 @login_required
 def create_category(request):
     if request.method == 'POST':
         category_form = CategoryForm(request.POST)
         spending_form = SpendingLimitForm(request.POST)
-        if category_form.is_valid() and spending_form.is_valid():
+
+        valid_forms = category_form.is_valid() and spending_form.is_valid()
+        if valid_forms:
+            if category_already_exists_for_create(category_form, request.user):
+                category_form.add_error('name', 'You already have a category with this name')
+                return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
+
             spending = spending_form.save()
             category = category_form.save(commit=False)
             category.user = request.user
@@ -25,7 +31,7 @@ def create_category(request):
 @login_required
 def delete_category(request, category_id):
     if request.method == 'POST':
-        if len(Category.objects.filter(id=category_id)) == 0:
+        if Category.objects.filter(id=category_id).count() == 0:
             messages.add_message(request, messages.ERROR, "Category does not exist")
             return redirect('create_category')
         category = Category.objects.get(id=category_id)
@@ -45,9 +51,9 @@ def edit_category(request, category_id):
     if not category_id:
         return redirect('category_list')
     
-    number_of_existing_categories = len(Category.objects.filter(id=category_id)) 
+    category_exists = len(Category.objects.filter(id=category_id)) != 0
     
-    if number_of_existing_categories == 0:
+    if not category_exists:
         messages.add_message(request, messages.ERROR, "Category does not exist")
         return redirect('create_category')
 
@@ -60,7 +66,12 @@ def edit_category(request, category_id):
     if request.method == 'POST':
         category_form = CategoryForm(instance=category, data=request.POST)
         spending_form = SpendingLimitForm(request.POST)
-        if category_form.is_valid() and spending_form.is_valid():
+        valid_forms = category_form.is_valid() and spending_form.is_valid()
+        if valid_forms:
+            if category_already_exists_for_edit(category_form, category, request.user):
+                category_form.add_error('name', 'You already have a category with this name')
+                return render(request, 'edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id})
+            
             messages.add_message(request, messages.SUCCESS, "Category updated!")
             new_spending = spending_form.save()
             category = category_form.save(commit=False)

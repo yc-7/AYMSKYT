@@ -20,6 +20,14 @@ class DeleteCategoryViewTest(TestCase):
 
     def test_delete_category_url(self):
         self.assertEqual(self.url,f'/category/{self.category_id}/delete')
+
+    def test_get_inavlid_category_id_redirects(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        url = reverse('delete_category', kwargs={'category_id': 100})
+        response = self.client.get(url, follow=True)
+        response_url = reverse('category_list')
+        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'category_list.html')
     
     def test_successful_deletion(self):        
         self.client.login(email = self.user.email, password = 'Password123')
@@ -27,7 +35,7 @@ class DeleteCategoryViewTest(TestCase):
         category_start_count = Category.objects.all().count()
         spending_limit_start_count = SpendingLimit.objects.all().count()
 
-        response = self.client.post(self.url, follow = True)
+        response = self.client.post(self.url, follow=True)
 
         category_end_count = Category.objects.all().count()
         spending_limit_end_count = SpendingLimit.objects.all().count()
