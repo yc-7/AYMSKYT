@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, Category
 from django import forms
-
+from minted.forms import SpendingLimitForm
 
 class CreateCategoryViewTest(TestCase):
     fixtures = ['minted/tests/fixtures/default_categories.json', 
@@ -33,4 +33,15 @@ class CreateCategoryViewTest(TestCase):
         response_url = reverse('category_list')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'category_list.html')
+
+    def test_unsuccessful_creation(self):
+        self.client.login(email=self.user.email, password="Password123")
+        self.form_input['budget'] = 'invalidbudget' 
+        category_count = len(Category.objects.all())
+        self.assertEqual(category_count, 3)
+        response = self.client.post(self.url, self.form_input, follow=True)
+        category_count = len(Category.objects.all())
+        self.assertEqual(category_count, 3)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'create_category.html')
     
