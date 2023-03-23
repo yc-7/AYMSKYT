@@ -1,18 +1,14 @@
 from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from minted.forms import *
 from minted.models import *
 from django.contrib import messages
-from minted.decorators import login_prohibited
+from minted.decorators import login_prohibited, staff_prohibited
+from django.contrib.auth.decorators import login_required
 from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
-from datetime import datetime, timedelta
-from django.utils import timezone
-import pytz
-
 from django.conf import settings
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 
@@ -54,13 +50,14 @@ def sign_up(request):
             user = form.save(spending)
             update_streak(user)
             login(request, user)
-            return redirect('dashboard')
+            redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
+            return redirect(redirect_url)
     else:
         form = SignUpForm()
         spending_form = SpendingLimitForm()
     return render(request, 'signup.html', {'form': form, 'spending_form': spending_form})
 
-@login_required
+@staff_prohibited
 def dashboard(request):
     return render(request,'dashboard.html')
       
@@ -88,18 +85,26 @@ def edit_profile(request):
         form = EditProfileForm(instance= request.user)
     return render(request, 'edit_profile.html', {'form': form})
 
-@login_required
+@staff_prohibited
 def edit_spending_limit(request):
     if request.method == 'POST':
-        form = SpendingLimitForm(request.POST, instance=request.user.budget)
+        if request.user.budget is not None:
+            form = SpendingLimitForm(request.POST, instance=request.user.budget)
+        else:
+            form = SpendingLimitForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_spending = form.save()
+            request.user.budget = new_spending
+            request.user.save()
             messages.success(request, 'Your spending limits were successfully updated!')
             return redirect('profile')
         else:
             messages.error(request, 'Please correct the error below.')
     else:
-        form = SpendingLimitForm(instance= request.user.budget)
+        if request.user.budget is not None:
+            form = SpendingLimitForm(instance= request.user.budget)
+        else:
+            form = SpendingLimitForm()
     return render(request, 'edit_spending_limit.html', {'form': form})
     
 @login_required

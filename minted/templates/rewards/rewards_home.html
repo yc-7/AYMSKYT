@@ -1,0 +1,35 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="card border-light mb-3">
+        <div class="card-body">
+            <h3 class="card-title d-flex justify-content-between align-items-center" style="margin-top: 0.5rem; margin-left: 0.5rem; margin-bottom: 1.75rem;">
+                <b>Rewards</b>
+                <div class="btn-group dropdown">
+                    <button type="button" class="btn btn-secondary">
+                        {% if brand_name is None %}
+                        Filter by Brand
+                        {% else %}
+                        {{ brand_name }}
+                        {% endif %}
+                    </button>
+                    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'rewards' %}">All</a></li>
+                        {% for brand in brands %}
+                        <li><a class="dropdown-item" href="{% url 'filtered_rewards' brand %}">{{ brand }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </h3>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for reward in rewards %}
+                   {% include 'rewards/partials/rewards_grid.html' with reward=reward date=date user=user %}
+                {% endfor %}
+            </div>               
+        </div>
+    </div>
+</div>
+{% endblock %}
