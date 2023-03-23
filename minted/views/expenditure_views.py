@@ -3,7 +3,7 @@ from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
 from .general_user_views.login_view_functions import *
-from minted.views.expenditure_receipt_functions import handle_uploaded_file, delete_file
+from minted.views.expenditure_receipt_functions import handle_uploaded_receipt_file, delete_file
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 
@@ -24,7 +24,7 @@ def delete_expenditure(request, expenditure_id):
         category = expenditure.category
         if request.user == category.user:
             if expenditure.receipt:
-                delete_file(expenditure.receipt.path)
+                delete_file(expenditure.receipt)
             expenditure.delete()
         return redirect('category_expenditures', category_name=category.name)
     return redirect('category_list')
@@ -45,15 +45,14 @@ def edit_expenditure(request, category_name, expenditure_id):
         if form.is_valid():
             expenditure = form.save(commit=False)
             new_file = request.FILES.get('receipt')
-            # clear = request.POST.get('receipt-clear') # This is so broken
             current_receipt = expenditure.receipt
             update_file = new_file and current_receipt
 
             if update_file:
-                delete_file(current_receipt.path)
+                delete_file(current_receipt)
 
             if new_file:
-                receipt_path = handle_uploaded_file(new_file)
+                receipt_path = handle_uploaded_receipt_file(new_file)
                 expenditure.receipt = receipt_path
 
             expenditure.save()
@@ -74,7 +73,7 @@ def add_expenditure(request, category_name):
                 expenditure.category = category
 
                 if file:
-                    receipt_path = handle_uploaded_file(file)
+                    receipt_path = handle_uploaded_receipt_file(file)
                     expenditure.receipt = receipt_path
                 
                 expenditure.save()

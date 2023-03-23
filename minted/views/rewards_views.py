@@ -6,6 +6,7 @@ from .general_user_views.login_view_functions import *
 from django.contrib import messages
 from django.db.models import Q
 import datetime
+from minted.views.expenditure_receipt_functions import handle_uploaded_reward_file, delete_file
 
 
 @staff_prohibited
@@ -64,7 +65,15 @@ def add_rewards(request):
     if request.method == 'POST':
         form = RewardForm(request.POST)
         if form.is_valid():
-            reward = form.save()
+            reward = form.save(commit=False)
+            file = request.FILES.get('cover_image')
+
+            if file:
+                cover_image_path = handle_uploaded_reward_file(file)
+                reward.cover_image = cover_image_path
+            
+            reward.save()
+
             messages.add_message(request, messages.SUCCESS, "Reward successfully created")
             return redirect('rewards_list') 
     else:
@@ -76,7 +85,10 @@ def rewards_list(request):
     if request.method == 'POST':
         if request.POST.get("delete"):
             reward_id = request.POST.get("delete")
-            Reward.objects.get(id=reward_id).delete()
+            reward = Reward.objects.get(id=reward_id)
+            if reward.cover_image:
+                delete_file(reward.cover_image)
+            reward.delete()
             messages.add_message(request, messages.SUCCESS, "Reward deleted successfully")
         return redirect('rewards_list')
     rewards = Reward.objects.all()
@@ -93,7 +105,20 @@ def edit_rewards(request, reward_id):
         form = RewardForm(request.POST, instance = reward)
         if form.is_valid():
             messages.add_message(request, messages.SUCCESS, "Reward updated!")
-            reward = form.save()
+            reward = form.save(commit=False)
+            new_file = request.FILES.get('cover_image')
+            current_reward_image = reward.cover_image
+            update_file = new_file and current_reward_image
+
+            if update_file:
+                delete_file(current_reward_image)
+
+            if new_file:
+                cover_image_path = handle_uploaded_reward_file(new_file)
+                reward.cover_image = cover_image_path
+
+            reward.save()
+
             return redirect('rewards_list')
     else:
         form = RewardForm(instance = reward)

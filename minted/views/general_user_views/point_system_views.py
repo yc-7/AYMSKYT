@@ -72,11 +72,12 @@ def is_today_a_end_date(user):
 
 
 def reward_login_and_streak_points(user):
-    last_login = user.streak_data.last_login_time
+    if user.streak_data is not None:
+        last_login = user.streak_data.last_login_time
     
-    if last_login.date() < datetime.now().date() and (not user.is_superuser):
-        reward_login_points(user)
-        reward_streak_points(user)
+        if last_login.date() < datetime.now().date() and (not user.is_superuser):
+            reward_login_points(user)
+            reward_streak_points(user)
     
 
 
