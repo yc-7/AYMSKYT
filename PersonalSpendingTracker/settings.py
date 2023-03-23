@@ -129,6 +129,12 @@ if not DEBUG:
                 }
             }
         }
+    if 'AZURE_ACCOUNT_NAME' in os.environ:
+        DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+        AZURE_ACCOUNT_NAME = os.environ['AZURE_ACCOUNT_NAME']
+        AZURE_ACCOUNT_KEY = os.environ['AZURE_ACCOUNT_KEY']
+        AZURE_CONTAINER = os.environ['AZURE_CONTAINER']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
