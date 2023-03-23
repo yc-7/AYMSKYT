@@ -10,7 +10,8 @@ def generate_budget_list(user, categories):
 
     for category in categories:
         all_budgets.append(current_category_limit(category))
-    all_budgets.append(current_user_limit(user))
+    if user.budget is not None:
+        all_budgets.append(current_user_limit(user))
 
     return all_budgets
 
