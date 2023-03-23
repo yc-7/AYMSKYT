@@ -27,6 +27,7 @@
             </div>
         </div>
     </div> 
+    {% if not request.user.is_staff %}
 
     <div class ="float-end container" style="width:750px">
         <div class="card bg-light">
@@ -71,6 +72,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
     

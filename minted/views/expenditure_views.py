@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
+from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
 from .general_user_views.login_view_functions import *
@@ -40,7 +41,7 @@ class CategoryExpenditureListView(LoginRequiredMixin, ListView):
         context['category'] = self.category
         return context
 
-@login_required
+@staff_prohibited
 def delete_expenditure(request, expenditure_id):
     if request.method == 'POST':
         expenditure = Expenditure.objects.get(pk=expenditure_id)
@@ -52,7 +53,7 @@ def delete_expenditure(request, expenditure_id):
         return redirect('category_expenditures', category_name=category.name)
     return redirect('category_list')
 
-@login_required
+@staff_prohibited
 def edit_expenditure(request, category_name, expenditure_id):
     expenditure_exists = Expenditure.objects.filter(id=expenditure_id).count() != 0
     if not expenditure_exists:
@@ -85,12 +86,12 @@ def edit_expenditure(request, category_name, expenditure_id):
     return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })
 
 
-@login_required
+@staff_prohibited
 def add_expenditure(request, category_name):
     if Category.objects.filter(user=request.user, name=category_name).exists() == False:
         return redirect('create_category')
     if request.method == 'POST':
-        category = Category.objects.get(user=request.user, name=category_name) # Need to make sure there are no duplicate categories with same name
+        category = Category.objects.get(user=request.user, name=category_name)
         form = ExpenditureForm(request.POST)
         if request.POST.get("addExpenditure"):
             if form.is_valid():

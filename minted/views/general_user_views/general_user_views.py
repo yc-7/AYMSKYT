@@ -1,6 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import login, logout, update_session_auth_hash
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -10,11 +9,9 @@ from django.views.generic.edit import FormView, UpdateView
 from minted.forms import *
 from minted.models import *
 from django.contrib import messages
-from minted.decorators import login_prohibited
+from minted.decorators import login_prohibited, staff_prohibited
 from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.hashers import check_password
 from django.conf import settings
 from minted.decorators import login_prohibited
 from minted.mixins import LoginProhibitedMixin
@@ -71,13 +68,14 @@ def sign_up(request):
             user = form.save(spending)
             update_streak(user)
             login(request, user)
-            return redirect('dashboard')
+            redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
+            return redirect(redirect_url)
     else:
         form = SignUpForm()
         spending_form = SpendingLimitForm()
     return render(request, 'signup.html', {'form': form, 'spending_form': spending_form})
 
-@login_required
+@staff_prohibited
 def dashboard(request):
     return render(request,'dashboard.html')
 
@@ -110,18 +108,26 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         messages.add_message(self.request, messages.SUCCESS, 'Profile updated')
         return reverse('profile')
 
-@login_required
+@staff_prohibited
 def edit_spending_limit(request):
     if request.method == 'POST':
-        form = SpendingLimitForm(request.POST, instance=request.user.budget)
+        if request.user.budget is not None:
+            form = SpendingLimitForm(request.POST, instance=request.user.budget)
+        else:
+            form = SpendingLimitForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_spending = form.save()
+            request.user.budget = new_spending
+            request.user.save()
             messages.success(request, 'Your spending limits were successfully updated!')
             return redirect('profile')
         else:
             messages.error(request, 'Please correct the error below.')
     else:
-        form = SpendingLimitForm(instance= request.user.budget)
+        if request.user.budget is not None:
+            form = SpendingLimitForm(instance= request.user.budget)
+        else:
+            form = SpendingLimitForm()
     return render(request, 'edit_spending_limit.html', {'form': form})
 
 class PasswordView(LoginRequiredMixin, FormView):
