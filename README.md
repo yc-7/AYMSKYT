@@ -1,4 +1,4 @@
-Minted - Personal Spending Tracker
+# Minted - Personal Spending Tracker
 
 ## Deployed version of the application:
 The deployed version of the application can be found at **[Minted](https://minted-aymskyt.azurewebsites.net/)**
