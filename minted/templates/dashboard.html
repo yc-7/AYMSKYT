@@ -52,7 +52,7 @@
                                     <i class=" bi-calendar-month-fill" style="color:#d462a1"></i>
                                 </div>
                                 <h3 class="card-title mb-3" style="color:#602385;">
-                                    So far this month, you've spent:
+                                    So far this {{user.budget.get_timeframe_display}}, you've spent:
                                 </h3>
                                 <h2 class="card-title mb-3" style="color:#d462a1;">
                                     <div>
@@ -107,7 +107,7 @@
     <script>
         var spend_this_month_data = JSON.parse(document.getElementById('spendThisMonthData').textContent);
         
-        var colours = build_random_colours(1);
+        var colours = [(`rgba(${147}, ${56}, ${201}, 1)`)];
 
         var spend_this_month_config = create_bar_chart_config(spend_this_month_data.data, spend_this_month_data.labels, colours)
         
@@ -139,7 +139,7 @@
                     </div>
                 </div>
                 <div class="col-md">
-                    <a href="example.com" style=" text-decoration : none">
+                    <a href="{% url 'rewards' %}" style=" text-decoration : none">
                         <div class="card bg-light text-light">
                             <div class="card-body text-center">
                                 <div class="h1 mb-3">
@@ -173,6 +173,9 @@
             </div>
         </div>
     </section>
+    <div>
+        <a href="{% url 'help' %}">Need Help?</a>
+    </div>
 </body>
 
 {% endblock %}

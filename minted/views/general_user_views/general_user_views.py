@@ -61,6 +61,9 @@ def sign_up(request):
 @staff_prohibited
 def dashboard(request):
     return dashboard_analytics(request)
+
+def help_page(request):
+    return render(request, 'help_page.html')
       
 @login_required
 def profile(request):
