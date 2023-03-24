@@ -4,25 +4,19 @@ from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *
 from django.contrib import messages
-import random
+from minted.views.category_views.category_view_functions import *
 
 @staff_prohibited
 def create_category(request):
+    category_form = CategoryForm(user=request.user)
+    spending_form = SpendingLimitForm()
+
     if request.method == 'POST':
         category_form = CategoryForm(request.POST, user=request.user)
         spending_form = SpendingLimitForm(request.POST)
         if category_form.is_valid() and spending_form.is_valid():
-            spending = spending_form.save()
-            category = category_form.save(commit=False)
-            category.user = request.user
-            category.budget = spending
-            colour_value = request.POST.get('colour_value', "")
-            category.colour = colour_value
-            category.save()
+            create_category_from_forms(request.user, category_form, spending_form, request.POST.get('colour_value', ""))
             return redirect('category_list')           
-    else:
-        category_form = CategoryForm(user=request.user)
-        spending_form = SpendingLimitForm()
     return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
 
 @staff_prohibited
@@ -55,30 +49,25 @@ def edit_category(request, category_id):
         return redirect('create_category')
 
     category = Category.objects.get(id=category_id)
-    spending = SpendingLimit.objects.get(category=category)
+    spending_limit = SpendingLimit.objects.get(category=category)
 
     if request.user != category.user and not request.user.is_superuser:
         return redirect('category_list')
+
+    category_form = CategoryForm(instance=category)
+    spending_form = SpendingLimitForm(instance=spending_limit)
+    category_colour = ""
+    category = Category.objects.get(pk=category_id)
+    if category.colour:
+        category_colour = category.colour
 
     if request.method == 'POST':
         category_form = CategoryForm(instance=category, data=request.POST)
         spending_form = SpendingLimitForm(request.POST)
         if category_form.is_valid() and spending_form.is_valid():
             messages.add_message(request, messages.SUCCESS, "Category updated!")
-            new_spending = spending_form.save()
-            category = category_form.save(commit=False)
-            category.budget = new_spending
-            colour_value = request.POST.get('colour_value', "")
-            category.colour = colour_value
-            category.save()
-            spending.delete()
+            edit_category_from_forms(category_form, spending_form, spending_limit, request.POST.get('colour_value', ""))
             return redirect('category_list')
-    else:
-        category_form = CategoryForm(instance=category)
-        spending_form = SpendingLimitForm(instance=spending)
-
-        category_colour = ""
-        category = Category.objects.get(pk=category_id)
-        if category.colour:
-            category_colour = category.colour
-    return render(request, 'edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id, 'category_colour': category_colour})
+    
+    context = {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id, 'category_colour': category_colour}
+    return render(request, 'edit_category.html', context)
