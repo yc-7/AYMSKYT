@@ -14,19 +14,28 @@ def reward_streak_points(user):
     user.save()
 
 def update_streak(user):
+    
     if user.is_superuser:
         return
 
-    window_size=timedelta(days=1)
     last_login = user.streak_data.last_login_time
-    time_since_last_login = datetime.now(pytz.utc) - last_login
+    now = datetime.now(pytz.utc)
     reward_login_points(user)
+    
 
-    user_has_missed_day = last_login is None or time_since_last_login >= 2 * window_size
-    if user_has_missed_day:
+    days_since_last_login = (now - last_login).days
+
+    print("Now:", now)  # Add this line
+    print("Last login:", last_login)  # Add this line
+    print("Days since last login:", days_since_last_login)  # Add this line
+    
+    if days_since_last_login >= 2:
         user.streak_data.streak = 1
-    elif window_size <= time_since_last_login < 2 * window_size:
+        user.streak_data.last_login_time = now
+    
+    elif days_since_last_login == 1:
         user.streak_data.streak += 1
         reward_streak_points(user)
-
+        user.streak_data.last_login_time = now
+        
     user.streak_data.save()
