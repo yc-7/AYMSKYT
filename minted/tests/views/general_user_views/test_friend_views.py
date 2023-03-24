@@ -7,7 +7,9 @@ class FriendViewTest(TestCase):
     fixtures = [
         'minted/tests/fixtures/default_user.json',
         "minted/tests/fixtures/default_other_user.json",
-        "minted/tests/fixtures/default_spending_limit.json"
+        "minted/tests/fixtures/default_spending_limit.json",
+        "minted/tests/fixtures/default_notification_subscriptions.json",
+        "minted/tests/fixtures/default_subscriptions.json"
     ]
 
     def setUp(self):

@@ -6,6 +6,8 @@ def user_is_subscribed_to_friend_notifications(user):
     friend_subscription = Subscription.objects.get(name="Friend Requests")
 
     notification_subscription = user.notification_subscription
+    if not notification_subscription:
+        return False
     subscriptions = notification_subscription.subscriptions.all()
 
     if friend_subscription in subscriptions:
