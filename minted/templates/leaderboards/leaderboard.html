@@ -5,6 +5,14 @@
 {% block content %}
 <div class="container">
     <h1> Leaderboard </h1>
+    <div class = "btn-group" role = "group" aria-label = "Leaderboard options">
+      <a href = "{% url 'points_leaderboard' %}" class = "btn btn-secondary" role = "button" style = "margin-top: 0.5rem; margin-bottom: 0.5rem;">
+        Points
+      </a>
+      <a href = "{% url 'streaks_leaderboard' %}" class = "btn btn-secondary" role = "button" style = "margin-top: 0.5rem; margin-bottom: 0.5rem;">
+        Streaks
+      </a>
+    </div>
     <table class="table table-striped">
         <thead>
           <tr>
@@ -14,7 +22,7 @@
         </thead>
           <tr>
             <td style="text-align:center"> User </td>
-            <td style="text-align:center"> Streak </td>
+            <td style="text-align:center"> Streaks </td>
           </tr>
         {% for user in users %}
           <tr>
