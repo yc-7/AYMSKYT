@@ -19,10 +19,12 @@ from string import ascii_uppercase
 
 class Streak(models.Model):
         
-    last_login_time = models.DateTimeField(blank = True, null= True, auto_now = True)
+    last_login_time = models.DateTimeField(auto_now = True, null = True, blank = True)
     streak = models.IntegerField(
         default = 1, 
-        validators= [MinValueValidator(0),]
+        validators= [
+            MinValueValidator(0)
+        ]
     )
 
 class SpendingLimit(models.Model):
@@ -117,6 +119,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
     def get_expenditures(self):
         expenditures = Expenditure.objects.filter(category=self)

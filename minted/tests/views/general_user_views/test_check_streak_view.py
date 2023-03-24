@@ -15,9 +15,9 @@ class CheckStreakTestCase(TestCase):
    
     def setUp(self):
         self.user = User.objects.get(pk = 1)
+    
 
     def test_increase_streak(self):
-
         now = datetime.now(pytz.utc)
         window_start = now - timedelta(days=1)
         self.user.streak_data.last_login_time = window_start

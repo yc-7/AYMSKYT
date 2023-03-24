@@ -132,7 +132,7 @@ class ExpenditureForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        exclude = ['user', 'budget']
+        exclude = ['user', 'budget', 'colour']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
