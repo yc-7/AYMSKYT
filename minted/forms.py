@@ -145,7 +145,6 @@ class CategoryForm(forms.ModelForm):
     
 class FriendReqForm(forms.Form):
     email = forms.EmailField()
-    is_active = forms.HiddenInput
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())

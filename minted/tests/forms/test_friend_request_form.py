@@ -7,7 +7,6 @@ class FriendReqFormTest(TestCase):
     def setUp(self):
         self.form_input = {
             'email': 'john@hotmail.co.uk',
-            'is_active': 'True',
         }
 
     def test_form_has_necessary_fields(self):

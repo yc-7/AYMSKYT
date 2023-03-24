@@ -28,7 +28,6 @@ def friend_request(request):
             FriendRequest.objects.create(
                 from_user = from_user,
                 to_user = to_user,
-                is_active = True
             )
             if user_is_subscribed_to_friend_notifications(to_user):
                 send_friend_request_notification(from_user, to_user)
