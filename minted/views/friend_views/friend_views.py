@@ -2,10 +2,11 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from minted.forms import *
 from minted.models import *
-from .general_user_views.login_view_functions import *
+from ..general_user_views.login_view_functions import *
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from minted.notifications import send_push
+from minted.views.friend_views.friend_view_functions import *
 
 @login_required
 def friend_request(request):
@@ -32,12 +33,16 @@ def friend_request(request):
                 messages.add_message(request, messages.ERROR, "You cannot send a friend request to this user!")
                 return redirect('friend_request') 
             
-            user = User.objects.get(email = email)
+            to_user = User.objects.get(email = email)
             new_friend = FriendRequest.objects.create(
                 from_user = from_user,
-                to_user = user,
+                to_user = to_user,
                 is_active = True
             )
+            if user_is_subscribed_to_friend_notifications(recipient):
+                head = "You have received a friend request"
+                body = f"{from_user} has send you a friend request"
+                send_push(head, body, to_user.id)
         return redirect('profile') 
     
     return render(request, 'friend_request.html', {'form': form})
@@ -55,22 +60,16 @@ def accept_request(request, friend_request_id):
         from_user = friend_request.from_user
         to_user = friend_request.to_user
 
-        #add who sent the request to the recipient's friend list
-        to_user.friends.add(from_user)
-        #add the recipient to the sender's friend list
-        from_user.friends.add(to_user)
+        make_friends(from_user, to_user)
+
         friend_request.is_active = False
         friend_request.delete()
         messages.add_message(request, messages.SUCCESS, "Friend request accepted!")
 
-        friend_subscription = Subscription.objects.get(name="Friend Requests")
         if not to_user.notification_subscription:
             return redirect('request_list')
 
-        notification_subscription = to_user.notification_subscription
-        subscriptions = notification_subscription.subscriptions.all()
-
-        if friend_subscription in subscriptions:
+        if user_is_subscribed_to_friend_notifications(to_user):
             head = "Your friend request has been accepted!"
             body = f"You and {to_user.first_name} are now friends!"
             send_push(head, body, from_user.id)
