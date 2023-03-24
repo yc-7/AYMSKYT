@@ -1,0 +1,34 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <h1>Friend Requests</h1>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th style="text-align:center; width:auto"></th>
+            <th style="text-align:center; width:30%"></th>
+            <th style="text-align:center; width:30%"></th>
+          </tr>
+        </thead>
+        {% if requests %}
+          {% for request in requests %}
+            <tr class="clickable"><form action="{% url 'accept_request' request.id %}" method="post">
+              {% csrf_token %}
+                <td style="text-align:center">{{ request.from_user }}</td>
+                <td style="text-align:center"><input type="submit" value="Accept"  class="btn btn-primary"/></td>
+            </form>
+            <td><form action="{% url 'decline_request' request.id %}" method="post">
+              {% csrf_token %}
+              <td style="text-align:center"><input type="submit" value="Decline"  class="btn btn-primary"/></td>
+            </form>
+          </td>
+        </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+              <td colspan=4 style="text-align:left">You have no pending friend requests</td>
+          </tr>
+          {% endif %}
+      </table>
+</div>
+{% endblock %}

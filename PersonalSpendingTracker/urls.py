@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
 from django.urls import include, path
 from minted import views
@@ -23,6 +24,7 @@ from django.contrib.auth import views as auth_views
 from minted.forms import NewPasswordForm
 
 urlpatterns = [
+    path('admin', admin.site.index, name='admin'),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('log_in/', views.log_in, name='log_in'),
@@ -44,10 +46,25 @@ urlpatterns = [
     path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
     path('category_list/', views.category_list_view, name = 'category_list'),
+
+    path('friend_request/', views.friend_request, name='friend_request'),
+    path('friend_list/', views.friend_list_view, name='friend_list'),
+    path('request_list/', views.request_list_view, name='request_list'),
+    path('unfriend/<int:friend_id>', views.unfriend_view, name='unfriend'),
+    path('accept_request/<int:friend_request_id>', views.accept_request, name='accept_request'),
+    path('decline_request/<int:friend_request_id>', views.decline_request, name='decline_request'),
     
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('budget_list/', views.budget_list, name = 'budget_list'),
 
+    path('rewards/', views.rewards_homepage, name='rewards'),
+    path('rewards/<str:brand_name>/<str:reward_id>/', views.claim_reward, name='claim_reward'),
+    path('rewards/my_rewards/', views.my_rewards, name='my_rewards'),
+    path('rewards/<str:brand_name>/', views.filtered_rewards, name='filtered_rewards'),
+    path('rewards/add', views.add_rewards, name='add_rewards'),
+    path('rewards/admin', views.rewards_list, name='rewards_list'),
+    path('rewards/<int:reward_id>/edit', views.edit_rewards, name='edit_rewards'),
+    
     path('notification_subscription/create', views.create_notification_subscription, name='create_notification_subscription'),
     path('notification_subscription/edit', views.edit_notification_subscription, name='edit_notification_subscription'),
     
@@ -68,4 +85,6 @@ urlpatterns = [
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name="password_reset/password_reset_done.html"
     ), name="password_reset_complete"),
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

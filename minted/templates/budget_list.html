@@ -19,6 +19,7 @@
             <td style="text-align:center">Start date</td>
             <td style="text-align:center">End date</td>
           </tr>
+        {%if budget%}
         {% for spendings in budget %}
           <tr>
               <td style="text-align:center">{{ spendings.name }}</td>
@@ -33,6 +34,7 @@
               <td style="text-align:center">{{ spendings.end_date }}</td>
           </tr>
         {% endfor %}
+        {% endif %}
   </table>
 </div>
 {% endblock %}
