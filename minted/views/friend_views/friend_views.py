@@ -1,14 +1,13 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from minted.forms import *
-from minted.models import *
-from ..general_user_views.login_view_functions import *
+from minted.forms import FriendReqForm
+from minted.models import User
 from django.contrib import messages
 from minted.views.friend_views.friend_view_functions import *
 
 @login_required
 def friend_request(request):
-    form = FriendReqForm(initial={'from_user':request.user, 'is_active': True})
+    form = FriendReqForm(initial={'from_user':request.user})
     if request.method == 'POST':
         form = FriendReqForm(request.POST)
         if form.is_valid():
@@ -76,14 +75,14 @@ def decline_request(request, friend_request_id):
 def friend_list_view(request):
     current_user = request.user
     my_friends_list = current_user.friends.all()
-    context = {'user': current_user,'friends': my_friends_list}
+    context = {'friends': my_friends_list}
     return render(request, 'friend_list.html', context)
 
 @login_required
 def request_list_view(request):
     current_user = request.user
     friend_requests_sent_to_current_user = FriendRequest.objects.filter(to_user = current_user)
-    context = {'user': current_user,'requests': friend_requests_sent_to_current_user}
+    context = {'requests': friend_requests_sent_to_current_user}
     return render(request, 'request_list.html', context)
                 
 @login_required
