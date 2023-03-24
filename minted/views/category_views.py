@@ -16,8 +16,8 @@ def create_category(request):
             category = category_form.save(commit=False)
             category.user = request.user
             category.budget = spending
-            if not category.colour:
-                category.colour = '#' + '%06x' % random.randint(0, 0xFFFFFF)
+            colour_value = request.POST.get('colour_value', "")
+            category.colour = colour_value
             category.save()
             return redirect('category_list')           
     else:
@@ -68,10 +68,17 @@ def edit_category(request, category_id):
             new_spending = spending_form.save()
             category = category_form.save(commit=False)
             category.budget = new_spending
+            colour_value = request.POST.get('colour_value', "")
+            category.colour = colour_value
             category.save()
             spending.delete()
             return redirect('category_list')
     else:
         category_form = CategoryForm(instance=category)
         spending_form = SpendingLimitForm(instance=spending)
-    return render(request, 'edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id})
+
+        category_colour = ""
+        category = Category.objects.get(pk=category_id)
+        if category.colour:
+            category_colour = category.colour
+    return render(request, 'edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id, 'category_colour': category_colour})

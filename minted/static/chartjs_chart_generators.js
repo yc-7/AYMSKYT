@@ -1,4 +1,4 @@
-function create_bar_chart_config(data, labels, colours){
+function create_pie_chart_config(data, labels, colours){
     var pie_chart_config = {
       type: 'doughnut',
       data: {
