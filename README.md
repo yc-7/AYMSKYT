@@ -29,7 +29,7 @@ Set up environment variables:
 
 Make migrations:
 ```
-python3 manage.py makemigrations
+$ python3 manage.py makemigrations
 ```
 Migrate the database:
 ```
