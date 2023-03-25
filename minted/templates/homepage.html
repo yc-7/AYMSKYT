@@ -2,21 +2,18 @@
 {% block content %}
         <section class = "p-5 text-center">
             <div class="container">
-                <div class="d-sm-flex align-items-center justify-content-between">
+                <div class="d-sm-flex align-items-center justify-content-center">
                     <div>
-                        <h1 style = "font-size: 40px;">
+                        <h1 style = "font-size: 60px;">
                             <span style ="color: #47235e">It's time to get </span>
                             <span style = "color: #47235e; font-weight: 800;">minted</span>
                         </h1>
-                        <p class = "lead my-4" style="color: #47235e; font-size: 18px">
+                        <p class = "lead my-4" style="color: #47235e; font-size: 20px">
                             Want to get rewarded for <em>not</em> spending money?
                             Start tracking your finances with minted today!
                         </p>
                         <a class = "btn btn-lg custom-button" href="{% url 'sign_up' %}">Get Started</a>
                     </div>
-                    <p class = "lead my-4" style=" font-size: 18px">
-                        ~~~~~~~~~~~~~~~~~some image here~~~~~~~~~~~~~~~~~~
-                    </p>
                 </div>
             </div>              
         </section>
@@ -51,7 +48,7 @@
                                 Get notified when you go over your budgets.
                             </p>
                         </div>
-                    </div></div>
+                    </div>
                     <div class="col-md"><div class="card bg-light text-light">
                         <div class="card-body text-center">
                             <div class="h1 mb-3">
@@ -64,8 +61,11 @@
                                 See how good <em>(or bad)</em> your friends have been with their money this month.
                             </p>
                         </div>
-                    </div></div>
+                    </div>
                 </div>
             </div>
+            </div class="container-fluid">
+            
+            <div>
         </section>
 {% endblock %}
