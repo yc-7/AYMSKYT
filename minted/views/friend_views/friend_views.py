@@ -17,8 +17,8 @@ class NewFriendRequestView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         email = form.cleaned_data.get('email')
         from_user = self.request.user
-        recipient_does_not_exist = User.objects.filter(email=email).count() == 0
 
+        recipient_does_not_exist = User.objects.filter(email=email).count() == 0
         if recipient_does_not_exist:
             messages.add_message(self.request, messages.ERROR, "User does not exist")
             return redirect('friend_request')
@@ -38,12 +38,6 @@ class NewFriendRequestView(LoginRequiredMixin, FormView):
 
         messages.add_message(self.request, messages.SUCCESS, "Friend request sent!")
         return redirect('profile')
-
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def get_initial(self):
-        return {'from_user': self.request.user}
 
 class AcceptFriendRequestView(LoginRequiredMixin, View):
     """View that handles accepting friend requests"""
@@ -88,7 +82,6 @@ class DeclineFriendRequestView(LoginRequiredMixin, View):
         friend_request.delete()
         messages.add_message(request, messages.SUCCESS, "Friend request declined!")
         return redirect('request_list')
-
 
 class FriendsListView(LoginRequiredMixin, ListView):
     """View that displays a users friends"""
@@ -140,3 +133,4 @@ class UnfriendView(LoginRequiredMixin, View):
         request.user.friends.remove(user_to_unfriend)
         user_to_unfriend.friends.remove(request.user)
         return redirect('friend_list')
+    
