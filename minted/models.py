@@ -103,8 +103,6 @@ class User(AbstractUser):
 class FriendRequest(models.Model):
 	from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
 	to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
-	is_active = models.BooleanField(blank = False, null = False, default = True)
-
     
 class Category(models.Model):
     """Model for expenditure categories"""
