@@ -20,14 +20,23 @@ class LogInForm(forms.Form):
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
-class SignUpForm(forms.ModelForm):
+class SignUpForm1(forms.ModelForm):
     """Form to allow unregistered users to sign up"""
 
     class Meta:
         """Form options"""
 
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['email']
+
+class SignUpForm2(forms.ModelForm):
+    """Form to allow unregistered users to sign up"""
+
+    class Meta:
+        """Form options"""
+
+        model = User
+        fields = ['first_name', 'last_name']
 
     new_password = forms.CharField(
         label = 'Password',
@@ -39,7 +48,8 @@ class SignUpForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user_data = kwargs.pop('user_data', None)
-        super(SignUpForm, self).__init__(*args, **kwargs)
+        self.user_email = kwargs.pop('user_email', None)
+        super(SignUpForm2, self).__init__(*args, **kwargs)
 
     def clean(self):
         """Clean data and generate error messages"""
@@ -57,7 +67,7 @@ class SignUpForm(forms.ModelForm):
         return User.objects.create_user(
             first_name = self.user_data.get('first_name'),
             last_name = self.user_data.get('last_name'),
-            email = self.user_data.get('email'),
+            email = self.user_email.get('email'),
             password = self.user_data.get('new_password'),
             points = 10,
             is_staff = False,

@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from minted.decorators import login_required
 from minted.forms import NotificationSubscriptionForm
 
 @login_required

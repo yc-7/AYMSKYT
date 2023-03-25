@@ -8,7 +8,7 @@
                     {% csrf_token %}
                     {% include 'partials/bootstrap_form.html' with form=form %}
                     <br>
-                    <input type="submit" value="spending" class="btn btn-lg custom-button">
+                    <input type="submit" value="Continue" class="btn btn-lg custom-button">
                 </form>
                 <br>
                 <form action="{% url 'spending_signup' %}" method="post">

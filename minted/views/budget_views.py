@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from minted.decorators import login_required
 from ..models import *
 from django.contrib import messages
 from .budget_views_functions import *

@@ -1,11 +1,10 @@
 from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from allauth.socialaccount.models import SocialAccount
 from minted.forms import *
 from minted.models import *
 from django.contrib import messages
-from minted.decorators import login_prohibited, budget_required
+from minted.decorators import login_prohibited, login_required
 from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.contrib.auth import update_session_auth_hash
@@ -42,49 +41,65 @@ def home(request):
     return render(request, 'homepage.html')
 
 @login_prohibited
-def sign_up(request):
+def sign_up_part1(request):
+    part = 1
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = SignUpForm1(request.POST)
+        if form.is_valid():
+            request.session['user_email'] = form.cleaned_data
+            return redirect('sign_up_part2')
+    else:
+        form = SignUpForm1()
+    return render(request, 'account/signup.html', { 'form': form, 'part': part })
+
+@login_prohibited
+def sign_up_part2(request):
+    part = 2
+    if SocialAccount.objects.filter(user=request.user.id).exists():
+        return redirect('dashboard')
+    if request.session.get('user_email') == None:
+        return redirect('sign_up')
+    if request.method == 'POST':
+        form = SignUpForm2(request.POST)
+        if 'cancel' in request.POST:
+            return redirect('sign_up')
         if form.is_valid():
             request.session['user_data'] = form.cleaned_data
             return redirect('spending_signup')
     else:
-        form = SignUpForm()
-    return render(request, 'account/signup.html', { 'form': form })
+        form = SignUpForm2()
+    return render(request, 'account/signup.html', { 'form': form, 'part': part })
 
 @login_prohibited
 def spending_signup(request):
+    user_email = request.session.get('user_email')
     user_data = request.session.get('user_data')
-    print(user_data)
     if SocialAccount.objects.filter(user=request.user.id).exists() == False and user_data == None:
         return redirect('sign_up')
     if request.method == 'POST':
         form = SpendingLimitForm(request.POST)
         if 'cancel' in request.POST:
             if SocialAccount.objects.filter(user=request.user.id).exists():
-                User.objects.get(email=request.user.email).delete
+                User.objects.get(email=request.user.email).delete()
             return redirect('sign_up')
         else:
             if form.is_valid():
                 spending = form.save()
                 if SocialAccount.objects.filter(user=request.user.id).exists():
-                    print('created')
                     user = request.user
                     user.budget = spending
                     user.streak_data = Streak.objects.create()
                     user.save()
                     update_streak(user)
-                    login(request, user, backend='allauth.account.auth_backends.AuthenticationBackend')
                 else:
-                    user = SignUpForm(user_data=user_data).save(spending)
+                    user = SignUpForm2(user_data=user_data, user_email=user_email).save(spending)
                     update_streak(user)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
                 return redirect(redirect_url)
     else:
         form = SpendingLimitForm()
-    return render(request, 'account/spending_signup.html', { 'form': form, 'user_data': user_data })
-
+    return render(request, 'account/spending_signup.html', { 'form': form })
 
 
 @login_required
