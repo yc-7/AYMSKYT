@@ -122,7 +122,7 @@ class ExpenditureForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        exclude = ['user', 'budget']
+        exclude = ['user', 'budget', 'colour']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -135,7 +135,6 @@ class CategoryForm(forms.ModelForm):
     
 class FriendReqForm(forms.Form):
     email = forms.EmailField()
-    is_active = forms.HiddenInput
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())

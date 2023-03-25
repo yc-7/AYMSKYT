@@ -15,6 +15,8 @@ from pathlib import Path
 from django.contrib.messages import constants as message_constants
 from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv())
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY'] if 'DJANGO_SECRET_KEY' in os.environ else 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -50,7 +52,6 @@ INSTALLED_APPS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-load_dotenv(find_dotenv())
 
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
@@ -68,6 +69,7 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
+    ('0 0 * * *', 'minted.cron.give_budget_rewards'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [
@@ -129,6 +131,12 @@ if not DEBUG:
                 }
             }
         }
+    if 'AZURE_ACCOUNT_NAME' in os.environ:
+        DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+        AZURE_ACCOUNT_NAME = os.environ['AZURE_ACCOUNT_NAME']
+        AZURE_ACCOUNT_KEY = os.environ['AZURE_ACCOUNT_KEY']
+        AZURE_CONTAINER = os.environ['AZURE_CONTAINER']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -193,3 +201,5 @@ MESSAGE_TAGS={
 
 # User model for authentication and login purposes
 AUTH_USER_MODEL = 'minted.User'
+
+

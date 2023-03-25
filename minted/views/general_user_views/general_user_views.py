@@ -50,7 +50,6 @@ class LogInView(LoginProhibitedMixin, View):
 
 
 def log_out(request):
-    unsubscribe_user_from_push(request.user.id)
     logout(request)
     return redirect('home')
 
@@ -66,8 +65,9 @@ def sign_up(request):
         if form.is_valid() and spending_form.is_valid():
             spending = spending_form.save()
             user = form.save(spending)
-            update_streak(user)
             login(request, user)
+            update_streak(user)
+            reward_login_and_streak_points(user)
             redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(redirect_url)
     else:

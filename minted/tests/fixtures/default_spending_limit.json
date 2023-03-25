@@ -22,5 +22,14 @@
             "budget": "1000.00",
             "timeframe": "/year"
         }
+    },
+
+    {
+        "model": "minted.SpendingLimit",
+        "pk": 4,
+        "fields": {
+            "budget": "50.00",
+            "timeframe": "/month"
+        }
     }
 ]
