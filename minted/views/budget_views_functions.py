@@ -11,7 +11,7 @@ class Budget:
         self.spent = spent
         self.budget = budget
         self.ninty_percentage_of_budget = round(float(budget) * 0.9, 2)
-        self.spent_text = f"£{str(spent)} out of £{str(budget)} spent"
+        self.spent_text = f"£{str(round(spent, 2))} out of £{str(budget)} spent"
         self.start_date = start_date
         self.end_date = end_date
 
@@ -38,7 +38,7 @@ def total_spending_limits_of_user(user):
     return total_spending_limit(filtered_expenditures, budget, timeframe)
 
 def get_week_end_date(today):
-    return today - timedelta(days=today.isocalendar().weekday) + relativedelta(days =+ 7)
+    return today - timedelta(days=today.weekday()) + relativedelta(days =+ 6)
 
 def get_week_start_date(today):
     return get_week_end_date(today) - relativedelta(days =+ 6)

@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak
+from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import UserChangeForm
@@ -146,7 +146,20 @@ class ExpenditureForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        exclude = ['user', 'budget']
+        exclude = ['user', 'budget', 'colour']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if Category.objects.filter(user=self.user, name=self.cleaned_data.get('name')).exists():
+            self.add_error('name', 'You already have a category with this name.')
+    
+class FriendReqForm(forms.Form):
+    email = forms.EmailField()
+    is_active = forms.HiddenInput
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())
@@ -179,3 +192,12 @@ class NotificationSubscriptionForm(forms.ModelForm):
         widget = forms.CheckboxSelectMultiple,
         required = False
     )
+
+class RewardForm(forms.ModelForm):
+    class Meta:
+        model = Reward
+        exclude = ['reward_id']
+        widgets = {
+            'description': forms.Textarea(attrs = {'rows': 3})
+        }
+    expiry_date = forms.DateField(widget=DateInput())

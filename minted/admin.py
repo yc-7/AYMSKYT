@@ -30,10 +30,8 @@ class SpendingLimitAdmin(admin.ModelAdmin):
 class RewardAdmin(admin.ModelAdmin):
     readonly_fields = ['reward_id']
     list_display = [
-        'brand_name', 'points_required', 'expiry_date', 'description', 'cover_image'
+        'brand_name', 'points_required', 'expiry_date', 'description', 'cover_image', 'user_limit'
     ]
-
-
 
 @admin.register(Streak)
 class StreakAdmin(admin.ModelAdmin):

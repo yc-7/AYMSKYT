@@ -5,7 +5,8 @@
         "fields": {
             "user": 1 ,
             "name": "Entertainment",
-            "budget": "1"
+            "budget": "1",
+            "colour": "#FF0000"
         }
     }, 
 
@@ -15,7 +16,8 @@
         "fields": {
             "user": 1 ,
             "name": "Transportation",
-            "budget": "2"
+            "budget": "2",
+            "colour": "#008000"
         }
     },
 
@@ -25,7 +27,19 @@
         "fields": {
             "user": 2 ,
             "name": "Entertainment",
-            "budget": "3"
+            "budget": "3",
+            "colour": "#0000FF"
+        }
+    },
+
+    {
+        "model": "minted.Category",
+        "pk": 4,
+        "fields": {
+            "user": 3 ,
+            "name": "Other",
+            "budget": "4",
+            "colour": "#0000FF"
         }
     }
 ]
