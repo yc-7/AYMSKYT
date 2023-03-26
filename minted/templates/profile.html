@@ -54,8 +54,11 @@
                     <a onclick="registerSw()" class="btn btn-lg btn-info">
                         Refresh Subscription
                     </a>
+                    <form action="{% url 'delete_push_subscription' %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Delete Subscription" class="btn btn-lg btn-info">
+                    </form>
                     <a id="error-message"></a>
-
                 </div><br>
 
                 <div>

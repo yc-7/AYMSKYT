@@ -67,6 +67,7 @@ urlpatterns = [
     
     path('notification_subscription/create', views.NotificationSubscriptionCreateView.as_view(), name='create_notification_subscription'),
     path('notification_subscription/edit', views.NotificationSubscriptionUpdateView.as_view(), name='edit_notification_subscription'),
+    path('push_subscription/delete', views.PushSubscriptionDeleteView.as_view(), name='delete_push_subscription'),
     
     path('webpush/', include('webpush.urls')),
     path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript')),
