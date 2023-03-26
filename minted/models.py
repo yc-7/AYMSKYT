@@ -91,7 +91,7 @@ class User(AbstractUser):
         return  self.first_name+" "+self.last_name
 
     def get_categories(self):
-        categories = Category.objects.filter(user = self)
+        categories = Category.objects.filter(user = self).order_by('name')
         return categories
 
     def get_expenditures(self):

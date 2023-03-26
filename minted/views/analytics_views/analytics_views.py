@@ -25,7 +25,7 @@ def view_analytics(request):
             end_date = form.cleaned_data.get('end_date')
             time_interval = form.cleaned_data.get('time_interval')
     
-    categories = Category.objects.filter(user = request.user)
+    categories = request.user.get_categories()
     if not categories:
         return render(request, 'analytics.html', {'form': form})
 
