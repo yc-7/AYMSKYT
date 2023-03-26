@@ -38,6 +38,7 @@ class CreateNotificationSubscriptionViewTestCase(TestCase):
         redirect_url = reverse('profile')
 
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'profile.html')
 
     def test_notification_subscription_redirects_to_edit_if_user_has_subscription(self):
         notification_subscription = NotificationSubscription.objects.get(pk=1)
@@ -50,4 +51,5 @@ class CreateNotificationSubscriptionViewTestCase(TestCase):
         redirect_url = reverse('edit_notification_subscription')
 
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'notification_subscriptions/edit_notification_subscription.html')
         

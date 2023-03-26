@@ -1,16 +1,14 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from minted.decorators import staff_prohibited
-from minted.forms import *
-from minted.models import *
-from minted.views.general_user_views.login_view_functions import *
-from minted.mixins import AdminProhitbitedMixin
+from minted.models import Category, SpendingLimit
+from minted.forms import CategoryForm, SpendingLimitForm
+from minted.mixins import AdminProhibitedMixin
 from minted.views.category_views.category_view_functions import *
 
-class CategoryListView(LoginRequiredMixin, AdminProhitbitedMixin, ListView):
+class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     """View that displays a user's categories"""
 
     model = Category

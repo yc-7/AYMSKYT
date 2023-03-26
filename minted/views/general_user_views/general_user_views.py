@@ -92,7 +92,6 @@ def profile(request):
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """"View that handles updating a logged-in user's profile"""
 
-    model = EditProfileForm
     template_name = 'edit_profile.html'
     form_class = EditProfileForm
 

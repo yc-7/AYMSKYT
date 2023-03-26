@@ -27,7 +27,7 @@ class LoginProhibitedMixin():
         else:
             return settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_USER
         
-class AdminProhitbitedMixin():
+class AdminProhibitedMixin():
     """Mixin that redirects when the user is an admin"""
 
     def dispatch(self, *args, **kwargs):

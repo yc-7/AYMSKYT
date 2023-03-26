@@ -1,6 +1,5 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from minted.decorators import staff_prohibited
 from minted.forms import *

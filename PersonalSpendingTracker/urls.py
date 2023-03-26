@@ -65,8 +65,8 @@ urlpatterns = [
     path('rewards/admin', views.rewards_list, name='rewards_list'),
     path('rewards/<int:reward_id>/edit', views.edit_rewards, name='edit_rewards'),
     
-    path('notification_subscription/create', views.create_notification_subscription, name='create_notification_subscription'),
-    path('notification_subscription/edit', views.edit_notification_subscription, name='edit_notification_subscription'),
+    path('notification_subscription/create', views.NotificationSubscriptionCreateView.as_view(), name='create_notification_subscription'),
+    path('notification_subscription/edit', views.NotificationSubscriptionUpdateView.as_view(), name='edit_notification_subscription'),
     
     path('webpush/', include('webpush.urls')),
     path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript')),
