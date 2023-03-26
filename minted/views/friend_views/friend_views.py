@@ -1,43 +1,45 @@
-from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
-from minted.forms import FriendReqForm
-from minted.models import User
+from django.urls import reverse
 from django.contrib import messages
-from minted.views.friend_views.friend_view_functions import *
+from django.shortcuts import redirect, get_object_or_404
+from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import FormView
-from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from minted.forms import FriendReqForm
+from minted.models import User
+from minted.views.friend_views.friend_view_functions import *
 
 class NewFriendRequestView(LoginRequiredMixin, FormView):
+    """View that handles sending friend requests"""
+
     form_class = FriendReqForm
     template_name = 'friend_request.html'
 
+    def get_form_kwargs(self, **kwargs):
+        """Pass the current user to the friend request form"""
+
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
     def form_valid(self, form):
+        """Handle valid form by making friend request"""
+
         email = form.cleaned_data.get('email')
         from_user = self.request.user
+        to_user = User.objects.get(email = email)
+        form.save()
 
-        recipient_does_not_exist = User.objects.filter(email=email).count() == 0
-        if recipient_does_not_exist:
-            messages.add_message(self.request, messages.ERROR, "User does not exist")
-            return redirect('friend_request')
-
-        to_user = User.objects.get(email=email)
-
-        if not can_send_friend_request(from_user, to_user):
-            messages.add_message(self.request, messages.ERROR, "You cannot send a friend request to this user!")
-            return redirect('friend_request')
-
-        FriendRequest.objects.create(
-            from_user=from_user,
-            to_user=to_user,
-        )
         if user_is_subscribed_to_friend_notifications(to_user):
             send_friend_request_notification(from_user, to_user)
 
         messages.add_message(self.request, messages.SUCCESS, "Friend request sent!")
-        return redirect('profile')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        """Return the redirect URL after successful friend request"""
+
+        return reverse('friend_request')
 
 class AcceptFriendRequestView(LoginRequiredMixin, View):
     """View that handles accepting friend requests"""

@@ -26,7 +26,7 @@ class FriendViewTest(TestCase):
         )
         created_request = FriendRequest.objects.create(
                 from_user = self.user,
-                to_user = self.other_user,
+                to_user = self.other_user
         )
 
 
@@ -37,18 +37,17 @@ class FriendViewTest(TestCase):
         self.client.login(email=self.user.email, password="Password123")
         self.form_input['email'] = 'bademail@bad.com'
         url = reverse('friend_request')
-        response_url = reverse('friend_request')
         response = self.client.post(url, self.form_input, follow=True)
-        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'friend_request.html')
         
     def test_successful_friend_request(self):
         self.client.login(email=self.user.email, password="Password123")
         url = reverse('friend_request')
-        response_url = reverse('profile')
+        response_url = reverse('friend_request')
         response = self.client.post(url, self.form_input, follow=True)
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'profile.html')
+        self.assertTemplateUsed(response, 'friend_request.html')
         
     def test_successful_decline(self):
         self.client.login(email=self.user.email, password="Password123")

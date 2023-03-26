@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward
+from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward, FriendRequest
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth import authenticate
@@ -134,7 +134,45 @@ class CategoryForm(forms.ModelForm):
             self.add_error('name', 'You already have a category with this name.')
     
 class FriendReqForm(forms.Form):
+    """Form to send friend requests to another user"""
+
     email = forms.EmailField()
+
+    def __init__(self, user = None, **kwargs):
+        """Construct a new form instance with a user instance"""
+
+        super().__init__(**kwargs)
+        self.user = user
+
+    def clean(self):
+        """Clean the data and generate messages for any errors"""
+
+        super().clean()
+        email = self.cleaned_data.get('email')
+
+        if (User.objects.filter(email = email).count() == 0):
+            self.add_error('email', 'This user does not exist')
+        elif self.user is not None:
+            self.to_user = User.objects.get(email = email)
+
+            if (self.user == self.to_user):
+                self.add_error('email', 'You cannot send a friend request to yourself :/')
+
+            if (FriendRequest.objects.filter(from_user = self.to_user, to_user = self.user).count() != 0):
+                self.add_error('email', 'This person has already sent you a friend request!')
+
+            if (FriendRequest.objects.filter(from_user = self.user, to_user = self.to_user).count() != 0):
+                self.add_error('email', 'You have already sent a friend request to this person')
+
+    def save(self):
+        """Create a friend request"""
+
+        if self.user is not None:
+            friend_request = FriendRequest.objects.create(
+                from_user = self.user,
+                to_user = self.to_user,
+            )
+        return friend_request
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())

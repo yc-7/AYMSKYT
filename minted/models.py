@@ -100,8 +100,10 @@ class User(AbstractUser):
 
 
 class FriendRequest(models.Model):
-	from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
-	to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
+    """Model for friend requests"""
+    
+    from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
+    to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
     
 class Category(models.Model):
     """Model for expenditure categories"""
