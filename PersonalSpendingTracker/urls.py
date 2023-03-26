@@ -23,18 +23,19 @@ from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 from minted.forms import NewPasswordForm
 
+
 urlpatterns = [
     path('admin', admin.site.index, name='admin'),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    
+
     path('accounts/', include('allauth.urls')),
-    
-    path("accounts/signup/", views.sign_up_part1, name='sign_up'),
+    path('accounts/signup/', views.sign_up_part1, name='sign_up'),
+
     path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up_part1, name='sign_up'),
-    path('sign_up/account_details', views.sign_up_part2, name='sign_up_part2'),
+    path('sign_up/account_details/', views.sign_up_part2, name='sign_up_part2'),
     path('sign_up/spending/', views.spending_signup, name='spending_signup'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/edit/profile', views.edit_profile, name='edit_profile'),

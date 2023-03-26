@@ -29,4 +29,4 @@ class LogInProhibitedDecoratorTestCase(TestCase):
     def test_login_prohibited_does_not_redirect_not_logged_in_user(self):
         response = self.client.get(reverse('log_in'), follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'login.html')
+        self.assertTemplateUsed(response, 'account/login.html')

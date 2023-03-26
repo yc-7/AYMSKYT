@@ -157,6 +157,9 @@ def edit_spending_limit(request):
 @login_required
 def change_password(request):
     current_user = request.user
+    if SocialAccount.objects.filter(user=current_user.id).exists():
+        messages.add_message(request, messages.ERROR, 'You are signed in with a Google Account')
+        return redirect('profile')
     if request.method == 'POST':
         form = PasswordForm(data=request.POST)
         if form.is_valid():
