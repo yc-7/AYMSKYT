@@ -9,6 +9,7 @@ from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
+import datetime
 from django.conf import settings
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 
@@ -23,7 +24,9 @@ def log_in(request):
             if user:
                 login(request, user)
                 update_streak(user)
-                redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
+                reward_login_and_streak_points(user)
+                # redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
+                redirect_url = get_redirect_url_for_user(user)
                 return redirect(redirect_url)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
     form = LogInForm()
@@ -32,7 +35,6 @@ def log_in(request):
 
 
 def log_out(request):
-    unsubscribe_user_from_push(request.user.id)
     logout(request)
     return redirect('home')
 
@@ -48,8 +50,9 @@ def sign_up(request):
         if form.is_valid() and spending_form.is_valid():
             spending = spending_form.save()
             user = form.save(spending)
-            update_streak(user)
             login(request, user)
+            update_streak(user)
+            reward_login_and_streak_points(user)
             redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(redirect_url)
     else:

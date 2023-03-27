@@ -69,6 +69,7 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
+    ('0 0 * * *', 'minted.cron.give_budget_rewards'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [
@@ -200,3 +201,5 @@ MESSAGE_TAGS={
 
 # User model for authentication and login purposes
 AUTH_USER_MODEL = 'minted.User'
+
+

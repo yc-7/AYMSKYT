@@ -7,15 +7,15 @@ class FriendViewTest(TestCase):
     fixtures = [
         'minted/tests/fixtures/default_user.json',
         "minted/tests/fixtures/default_other_user.json",
-        "minted/tests/fixtures/default_spending_limit.json"
+        "minted/tests/fixtures/default_spending_limit.json",
+        "minted/tests/fixtures/default_notification_subscriptions.json",
+        "minted/tests/fixtures/default_subscriptions.json"
     ]
 
     def setUp(self):
         self.friend_request_id = 1
         self.form_input = {
-            'email': 'janedoe@example.org',
-            'is_active': 'True',
-            
+            'email': 'janedoe@example.org',       
         }
         self.user = User.objects.get(pk = 1)
         self.other_user = User.objects.create (
@@ -23,12 +23,11 @@ class FriendViewTest(TestCase):
             last_name = 'Hendricks',
             email = 'ross@example.org',
             points = 5
-            )
+        )
         created_request = FriendRequest.objects.create(
                 from_user = self.user,
                 to_user = self.other_user,
-                is_active = True
-            )
+        )
 
 
     def test_friend_request_url(self):

@@ -1,6 +1,9 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Edit Category
+{% endblock %}
 {% block content %}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.5.1/jscolor.min.js"></script> 
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-md-6 offset-md-3">
@@ -10,10 +13,15 @@
                 {% csrf_token %}
                 {% include 'partials/bootstrap_form.html' with form=category_form %}
                 {% include 'partials/bootstrap_form.html' with form=spending_form %}
+                <input type="hidden" name="colour_value" value={{category_colour}}>
+                <p>
+                    <button data-jscolor="{valueElement:'input[name=colour_value]', defaultValue:'{{category_colour}}'}">
+                        Pick color
+                    </button>
+                <p>
                 <input type="submit" value="Edit Category" class="btn btn-primary">
             </form>
         </div>
     </div>
 </div>
-
 {% endblock %}

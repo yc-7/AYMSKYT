@@ -14,7 +14,7 @@ class DeleteCategoryViewTest(TestCase):
     ]
 
     def setUp(self):
-        self.category_id = 3
+        self.category_id = 1
         self.url = reverse('delete_category', kwargs={'category_id': self.category_id})
         self.user = User.objects.get(pk = 1)
 

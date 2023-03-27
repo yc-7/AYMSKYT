@@ -42,11 +42,10 @@ class CreateCategoryViewTest(TestCase):
     def test_unsuccessful_creation(self):
         self.client.login(email=self.user.email, password="Password123")
         self.form_input['budget'] = 'invalidbudget' 
-        category_count = len(Category.objects.all())
-        self.assertEqual(category_count, 3)
+        category_start_count = len(Category.objects.all())
         response = self.client.post(self.url, self.form_input, follow=True)
-        category_count = len(Category.objects.all())
-        self.assertEqual(category_count, 3)
+        category_end_count = len(Category.objects.all())
+        self.assertEqual(category_start_count, category_end_count)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create_category.html')
     
