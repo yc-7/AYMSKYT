@@ -4,7 +4,6 @@
     <div class="container">
         <div class="row g-2">
             <div class="col-sm-12 col-md-6 offset-md-3">
-                {% if part == 1 %}
                 <div class="h1 mb-5" style="font-weight: 800;">Sign Up</div>
                 <form action="{% url 'sign_up' %}" method="post">
                     {% csrf_token %}
@@ -17,20 +16,6 @@
                     {% csrf_token %}
                     <button class="btn btn-lg custom-button" type="submit">Continue with Google</button>
                 </form>
-                {% else %}
-                <div class="h1 mb-5" style="font-weight: 800;">Create Your Account</div>
-                <form action="{% url 'sign_up_part2' %}" method="post">
-                    {% csrf_token %}
-                    {% include 'partials/bootstrap_form.html' with form=form %}
-                    <br>
-                    <input type="submit" value="Continue" class="btn btn-lg custom-button">
-                </form>
-                <hr>
-                <form action="{% url 'sign_up_part2' %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-lg custom-button" type="submit" name="cancel">Cancel</button>
-                </form>
-                {% endif %}
             </div>
         </div>
     </div>

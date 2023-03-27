@@ -43,38 +43,18 @@ def home(request):
     return render(request, 'homepage.html')
 
 @login_prohibited
-def sign_up_part1(request):
-    part = 1
+def sign_up(request):
     if request.method == 'POST':
-        form = SignUpForm1(request.POST)
-        if form.is_valid():
-            request.session['user_email'] = form.cleaned_data
-            return redirect('sign_up_part2')
-    else:
-        form = SignUpForm1()
-    return render(request, 'account/signup.html', { 'form': form, 'part': part })
-
-@login_prohibited
-def sign_up_part2(request):
-    part = 2
-    if SocialAccount.objects.filter(user=request.user.id).exists():
-        return redirect('dashboard')
-    if request.session.get('user_email') == None:
-        return redirect('sign_up')
-    if request.method == 'POST':
-        form = SignUpForm2(request.POST)
-        if 'cancel' in request.POST:
-            return redirect('sign_up')
+        form = SignUpForm(request.POST)
         if form.is_valid():
             request.session['user_data'] = form.cleaned_data
             return redirect('spending_signup')
     else:
-        form = SignUpForm2()
-    return render(request, 'account/signup.html', { 'form': form, 'part': part })
+        form = SignUpForm()
+    return render(request, 'account/signup.html', { 'form': form })
 
 @login_prohibited
 def spending_signup(request):
-    user_email = request.session.get('user_email')
     user_data = request.session.get('user_data')
     if SocialAccount.objects.filter(user=request.user.id).exists() == False and user_data == None:
         return redirect('sign_up')
@@ -94,7 +74,7 @@ def spending_signup(request):
                     user.save()
                     update_streak(user)
                 else:
-                    user = SignUpForm2(user_data=user_data, user_email=user_email).save(spending)
+                    user = SignUpForm(user_data=user_data).save(spending)
                     update_streak(user)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
@@ -102,7 +82,6 @@ def spending_signup(request):
     else:
         form = SpendingLimitForm()
     return render(request, 'account/spending_signup.html', { 'form': form })
-
 
 @staff_prohibited
 def dashboard(request):

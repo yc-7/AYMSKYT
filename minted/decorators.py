@@ -20,7 +20,7 @@ def login_prohibited(view_function):
 def login_required(view_function):
     def modified_view_function(request, *args, **kw):
         if request.user.is_authenticated:
-            if request.user.budget == None:
+            if request.user.budget == None and request.user.is_staff == False:
                 return redirect(settings.LOGIN_REDIRECT_URL)
         return view_function(request, *args, **kw)
     return decorators.login_required(modified_view_function)

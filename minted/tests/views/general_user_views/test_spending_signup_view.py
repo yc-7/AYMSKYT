@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from minted.models import User, SpendingLimit
-from minted.forms import SpendingLimitForm, SignUpForm1, SignUpForm2
+from minted.forms import SpendingLimitForm
 
 class SpendingSignupViewTestCase(TestCase):
     """Tests of the sign up view."""
@@ -25,10 +25,10 @@ class SpendingSignupViewTestCase(TestCase):
 
     def test_get_spending_signup(self):
         session = self.client.session
-        session['user_email'] = 'janedoe@example.org'
         session['user_data'] = {
             'first_name': 'Jane',
             'last_name': 'Doe',
+            'email': 'janedoe@example.org',
             'new_password': 'Password123',
             'password_confirmation': 'Password123'
         }
@@ -40,19 +40,28 @@ class SpendingSignupViewTestCase(TestCase):
         self.assertTrue(isinstance(form, SpendingLimitForm))
         self.assertFalse(form.is_bound)
     
-    def test_get_spending_sign_up_redirects_when_logged_in(self):
+    def test_get_spending_signup_redirects_when_logged_in(self):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url, follow=True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'dashboard.html')
+    
+    def test_spending_signup_redirects_with_no_user_data(self):
+        session = self.client.session
+        session['user_data'] = None
+        session.save()
+        response = self.client.get(self.url, follow=True)
+        redirect_url = reverse('sign_up')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'account/signup.html')
 
     def test_unsuccessful_sign_up(self):
         session = self.client.session
-        session['user_email'] = { 'email': 'janedoe@example.org' }
         session['user_data'] = {
             'first_name': 'Jane',
             'last_name': 'Doe',
+            'email': 'janedoe@example.org',
             'new_password': 'Password123',
             'password_confirmation': 'Password123'
         }
@@ -70,10 +79,10 @@ class SpendingSignupViewTestCase(TestCase):
 
     def test_successful_sign_up(self):
         session = self.client.session
-        session['user_email'] = { 'email': 'janedoe@example.org' }
         session['user_data'] = {
             'first_name': 'Jane',
             'last_name': 'Doe',
+            'email': 'janedoe@example.org',
             'new_password': 'Password123',
             'password_confirmation': 'Password123'
         }

@@ -70,7 +70,7 @@ ACCOUNT_CHOICE_SESSION_KEY = None
 LOGIN_REDIRECT_URL = 'spending_signup'
 LOGOUT_REDIRECT_URL = '/'
 
-ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm1'}
+ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm'}
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
