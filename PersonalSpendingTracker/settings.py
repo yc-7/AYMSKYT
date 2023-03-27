@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY'] if 'DJANGO_SECRET_KEY' in os.environ else 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minted-aymskyt.azurewebsites.net']
 CSRF_TRUSTED_ORIGINS = ['https://minted-aymskyt.azurewebsites.net']
@@ -69,6 +69,7 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
+    ('0 0 * * *', 'minted.cron.give_budget_rewards'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [
@@ -200,3 +201,5 @@ MESSAGE_TAGS={
 
 # User model for authentication and login purposes
 AUTH_USER_MODEL = 'minted.User'
+
+

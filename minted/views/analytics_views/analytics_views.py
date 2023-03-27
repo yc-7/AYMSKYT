@@ -28,15 +28,15 @@ def view_analytics(request):
             time_interval = form.cleaned_data.get('time_interval')
     
     categories = Category.objects.filter(user = request.user)
-    
     if not categories:
         return render(request, 'analytics.html', {'form': form})
 
-    category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date,float(budget))
+    colours = [category.colour for category in categories]
+    category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date, float(budget))
     category_line_chart_data = generate_category_line_chart_dataset(categories, start_date, end_date, time_interval)
     all_spending_line_chart_data = generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval)
     
-    return render(request, 'analytics.html', {'form': form, 'category_pie_chart_data': category_pie_chart_data, 'category_line_chart_data': category_line_chart_data, 'all_spending_line_chart_data': all_spending_line_chart_data})
+    return render(request, 'analytics.html', {'form': form, 'category_pie_chart_data': category_pie_chart_data, 'category_line_chart_data': category_line_chart_data, 'all_spending_line_chart_data': all_spending_line_chart_data, 'colours': colours})
 
 def dashboard_analytics(request):
     now = datetime.date.today()
@@ -56,4 +56,6 @@ def dashboard_analytics(request):
     spend_this_month_data = generate_all_spending_pie_chart_dataset(categories, start_date, end_date, float(budget))
     
     return render(request, 'dashboard.html', {'spend_this_month_data': spend_this_month_data})
+
+
 

@@ -1,9 +1,11 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Dashboard
+{% endblock %}
 {% block content %}
 {% load static %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="{% static 'random_colour_generator.js' %}"></script>
 <script src="{% static 'chartjs_chart_generators.js' %}"></script>
 
 
@@ -109,7 +111,7 @@
         
         var colours = [(`rgba(${147}, ${56}, ${201}, 1)`)];
 
-        var spend_this_month_config = create_bar_chart_config(spend_this_month_data.data, spend_this_month_data.labels, colours)
+        var spend_this_month_config = create_pie_chart_config(spend_this_month_data.data, spend_this_month_data.labels, colours)
         
 
         window.onload = function() {
@@ -177,5 +179,4 @@
         <a href="{% url 'help' %}">Need Help?</a>
     </div>
 </body>
-
 {% endblock %}

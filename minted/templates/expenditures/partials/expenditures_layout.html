@@ -1,18 +1,18 @@
 <tr>
-    <td>{{ expenditure.title }}</td>
-    <td>{{ expenditure.date }}</td>
-    <td>{{ expenditure.amount }}</td>
-    <td style="text-align:right">
-        <div class="btn-group" role="group">
-            <a type="button" class="btn btn-light" href="{% url 'edit_expenditure' expenditure.category.name expenditure.id %}">
-                <i class="bi bi-pencil text-info"></i>
+    <td style = "width:40%"> {{ expenditure.title }} </td>
+    <td style = "width:20%"> £{{ expenditure.amount }} </td>
+    <td style = "width:30%"> {{ expenditure.date }} </td>
+    <td style = "text-align:right">
+        <div class = "btn-group" role = "group">
+            <a type = "button" class = "btn btn-light" href = "{% url 'edit_expenditure' expenditure.category.name expenditure.id %}">
+                <i class = "bi bi-pencil text-info"></i>
             </a>
-            <form action="{% url 'delete_expenditure' expenditure.id %}" method="post">
+            <form action = "{% url 'delete_expenditure' expenditure.id %}" method = "post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-light">
-                    <i class="bi bi-trash text-danger"></i>
+                <button type = "submit" class = "btn btn-light">
+                    <i class = "bi bi-trash text-danger"></i>
                 </button>
             </form>
         </div>
     </td>
-</tr>
+</tr> 
