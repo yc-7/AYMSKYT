@@ -13,7 +13,7 @@
         "pk": 2,
         "fields": {
             "budget": "100.00",
-            "timeframe": "/week"
+            "timeframe": "/quarter"
         }
     },
 
@@ -23,6 +23,15 @@
         "fields": {
             "budget": "1000.00",
             "timeframe": "/year"
+        }
+    },
+
+    {
+        "model": "minted.SpendingLimit",
+        "pk": 4,
+        "fields": {
+            "budget": "50.00",
+            "timeframe": "/month"
         }
     }
 ]

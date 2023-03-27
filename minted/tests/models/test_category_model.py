@@ -8,6 +8,7 @@ class CategoryModelTestCase(TestCase):
     fixtures = [
         "minted/tests/fixtures/default_user.json",
         "minted/tests/fixtures/default_other_user.json",
+        "minted/tests/fixtures/default_third_user.json",
         "minted/tests/fixtures/default_categories.json",
         "minted/tests/fixtures/default_spending_limit.json"
     ]
@@ -49,6 +50,7 @@ class CategoryModelTestCase(TestCase):
     def test_category_must_have_user(self):
         self.category.user = None
         self._assert_category_is_invalid()
+
 
     def _assert_category_is_valid(self):
         try:
