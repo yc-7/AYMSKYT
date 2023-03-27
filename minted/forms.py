@@ -58,16 +58,28 @@ class EditProfileForm(UserChangeForm):
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-class PasswordForm(NewPasswordMixin):
-    """Form enabling users to change their password"""
-
-    password = forms.CharField(label = 'Current password', widget = forms.PasswordInput())
+class NewPasswordForm(NewPasswordMixin):
+    """Form for password resets through email link"""
 
     def __init__(self, user = None, **kwargs):
         """Construct a new form instance with a user instance"""
 
         super().__init__(**kwargs)
         self.user = user
+
+    def save(self):
+        """Save the user's new password"""
+
+        new_password = self.cleaned_data['new_password']
+        if self.user is not None:
+            self.user.set_password(new_password)
+            self.user.save()
+        return self.user
+
+class PasswordForm(NewPasswordForm):
+    """Form enabling users to change their password"""
+
+    password = forms.CharField(label = 'Current password', widget = forms.PasswordInput())
 
     def clean(self):
         """Clean the data and generate messages for any errors"""
@@ -80,35 +92,6 @@ class PasswordForm(NewPasswordMixin):
             user = None
         if user is None:
             self.add_error('password', 'Password is invalid')
-
-    def save(self):
-        """Save the user's new password"""
-
-        new_password = self.cleaned_data['new_password']
-        if self.user is not None:
-            self.user.set_password(new_password)
-            self.user.save()
-        return self.user
-
-class NewPasswordForm(NewPasswordMixin):
-    """Form for password resets"""
-    def __init__(self, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.user = user
-        self.fields['new_password'] = forms.CharField(
-            label='Password',
-            widget=forms.PasswordInput(),
-            validators=[PASSWORD_REGEX_VALIDATOR]
-        )
-        self.fields['password_confirmation'] = forms.CharField(
-            label='Password confirmation',
-            widget=forms.PasswordInput()
-        )
-
-    def save(self):
-        new_password = self.cleaned_data.get('new_password')
-        self.user.set_password(new_password)
-        self.user.save()
 
 class ExpenditureForm(forms.ModelForm):
     class Meta:
