@@ -1,4 +1,3 @@
-
 from minted.models import FriendRequest, Subscription
 from minted.notifications import send_push
 
@@ -17,7 +16,6 @@ def user_is_subscribed_to_friend_notifications(user):
 
 def make_friends(user1, user2):
     user1.friends.add(user2)
-    user2.friends.add(user1)
 
 def send_friend_request_notification(from_user, to_user):
     head = "You have received a friend request"
