@@ -28,8 +28,9 @@ class SignUpPart2ViewTestCase(TestCase):
     def test_get_sign_up_part_2(self):
         session = self.client.session
         session['user_email'] = 'janedoe@example.org'
+        session.save()
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'account/signup.html')
         form = response.context['form']
         part = response.context['part']
@@ -40,12 +41,16 @@ class SignUpPart2ViewTestCase(TestCase):
     def test_get_sign_up_part_2_redirects_with_no_email_data(self):
         session = self.client.session
         session['user_email'] = None
+        session.save()
         response = self.client.get(self.url)
         redirect_url = reverse('sign_up')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
     
     def test_get_sign_up_part_2_redirects_with_valid_data(self):
+        session = self.client.session
+        session['user_email'] = 'janedoe@example.org'
+        session.save()
         response = self.client.post(self.url, {**self.form_input}, follow = True)
         response_url = reverse('spending_signup')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'account/signup.html')
+        self.assertTemplateUsed(response, 'account/spending_signup.html')

@@ -24,6 +24,15 @@ class SpendingSignupViewTestCase(TestCase):
         self.assertEqual(self.url,'/sign_up/spending/')
 
     def test_get_spending_signup(self):
+        session = self.client.session
+        session['user_email'] = 'janedoe@example.org'
+        session['user_data'] = {
+            'first_name': 'Jane',
+            'last_name': 'Doe',
+            'new_password': 'Password123',
+            'password_confirmation': 'Password123'
+        }
+        session.save()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'account/spending_signup.html')
@@ -39,6 +48,15 @@ class SpendingSignupViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'dashboard.html')
 
     def test_unsuccessful_sign_up(self):
+        session = self.client.session
+        session['user_email'] = { 'email': 'janedoe@example.org' }
+        session['user_data'] = {
+            'first_name': 'Jane',
+            'last_name': 'Doe',
+            'new_password': 'Password123',
+            'password_confirmation': 'Password123'
+        }
+        session.save()
         self.form_input['budget'] = ''
         before_count = User.objects.count()
         response = self.client.post(self.url, {**self.form_input})
@@ -51,6 +69,15 @@ class SpendingSignupViewTestCase(TestCase):
         self.assertTrue(form.is_bound)
 
     def test_successful_sign_up(self):
+        session = self.client.session
+        session['user_email'] = { 'email': 'janedoe@example.org' }
+        session['user_data'] = {
+            'first_name': 'Jane',
+            'last_name': 'Doe',
+            'new_password': 'Password123',
+            'password_confirmation': 'Password123'
+        }
+        session.save()
         before_count = User.objects.count()
         response = self.client.post(self.url, {**self.form_input}, follow = True)
         after_count = User.objects.count()
