@@ -3,10 +3,10 @@ from django.test import TestCase
 from django.urls import reverse
 from minted.forms import TimeFrameForm
 from minted.models import User, Category
-from minted.tests.helpers import reverse_with_next
+from minted.tests.helpers import LoginRequiredTester
 import datetime
 
-class AnalyticsViewTest(TestCase):
+class AnalyticsViewTest(TestCase, LoginRequiredTester):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -44,11 +44,6 @@ class AnalyticsViewTest(TestCase):
         self.assertTrue(form['start_date'], datetime.date.today())
         self.assertTrue(form['end_date'], one_year_from_today)
         self.assertTrue(form['time_interval'], 'monthly')
-
-    def test_get_analytics_redirects_when_not_logged_in(self):
-        redirect_url = reverse_with_next('log_in', self.url)
-        response = self.client.get(self.url)
-        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
 
     def test_post_invalid_dates(self):
         self.client.login(email=self.user.email, password="Password123")

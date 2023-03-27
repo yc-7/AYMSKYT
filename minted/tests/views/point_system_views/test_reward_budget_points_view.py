@@ -2,9 +2,9 @@ from django.test import TestCase
 from minted.models import User
 from minted.views.general_user_views.point_system_views import *
 from minted.views.budget_views_functions import Budget
+from minted.tests.helpers import LoginRequiredTester
 
-
-class BudgetPointsTestViews(TestCase):
+class BudgetPointsTestViews(TestCase, LoginRequiredTester):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -35,12 +35,13 @@ class BudgetPointsTestViews(TestCase):
         self.category = Category.objects.get(pk = 4)
         self.other_category = Category.objects.get(pk = 1)
 
-
+    
     def test_standardise_timeframe(self):
         yearly_budget = standardise_timeframe(self.other_category)
         self.assertEqual(yearly_budget, 7800)
 
-
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_calculate_category_weightings(self):
         

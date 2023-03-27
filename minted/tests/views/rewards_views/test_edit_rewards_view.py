@@ -1,11 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, Reward
-from django.contrib import messages
-from minted.forms import *
+from minted.forms import RewardForm
+from minted.tests.helpers import LoginRequiredTester
 
-
-class EditRewardsViewTestCase(TestCase):
+class EditRewardsViewTestCase(TestCase, LoginRequiredTester):
     
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -34,8 +33,7 @@ class EditRewardsViewTestCase(TestCase):
         self.assertTrue(isinstance(form, RewardForm))
         
     def test_view_redirects_to_login_if_not_logged_in(self):
-        response = self.client.get(self.url)
-        self.assertRedirects(response, '/log_in/?next=' + self.url)
+        self.assertLoginRequired(self.url)
 
     def test_view_redirects_to_dashboard_if_not_authorised(self):
         self.client.force_login(self.other_user)

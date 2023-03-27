@@ -6,8 +6,9 @@ from minted.models import User
 import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
+from minted.tests.helpers import LoginRequiredTester
 
-class AddExpenditureViewTestCase(TestCase):
+class AddExpenditureViewTestCase(TestCase, LoginRequiredTester):
     """Test suite for the add expenditure view."""
 
     fixtures = [
@@ -47,6 +48,9 @@ class AddExpenditureViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'expenditures/add_expenditure.html')
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_successful_expenditure_creation(self):
         self.client.login(email = self.user.email, password = 'Password123')
