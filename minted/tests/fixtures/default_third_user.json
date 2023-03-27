@@ -1,0 +1,28 @@
+[
+    {
+      "model": "minted.Streak",
+      "pk": 3,
+      "fields": {
+        "last_login_time": "2023-03-10T12:00:00Z",
+        "streak": 3
+      }
+    },
+  
+    
+    {
+      "model": "minted.User",
+      "pk": 3,
+      "fields": {
+        "first_name": "Third",
+        "last_name": "User",
+        "email": "thirduser@example.org",
+        "password": "pbkdf2_sha256$390000$8p9uNEZYtB5CTxES2VQe1Z$lSv0dmsmcM7V7yH54yReh/qbV3NQMl5koEfCMjPUGB4=",
+        "is_active": true,
+        "is_staff": true,
+        "is_superuser": true,
+        "budget": 4,
+        "points": "1",
+        "streak_data": 3
+      }
+    }
+  ]

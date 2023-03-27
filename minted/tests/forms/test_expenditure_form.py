@@ -6,6 +6,7 @@ class ExpenditureFormTestCase(TestCase):
 
     fixtures = ['minted/tests/fixtures/default_categories.json', 
                 'minted/tests/fixtures/default_user.json',
+                "minted/tests/fixtures/default_third_user.json",
                 'minted/tests/fixtures/default_other_user.json',
                 "minted/tests/fixtures/default_spending_limit.json"]
 

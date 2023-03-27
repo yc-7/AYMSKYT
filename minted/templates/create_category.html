@@ -1,6 +1,9 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Create Category
+{% endblock %}
 {% block content %}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.5.1/jscolor.min.js"></script>
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-md-6 offset-md-3">
@@ -11,10 +14,15 @@
                 <input type="hidden" name="next" value="{{ next }}">
                 {% include 'partials/bootstrap_form.html' with form=category_form %}
                 {% include 'partials/bootstrap_form.html' with form=spending_form %}
+                <input type="hidden" name="colour_value" value="">
+                <p>
+                    <button data-jscolor="{valueElement:'input[name=colour_value]'}">
+                        Pick color
+                    </button>
+                <p>
                 <input type="submit" value="Create a category" class="btn btn-primary">
             </form>
         </div>
     </div>
 </div>
-
 {% endblock %}
