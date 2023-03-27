@@ -19,7 +19,7 @@ from string import ascii_uppercase
 
 class Streak(models.Model):
         
-    last_login_time = models.DateTimeField(auto_now = True, null = True, blank = True)
+    last_login_time = models.DateTimeField(blank = True, null= True, auto_now_add = True)
     streak = models.IntegerField(
         default = 1, 
         validators= [
