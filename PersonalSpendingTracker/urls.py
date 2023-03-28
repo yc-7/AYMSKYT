@@ -23,19 +23,27 @@ from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 from minted.forms import NewPasswordForm
 
+
 urlpatterns = [
     path('admin', admin.site.index, name='admin'),
     path('admin/', admin.site.urls),
     path('', views.home, name = 'home'),
+
+    path('accounts/', include('allauth.urls')),
+    path('accounts/signup/', views.sign_up, name='sign_up'),
+
     path('log_in/', views.LogInView.as_view(), name = 'log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
+    path('sign_up/spending/', views.spending_signup, name='spending_signup'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/edit/profile/', views.ProfileUpdateView.as_view(), name = 'edit_profile'),
     path('profile/edit/change_password/', views.PasswordView.as_view(), name = 'change_password'),
     path('profile/', views.profile , name='profile'),
 
     path('analytics/', views.view_analytics, name='view_analytics'),
+    path('leaderboard/points', views.PointsLeaderboardView.as_view(), name = 'points_leaderboard'),
+    path('leaderboard/streaks', views.StreaksLeaderboardView.as_view(), name = 'streaks_leaderboard'),
 
     path('category_list/<str:category_name>/', views.CategoryExpenditureListView.as_view(), name = 'category_expenditures'),
     path('category_list/<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),

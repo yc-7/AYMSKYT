@@ -19,7 +19,7 @@ from string import ascii_uppercase
 
 class Streak(models.Model):
         
-    last_login_time = models.DateTimeField(auto_now = True, null = True, blank = True)
+    last_login_time = models.DateTimeField(blank = True, null= True, auto_now_add = True)
     streak = models.IntegerField(
         default = 1, 
         validators= [
@@ -88,7 +88,7 @@ class User(AbstractUser):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return  self.first_name+" "+self.last_name
+        return f'{self.first_name} {self.last_name}'
 
     def get_categories(self):
         categories = Category.objects.filter(user = self).order_by('name')
@@ -252,6 +252,11 @@ class RewardClaim(models.Model):
                         unique = False
         return super(RewardClaim, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        if self.claim_qr == True:
+            self.claim_qr.delete()
+        super(Reward, self).delete(*args, **kwargs)
+    
     def _create_claim_qr(self):
         qr_name = f'{self._create_claim_code}{self.reward_type.reward_id}_qr'
         qr = segno.make_qr(qr_name)

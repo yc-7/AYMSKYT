@@ -29,17 +29,21 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         """Form options"""
 
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['email', 'first_name', 'last_name']
+
+    def __init__(self, *args, **kwargs):
+        self.user_data = kwargs.pop('user_data', None)
+        super(SignUpForm, self).__init__(*args, **kwargs)
 
     def save(self, budget):
         """Creates a new user"""
 
         super().save(commit = False)
         return User.objects.create_user(
-            first_name = self.cleaned_data.get('first_name'),
-            last_name = self.cleaned_data.get('last_name'),
-            email = self.cleaned_data.get('email'),
-            password = self.cleaned_data.get('new_password'),
+            first_name = self.user_data.get('first_name'),
+            last_name = self.user_data.get('last_name'),
+            email = self.user_data.get('email'),
+            password = self.user_data.get('new_password'),
             points = 10,
             is_staff = False,
             is_superuser = False,

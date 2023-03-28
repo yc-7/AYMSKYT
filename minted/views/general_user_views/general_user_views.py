@@ -6,10 +6,11 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
+from django.contrib import messages
+from allauth.socialaccount.models import SocialAccount
 from minted.forms import *
 from minted.models import *
-from django.contrib import messages
-from minted.decorators import login_prohibited, staff_prohibited
+from minted.decorators import login_prohibited, login_required, staff_prohibited
 from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.conf import settings
@@ -37,6 +38,8 @@ class LogInView(LoginProhibitedMixin, View):
         self.next = request.POST.get('next')
         if user is not None:
             login(request, user)
+            update_streak(user)
+            reward_login_and_streak_points(user)
             self.next = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "Log in credentials were invalid!")
@@ -46,8 +49,7 @@ class LogInView(LoginProhibitedMixin, View):
         """Render log in template with blank log in form"""
 
         form = LogInForm()
-        return render(self.request, 'login.html', {'form': form, 'next': self.next})
-
+        return render(self.request, 'account/login.html', {'form': form, 'next': self.next})
 
 def log_out(request):
     logout(request)
@@ -61,22 +63,49 @@ def home(request):
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        spending_form = SpendingLimitForm(request.POST)
-        if form.is_valid() and spending_form.is_valid():
-            spending = spending_form.save()
-            user = form.save(spending)
-            login(request, user)
-            update_streak(user)
-            reward_login_and_streak_points(user)
-            redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
-            return redirect(redirect_url)
+        if form.is_valid():
+            request.session['user_data'] = form.cleaned_data
+            return redirect('spending_signup')
     else:
         form = SignUpForm()
-        spending_form = SpendingLimitForm()
-    return render(request, 'signup.html', {'form': form, 'spending_form': spending_form})
+    return render(request, 'account/signup.html', { 'form': form })
+
+@login_prohibited
+def spending_signup(request):
+    user_data = request.session.get('user_data')
+    if SocialAccount.objects.filter(user=request.user.id).exists() == False and user_data == None:
+        return redirect('sign_up')
+    if request.method == 'POST':
+        form = SpendingLimitForm(request.POST)
+        if 'cancel' in request.POST:
+            if SocialAccount.objects.filter(user=request.user.id).exists():
+                User.objects.get(email=request.user.email).delete()
+            return redirect('sign_up')
+        else:
+            if form.is_valid():
+                spending = form.save()
+                if SocialAccount.objects.filter(user=request.user.id).exists():
+                    user = request.user
+                    user.budget = spending
+                    user.streak_data = Streak.objects.create()
+                    user.save()
+                    update_streak(user)
+                else:
+                    user = SignUpForm(user_data=user_data).save(spending)
+                    update_streak(user)
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
+                return redirect(redirect_url)
+    else:
+        form = SpendingLimitForm()
+    return render(request, 'account/spending_signup.html', { 'form': form })
 
 @staff_prohibited
 def dashboard(request):
+    if SocialAccount.objects.filter(user=request.user.id).exists():
+            update_streak(request.user)
+            reward_login_and_streak_points(request.user)
+            print(request.user.streak_data.streak)
     return render(request,'dashboard.html')
 
 @login_required
@@ -141,6 +170,14 @@ class PasswordView(LoginRequiredMixin, FormView):
         kwargs = super().get_form_kwargs(**kwargs)
         kwargs.update({'user': self.request.user})
         return kwargs
+    
+    # def dispatch(self, *args, **kwargs):
+    #     """Redirect if a user is signed in with google"""
+
+    #     if SocialAccount.objects.filter(user = self.request.user.id).exists():
+    #         messages.add_message(self.request, messages.ERROR, 'You are signed in with a Google Account')
+    #         return redirect('profile')
+    #     return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
         """Handle valid form by saving the new password"""
