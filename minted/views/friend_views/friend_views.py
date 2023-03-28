@@ -93,7 +93,7 @@ class AcceptFriendRequestView(LoginRequiredMixin, View):
         if not to_user.notification_subscription:
             return redirect('request_list')
 
-        if user_is_subscribed_to_friend_notifications(to_user):
+        if user_is_subscribed_to_friend_notifications(from_user):
             send_friend_request_accept_notification(to_user, from_user)
 
         return redirect('request_list')
