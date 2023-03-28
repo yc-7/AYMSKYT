@@ -27,7 +27,7 @@ class SignUpForm(forms.ModelForm):
         """Form options"""
 
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['email', 'first_name', 'last_name']
 
     new_password = forms.CharField(
         label = 'Password',
@@ -36,6 +36,10 @@ class SignUpForm(forms.ModelForm):
     )
 
     password_confirmation = forms.CharField(label = 'Password confirmation', widget = forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        self.user_data = kwargs.pop('user_data', None)
+        super(SignUpForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         """Clean data and generate error messages"""
@@ -51,10 +55,10 @@ class SignUpForm(forms.ModelForm):
 
         super().save(commit = False)
         return User.objects.create_user(
-            first_name = self.cleaned_data.get('first_name'),
-            last_name = self.cleaned_data.get('last_name'),
-            email = self.cleaned_data.get('email'),
-            password = self.cleaned_data.get('new_password'),
+            first_name = self.user_data.get('first_name'),
+            last_name = self.user_data.get('last_name'),
+            email = self.user_data.get('email'),
+            password = self.user_data.get('new_password'),
             points = 10,
             is_staff = False,
             is_superuser = False,

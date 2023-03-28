@@ -251,6 +251,11 @@ class RewardClaim(models.Model):
                         unique = False
         return super(RewardClaim, self).save(*args, **kwargs)
     
+    def delete(self, *args, **kwargs):
+        if self.claim_qr == True:
+            self.claim_qr.delete()
+        super(Reward, self).delete(*args, **kwargs)
+    
     def _create_claim_qr(self):
         qr_name = f'{self._create_claim_code}{self.reward_type.reward_id}_qr'
         qr = segno.make_qr(qr_name)

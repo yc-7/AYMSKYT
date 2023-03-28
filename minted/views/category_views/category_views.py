@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from minted.decorators import staff_prohibited
+from minted.decorators import staff_prohibited, login_required
 from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *

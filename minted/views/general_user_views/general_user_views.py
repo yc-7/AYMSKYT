@@ -1,10 +1,10 @@
 from django.contrib.auth import login, logout
 from django.shortcuts import redirect, render
+from allauth.socialaccount.models import SocialAccount
 from minted.forms import *
 from minted.models import *
 from django.contrib import messages
-from minted.decorators import login_prohibited, staff_prohibited
-from django.contrib.auth.decorators import login_required
+from minted.decorators import login_prohibited, login_required, staff_prohibited
 from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.contrib.auth import update_session_auth_hash
@@ -31,7 +31,7 @@ def log_in(request):
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
     form = LogInForm()
     next_url = request.GET.get('next') or request.POST.get('next') or ''
-    return render(request, 'login.html', {'form': form, 'next': next_url})
+    return render(request, 'account/login.html', {'form': form, 'next': next_url})
 
 
 def log_out(request):
@@ -46,24 +46,51 @@ def home(request):
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        spending_form = SpendingLimitForm(request.POST)
-        if form.is_valid() and spending_form.is_valid():
-            spending = spending_form.save()
-            user = form.save(spending)
-            login(request, user)
-            update_streak(user)
-            reward_login_and_streak_points(user)
-            redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
-            return redirect(redirect_url)
+        if form.is_valid():
+            request.session['user_data'] = form.cleaned_data
+            return redirect('spending_signup')
     else:
         form = SignUpForm()
-        spending_form = SpendingLimitForm()
-    return render(request, 'signup.html', {'form': form, 'spending_form': spending_form})
+    return render(request, 'account/signup.html', { 'form': form })
+
+@login_prohibited
+def spending_signup(request):
+    user_data = request.session.get('user_data')
+    if SocialAccount.objects.filter(user=request.user.id).exists() == False and user_data == None:
+        return redirect('sign_up')
+    if request.method == 'POST':
+        form = SpendingLimitForm(request.POST)
+        if 'cancel' in request.POST:
+            if SocialAccount.objects.filter(user=request.user.id).exists():
+                User.objects.get(email=request.user.email).delete()
+            return redirect('sign_up')
+        else:
+            if form.is_valid():
+                spending = form.save()
+                if SocialAccount.objects.filter(user=request.user.id).exists():
+                    user = request.user
+                    user.budget = spending
+                    user.streak_data = Streak.objects.create()
+                    user.save()
+                    update_streak(user)
+                else:
+                    user = SignUpForm(user_data=user_data).save(spending)
+                    update_streak(user)
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                redirect_url = request.POST.get('next') or get_redirect_url_for_user(user)
+                return redirect(redirect_url)
+    else:
+        form = SpendingLimitForm()
+    return render(request, 'account/spending_signup.html', { 'form': form })
 
 @staff_prohibited
 def dashboard(request):
+    if SocialAccount.objects.filter(user=request.user.id).exists():
+            update_streak(request.user)
+            reward_login_and_streak_points(request.user)
+            print(request.user.streak_data.streak)
     return render(request,'dashboard.html')
-      
+
 @login_required
 def profile(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
@@ -109,10 +136,13 @@ def edit_spending_limit(request):
         else:
             form = SpendingLimitForm()
     return render(request, 'edit_spending_limit.html', {'form': form})
-    
+
 @login_required
 def change_password(request):
     current_user = request.user
+    if SocialAccount.objects.filter(user=current_user.id).exists():
+        messages.add_message(request, messages.ERROR, 'You are signed in with a Google Account')
+        return redirect('profile')
     if request.method == 'POST':
         form = PasswordForm(data=request.POST)
         if form.is_valid():
