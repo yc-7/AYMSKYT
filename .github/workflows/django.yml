@@ -35,8 +35,8 @@ jobs:
         EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
         EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
         EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
-        CLIENT_ID: ${{ CLIENT_ID }}
-        SECRET: ${{ SECRET }}
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        SECRET: ${{ secrets.SECRET }}
       run: |
         python3 manage.py collectstatic
         coverage run manage.py test
