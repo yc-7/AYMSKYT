@@ -59,6 +59,50 @@ class FriendViewTest(TestCase):
         self.assertTemplateUsed(response, 'request_list.html')
         total_requests_after_decline = FriendRequest.objects.count()
         self.assertTrue(total_requests_after_decline == total_requests_before_decline - 1)
+
+    def test_unsuccessful_friend_request_due_to_sent_to_self(self):
+        FriendRequest.objects.all().delete()
+        self.client.login(email=self.user.email, password="Password123")
+        self.form_input['email'] = self.user.email
+        url = reverse('friend_request')
+        response = self.client.post(url, self.form_input, follow=True)
+        form = response.context['form']
+        self.assertIn('email', form.errors)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'friend_request.html')
+    
+    def test_unsuccessful_friend_request_due_to_pending_friend_request_from_other_user(self):
+        self.client.login(email=self.user.email, password="Password123")
+        FriendRequest.objects.create(from_user = self.other_user, to_user = self.user)
+        self.form_input['email'] = self.other_user.email
+        url = reverse('friend_request')
+        response = self.client.post(url, self.form_input, follow=True)
+        form = response.context['form']
+        self.assertIn('email', form.errors)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'friend_request.html')
+
+    def test_unsuccessful_friend_request_due_to_pending_friend_request_to_other_user(self):
+        self.client.login(email=self.user.email, password="Password123")
+        FriendRequest.objects.create(from_user = self.user, to_user = self.other_user)
+        self.form_input['email'] = self.other_user.email
+        url = reverse('friend_request')
+        response = self.client.post(url, self.form_input, follow=True)
+        form = response.context['form']
+        self.assertIn('email', form.errors)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'friend_request.html')
+
+    def test_unsuccessful_friend_request_due_to_already_friends(self):
+        self.client.login(email=self.user.email, password="Password123")
+        self.user.friends.add(self.other_user)
+        self.form_input['email'] = self.other_user.email
+        url = reverse('friend_request')
+        response = self.client.post(url, self.form_input, follow=True)
+        form = response.context['form']
+        self.assertIn('email', form.errors)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'friend_request.html')
     
 
 

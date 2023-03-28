@@ -147,6 +147,9 @@ class FriendReqForm(forms.Form):
             if (FriendRequest.objects.filter(from_user = self.user, to_user = self.to_user).count() != 0):
                 self.add_error('email', 'You have already sent a friend request to this person')
 
+            if self.to_user in self.user.friends.all():
+                self.add_error('email', 'You are already friends with this user')
+
     def save(self):
         """Create a friend request"""
 
