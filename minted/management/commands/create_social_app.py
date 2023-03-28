@@ -20,19 +20,19 @@ class Command(BaseCommand):
         print("Social App 'google' added")
     
     def create_sites(self):
-        example = Site.objects.filter(domain_name='example.com')
+        example = Site.objects.filter(domain='example.com')
         if example.exists():
             example.first().delete()
         for site in settings.CSRF_TRUSTED_ORIGINS:
             Site.objects.create(
-                domain_name=f'{site}',
-                display_name=f'{site}'
+                domain=f'{site}',
+                name=f'{site}'
             )
         Site.objects.create(
-            domain_name='http://localhost:8000'
-            display_name='http://localhost:8000'
+            domain='http://localhost:8000',
+            name='http://localhost:8000'
         )
         Site.objects.create(
-            domain_name='http://127.0.0.1:8000'
-            display_name='http://127.0.0.1:8000'
+            domain='http://127.0.0.1:8000',
+            name='http://127.0.0.1:8000'
         )
