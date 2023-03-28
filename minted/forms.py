@@ -29,7 +29,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         """Form options"""
 
         model = User
-        fields = ['email', 'first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'email']
 
     def __init__(self, *args, **kwargs):
         self.user_data = kwargs.pop('user_data', None)
