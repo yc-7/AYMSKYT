@@ -171,19 +171,19 @@ class PasswordView(LoginRequiredMixin, FormView):
         kwargs.update({'user': self.request.user})
         return kwargs
     
-    # def dispatch(self, *args, **kwargs):
-    #     """Redirect if a user is signed in with google"""
+    def dispatch(self, *args, **kwargs):
+        """Redirect if a user is signed in with google"""
 
-    #     if SocialAccount.objects.filter(user = self.request.user.id).exists():
-    #         messages.add_message(self.request, messages.ERROR, 'You are signed in with a Google Account')
-    #         return redirect('profile')
-    #     return super().dispatch(*args, **kwargs)
+        if SocialAccount.objects.filter(user = self.request.user.id).exists():
+            messages.add_message(self.request, messages.ERROR, 'You are signed in with a Google Account')
+            return redirect('profile')
+        return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
         """Handle valid form by saving the new password"""
 
         form.save()
-        login(self.request, self.request.user)
+        login(self.request, self.request.user, backend = 'django.contrib.auth.backends.ModelBackend')
         return super().form_valid(form)
 
     def get_success_url(self):
