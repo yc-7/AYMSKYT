@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY'] if 'DJANGO_SECRET_KEY' in os.environ else 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minted-aymskyt.azurewebsites.net']
 CSRF_TRUSTED_ORIGINS = ['https://minted-aymskyt.azurewebsites.net']
@@ -70,7 +70,7 @@ ACCOUNT_CHOICE_SESSION_KEY = None
 LOGIN_REDIRECT_URL = 'spending_signup'
 LOGOUT_REDIRECT_URL = '/'
 
-ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm'}
+ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm', 'login': 'minted.forms.LogInForm'}
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -83,6 +83,9 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+CLIENT_ID = os.environ['CLIENT_ID']
+SECRET = os.environ['SECRET']
 
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']

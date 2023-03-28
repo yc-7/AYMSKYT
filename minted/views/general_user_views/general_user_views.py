@@ -85,6 +85,10 @@ def spending_signup(request):
 
 @staff_prohibited
 def dashboard(request):
+    if SocialAccount.objects.filter(user=request.user.id).exists():
+            update_streak(request.user)
+            reward_login_and_streak_points(request.user)
+            print(request.user.streak_data.streak)
     return render(request,'dashboard.html')
 
 @login_required
