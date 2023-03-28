@@ -94,3 +94,7 @@ class SpendingSignupViewTestCase(TestCase):
         response_url = reverse('dashboard')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'dashboard.html')
+
+
+
+
