@@ -1,7 +1,9 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Profile
+{% endblock %}
 {% load static %}
 {% block content %}
-
 <script src="{% static 'registerSw.js' %}" defer></script>
 <head>
     <meta name="vapid-key" content="{{ vapid_key }}">
@@ -26,7 +28,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
     {% if not request.user.is_staff %}
 
     <div class ="float-end container" style="width:750px">
@@ -41,7 +43,7 @@
                         Edit Limits
                     </a>
                 </div><br>
-    
+
                 <div>
                     <i class="bi-bell-fill" style="font-size:35px; color:#d462a1"></i>
                     <h1>Register Notifications</h1>
@@ -53,9 +55,9 @@
                         Refresh Subscription
                     </a>
                     <a id="error-message"></a>
-            
+
                 </div><br>
-    
+
                 <div>
                     <i class="bi-people-fill" style="font-size:35px; color:#d462a1"></i>
                     <h1>Manage Friends</h1>
@@ -74,7 +76,4 @@
     </div>
     {% endif %}
 </div>
-
-    
-
 {% endblock %}

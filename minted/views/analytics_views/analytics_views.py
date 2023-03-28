@@ -26,14 +26,10 @@ def view_analytics(request):
             time_interval = form.cleaned_data.get('time_interval')
     
     categories = Category.objects.filter(user = request.user)
-    
     if not categories:
         return render(request, 'analytics.html', {'form': form})
-    else:
-        colours = []
-        for category in categories:
-            colours.append(category.colour)
 
+    colours = [category.colour for category in categories]
     category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date)
     category_line_chart_data = generate_category_line_chart_dataset(categories, start_date, end_date, time_interval)
     all_spending_line_chart_data = generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval)

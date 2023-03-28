@@ -1,4 +1,7 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Analytics
+{% endblock %}
 {% block content %}
 {% load static %}
 
@@ -30,7 +33,7 @@
   var all_spending_line_chart_data = JSON.parse(document.getElementById('allSpendingLineChartData').textContent);
   var colours = JSON.parse(document.getElementById('colours').textContent);
   
-  var pie_chart_config = create_bar_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
+  var pie_chart_config = create_pie_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
   var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours)
   var all_spending_line_config = create_line_chart_config(all_spending_line_chart_data.datasets, all_spending_line_chart_data.labels, ['#000000'])
 

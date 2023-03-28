@@ -34,7 +34,6 @@ def log_in(request):
 
 
 def log_out(request):
-    unsubscribe_user_from_push(request.user.id)
     logout(request)
     return redirect('home')
 
