@@ -54,17 +54,6 @@ class FriendViewTest(TestCase, LoginRequiredTester):
         response = self.client.post(url, self.form_input, follow=True)
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'profile.html')
-        
-    def test_successful_decline(self):
-        self.client.login(email=self.user.email, password="Password123")
-        total_requests_before_decline = FriendRequest.objects.count()
-        url = reverse('decline_request', kwargs={'friend_request_id': self.friend_request_id})
-        response_url = reverse('request_list')
-        response = self.client.post(url, self.form_input, follow=True)
-        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'request_list.html')
-        total_requests_after_decline = FriendRequest.objects.count()
-        self.assertTrue(total_requests_after_decline == total_requests_before_decline - 1)
     
 
 

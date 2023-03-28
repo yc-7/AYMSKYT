@@ -59,7 +59,7 @@ def accept_request(request, friend_request_id):
         if user_is_subscribed_to_friend_notifications(to_user):
             send_friend_request_accept_notification(to_user, from_user)
 
-        return redirect('request_list')
+    return redirect('request_list')
 
 @login_required
 def decline_request(request, friend_request_id):
@@ -67,7 +67,7 @@ def decline_request(request, friend_request_id):
         friend_request = FriendRequest.objects.get(id = friend_request_id)
         friend_request.delete()
         messages.add_message(request, messages.SUCCESS, "Friend request declined!")
-        return redirect('request_list')
+    return redirect('request_list')
 
 
 @login_required
