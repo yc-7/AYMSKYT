@@ -24,16 +24,6 @@ def send_friend_request_notification(from_user, to_user):
     body = f"{from_user} has send you a friend request"
     send_push(head, body, to_user.id)
 
-def can_send_friend_request(from_user, to_user):
-    sent_to_self = (to_user == from_user)
-    has_incoming_request = FriendRequest.objects.filter(from_user = to_user, to_user = from_user).count() != 0
-    request_already_sent = FriendRequest.objects.filter(from_user = from_user, to_user = to_user).count() != 0
-
-    if sent_to_self or request_already_sent or has_incoming_request:
-        return False
-    
-    return True
-
 def send_friend_request_accept_notification(to_user, from_user):
     head = "Your friend request has been accepted!"
     body = f"You and {to_user.first_name} are now friends!"

@@ -9,7 +9,6 @@
             "colour": "#FF0000"
         }
     }, 
-
     {
         "model": "minted.Category",
         "pk": 2,
@@ -20,7 +19,6 @@
             "colour": "#008000"
         }
     },
-
     {
         "model": "minted.Category",
         "pk": 3,

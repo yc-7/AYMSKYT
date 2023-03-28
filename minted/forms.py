@@ -3,10 +3,12 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward
+from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward, FriendRequest
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserChangeForm
+from .mixins import NewPasswordMixin
 
 PASSWORD_REGEX_VALIDATOR = RegexValidator(
     regex = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
@@ -17,38 +19,21 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 class LogInForm(forms.Form):
-    email = forms.CharField(label="Email")
-    password = forms.CharField(label="Password", widget=forms.PasswordInput())
-
-class SignUpForm(forms.ModelForm):
+    email = forms.CharField(label = "Email")
+    password = forms.CharField(label = "Password", widget = forms.PasswordInput())
+    
+class SignUpForm(NewPasswordMixin, forms.ModelForm):
     """Form to allow unregistered users to sign up"""
 
     class Meta:
         """Form options"""
 
         model = User
-        fields = ['email', 'first_name', 'last_name']
-
-    new_password = forms.CharField(
-        label = 'Password',
-        widget = forms.PasswordInput(),
-        validators = [PASSWORD_REGEX_VALIDATOR]
-    )
-
-    password_confirmation = forms.CharField(label = 'Password confirmation', widget = forms.PasswordInput())
+        fields = ['first_name', 'last_name', 'email']
 
     def __init__(self, *args, **kwargs):
         self.user_data = kwargs.pop('user_data', None)
         super(SignUpForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        """Clean data and generate error messages"""
-
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
-        if new_password != password_confirmation:
-            self.add_error('password_confirmation', 'Password does not match')
 
     def save(self, budget):
         """Creates a new user"""
@@ -77,52 +62,40 @@ class EditProfileForm(UserChangeForm):
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-class PasswordForm(forms.Form):
-    """Form enabling users to change their password."""
+class NewPasswordForm(NewPasswordMixin):
+    """Form for password resets through email link"""
 
-    password = forms.CharField(label='Current password', widget=forms.PasswordInput())
-    new_password = forms.CharField(
-        label='Password',
-        widget=forms.PasswordInput(),
-        validators=[PASSWORD_REGEX_VALIDATOR]
-    )
-    password_confirmation = forms.CharField(label='Password confirmation', widget=forms.PasswordInput())
+    def __init__(self, user = None, **kwargs):
+        """Construct a new form instance with a user instance"""
 
-    def clean(self):
-        """Clean the data and generate messages for any errors."""
-
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
-        if new_password != password_confirmation:
-            self.add_error('password_confirmation', 'Confirmation does not match password.')
-
-class NewPasswordForm(forms.Form):
-    """Form for password resets"""
-    def __init__(self, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         self.user = user
-        self.fields['new_password'] = forms.CharField(
-            label='Password',
-            widget=forms.PasswordInput(),
-            validators=[PASSWORD_REGEX_VALIDATOR]
-        )
-        self.fields['password_confirmation'] = forms.CharField(
-            label='Password confirmation',
-            widget=forms.PasswordInput()
-        )
-
-    def clean(self):
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
-        if new_password != password_confirmation:
-            self.add_error('password_confirmation', 'Confirmation does not match password.')
 
     def save(self):
-        new_password = self.cleaned_data.get('new_password')
-        self.user.set_password(new_password)
-        self.user.save()
+        """Save the user's new password"""
+
+        new_password = self.cleaned_data['new_password']
+        if self.user is not None:
+            self.user.set_password(new_password)
+            self.user.save()
+        return self.user
+
+class PasswordForm(NewPasswordForm):
+    """Form enabling users to change their password"""
+
+    password = forms.CharField(label = 'Current password', widget = forms.PasswordInput())
+
+    def clean(self):
+        """Clean the data and generate messages for any errors"""
+
+        super().clean()
+        password = self.cleaned_data.get('password')
+        if self.user is not None:
+            user = authenticate(email = self.user.email, password = password)
+        else:
+            user = None
+        if user is None:
+            self.add_error('password', 'Password is invalid')
 
 class ExpenditureForm(forms.ModelForm):
     class Meta:
@@ -148,7 +121,48 @@ class CategoryForm(forms.ModelForm):
             self.add_error('name', 'You already have a category with this name.')
     
 class FriendReqForm(forms.Form):
+    """Form to send friend requests to another user"""
+
     email = forms.EmailField()
+
+    def __init__(self, user = None, **kwargs):
+        """Construct a new form instance with a user instance"""
+
+        super().__init__(**kwargs)
+        self.user = user
+
+    def clean(self):
+        """Clean the data and generate messages for any errors"""
+
+        super().clean()
+        email = self.cleaned_data.get('email')
+
+        if not (User.objects.filter(email = email).exists()):
+            self.add_error('email', 'This user does not exist')
+        elif self.user is not None:
+            self.to_user = User.objects.get(email = email)
+
+            if (self.user == self.to_user):
+                self.add_error('email', 'You cannot send a friend request to yourself :/')
+
+            if (FriendRequest.objects.filter(from_user = self.to_user, to_user = self.user).count() != 0):
+                self.add_error('email', 'This person has already sent you a friend request!')
+
+            if (FriendRequest.objects.filter(from_user = self.user, to_user = self.to_user).count() != 0):
+                self.add_error('email', 'You have already sent a friend request to this person')
+
+            if self.to_user in self.user.friends.all():
+                self.add_error('email', 'You are already friends with this user')
+
+    def save(self):
+        """Create a friend request"""
+
+        if self.user is not None:
+            friend_request = FriendRequest.objects.create(
+                from_user = self.user,
+                to_user = self.to_user,
+            )
+        return friend_request
 
 class TimeFrameForm(forms.Form):
     start_date = forms.DateField(widget=DateInput())
