@@ -13,7 +13,7 @@
         "pk": 2,
         "fields": {
             "budget": "100.00",
-            "timeframe": "/week"
+            "timeframe": "/quarter"
         }
     },
 

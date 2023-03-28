@@ -42,6 +42,8 @@ urlpatterns = [
     path('profile/', views.profile , name='profile'),
 
     path('analytics/', views.view_analytics, name='view_analytics'),
+    path('leaderboard/points', views.PointsLeaderboardView.as_view(), name = 'points_leaderboard'),
+    path('leaderboard/streaks', views.StreaksLeaderboardView.as_view(), name = 'streaks_leaderboard'),
 
     path('category_list/<str:category_name>/', views.category_expenditures_view, name='category_expenditures'),
     path('category_list/<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),
