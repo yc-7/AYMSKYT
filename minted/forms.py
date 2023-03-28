@@ -133,7 +133,7 @@ class FriendReqForm(forms.Form):
         super().clean()
         email = self.cleaned_data.get('email')
 
-        if (User.objects.filter(email = email).count() == 0):
+        if not (User.objects.filter(email = email).exists()):
             self.add_error('email', 'This user does not exist')
         elif self.user is not None:
             self.to_user = User.objects.get(email = email)

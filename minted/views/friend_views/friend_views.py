@@ -9,6 +9,21 @@ from minted.forms import FriendReqForm
 from minted.models import User
 from minted.views.friend_views.friend_view_functions import *
 
+class FriendsListView(LoginRequiredMixin, ListView):
+    """View that displays a users friends"""
+    
+    model = User
+    template_name = 'friend_list.html'
+    context_object_name = 'friends'
+    http_method_names = ['get']
+    
+    def get_queryset(self):
+        """Return the user's friends"""
+
+        current_user = self.request.user
+        my_friends_list = current_user.friends.all()
+        return my_friends_list
+
 class NewFriendRequestView(LoginRequiredMixin, FormView):
     """View that handles sending friend requests"""
 
@@ -40,6 +55,19 @@ class NewFriendRequestView(LoginRequiredMixin, FormView):
         """Return the redirect URL after successful friend request"""
 
         return reverse('friend_request')
+
+class FriendRequestListView(LoginRequiredMixin, ListView):
+    """View to display a users incoming friend requests"""
+    model = User
+    template_name = 'request_list.html'
+    context_object_name = 'requests'
+    http_method_names = ['get']
+    
+    def get_queryset(self):
+        """Return the user's friend requests"""
+        current_user = self.request.user
+        friend_requests_sent_to_current_user = FriendRequest.objects.filter(to_user = current_user)
+        return friend_requests_sent_to_current_user
 
 class AcceptFriendRequestView(LoginRequiredMixin, View):
     """View that handles accepting friend requests"""
@@ -84,42 +112,6 @@ class DeclineFriendRequestView(LoginRequiredMixin, View):
         friend_request.delete()
         messages.add_message(request, messages.SUCCESS, "Friend request declined!")
         return redirect('request_list')
-
-class FriendsListView(LoginRequiredMixin, ListView):
-    """View that displays a users friends"""
-    model = User
-    template_name = 'friend_list.html'
-    context_object_name = 'friends'
-    http_method_names = ['get']
-
-    def get(self, request, *args, **kwargs):
-        """Handle get request"""
-
-        return super().get(request, *args, **kwargs)
-    
-    def get_queryset(self):
-        """Return the user's friends"""
-
-        current_user = self.request.user
-        my_friends_list = current_user.friends.all()
-        return my_friends_list
-
-class FriendRequestListView(LoginRequiredMixin, ListView):
-    """View to display a users incoming friend requests"""
-    model = User
-    template_name = 'request_list.html'
-    context_object_name = 'requests'
-    http_method_names = ['get']
-
-    def get(self, request, *args, **kwargs):
-        """Handle get request"""
-        return super().get(request, *args, **kwargs)
-    
-    def get_queryset(self):
-        """Return the user's friend requests"""
-        current_user = self.request.user
-        friend_requests_sent_to_current_user = FriendRequest.objects.filter(to_user = current_user)
-        return friend_requests_sent_to_current_user
 
 class UnfriendView(LoginRequiredMixin, View):
     """View that handles user unfriending"""
