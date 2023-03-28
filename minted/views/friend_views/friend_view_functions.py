@@ -4,7 +4,7 @@ from minted.notifications import send_push
 
 
 def user_is_subscribed_to_friend_notifications(user):
-    friend_subscription = Subscription.objects.get_or_create(name="Friend Requests")
+    friend_subscription = Subscription.objects.get(name="Friend Requests")
 
     notification_subscription = user.notification_subscription
     if not notification_subscription:
