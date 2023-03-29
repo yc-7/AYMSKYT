@@ -24,7 +24,6 @@ def standardise_timeframe(category):
         yearly_budget = float(category.budget.budget) * 12
     return yearly_budget
 
-
 def calculate_category_weightings(user, category, all_budgets):
     user_total_budget = all_budgets[-1]
     if (user.budget.timeframe != '/year'):
@@ -40,7 +39,6 @@ def calculate_category_weightings(user, category, all_budgets):
         weighting_of_category = float(category.budget) / user_yearly_budget
     return weighting_of_category
 
-
 def calculate_budget_points(user, all_budgets, category):
     total_budget_reward = 100
     weighting_of_category = calculate_category_weightings(user, category, all_budgets)
@@ -50,39 +48,41 @@ def calculate_budget_points(user, all_budgets, category):
 def reward_budget_points(user):
     categories = user.get_categories()
     all_budgets = generate_budget_list(user, categories)
-    now = str(timezone.now().date())
-    if (all_budgets is not None) and (len(all_budgets) > 1):
-        for category in all_budgets[:-1]:
-            if category.spent <= category.budget and now == category.end_date:
-                reward_points = calculate_budget_points(user, all_budgets, category)
-                user.points += reward_points
-                user.save()
+    today = str(timezone.now().date())
 
-def is_today_a_end_date(user):
+    if not all_budgets:
+        return
+    
+    for category_budget in all_budgets[:-1]:
+        within_budget = category_budget.spent <= category_budget.budget
+        today_is_budget_end_date = today == category_budget.end_date
+        if within_budget and today_is_budget_end_date:
+            reward_points = calculate_budget_points(user, all_budgets, category_budget)
+            user.points += reward_points
+            user.save()
+
+def user_has_budget_ending_today(user):
     categories = user.get_categories()
     all_budgets = generate_budget_list(user, categories)
     today = str(datetime.now().date())
-    ends_today = []
-    for category in all_budgets:
-        is_today = False
-        if today == category.end_date:
-            is_today = True
-        ends_today.append(is_today)
-    return ends_today
 
+    for category in all_budgets:
+        if today == category.end_date:
+            return True
+    return False
 
 def reward_login_and_streak_points(user):
+    if user.is_superuser:
+        return
+    
     if user.streak_data is not None:
         last_login = user.streak_data.last_login_time
     
-        if last_login.date() < datetime.now().date() and (not user.is_superuser):
+        if last_login.date() < datetime.now().date():
             reward_login_points(user)
             reward_streak_points(user)
     
-
-
 def update_streak(user):
-    
     if user.is_superuser:
         return
 
