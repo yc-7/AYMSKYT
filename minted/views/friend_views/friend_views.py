@@ -71,7 +71,10 @@ class FriendRequestListView(LoginRequiredMixin, ListView):
 
 class AcceptFriendRequestView(LoginRequiredMixin, View):
     """View that handles accepting friend requests"""
-    http_method_name = ['post']
+    http_method_name = ['get', 'post']
+
+    def get(self, request, **kwargs):
+        return redirect('request_list')
 
     def post(self, request, **kwargs):
         friend_request_id = kwargs.get('friend_request_id')
@@ -90,9 +93,6 @@ class AcceptFriendRequestView(LoginRequiredMixin, View):
         friend_request.delete()
         messages.add_message(request, messages.SUCCESS, "Friend request accepted!")
 
-        if not to_user.notification_subscription:
-            return redirect('request_list')
-
         if user_is_subscribed_to_friend_notifications(from_user):
             send_friend_request_accept_notification(to_user, from_user)
 
@@ -100,13 +100,14 @@ class AcceptFriendRequestView(LoginRequiredMixin, View):
     
 class DeclineFriendRequestView(LoginRequiredMixin, View):
     """View that handles declining friend request"""
-    http_method_name = ['post']
+    http_method_name = ['get', 'post']
+
+    def get(self, request, **kwargs):
+        return redirect('request_list')
 
     def post(self, request, **kwargs):
         """Decline friend request"""
         friend_request_id = kwargs.get('friend_request_id')
-        if not friend_request_id:
-            return redirect('friend_list')
         
         friend_request = get_object_or_404(FriendRequest, id=friend_request_id)
         friend_request.delete()
@@ -115,13 +116,14 @@ class DeclineFriendRequestView(LoginRequiredMixin, View):
 
 class UnfriendView(LoginRequiredMixin, View):
     """View that handles user unfriending"""
-    http_method_name = ['post']
+    http_method_name = ['get', 'post']
+
+    def get(self, request, **kwargs):
+        return redirect('friend_list')
 
     def post(self, request, **kwargs):
         """Handle unfriend"""
         friend_id = kwargs.get('friend_id')
-        if not friend_id:
-            return redirect('friend_list')
         
         user_to_unfriend = get_object_or_404(User, id=friend_id)
         request.user.friends.remove(user_to_unfriend)

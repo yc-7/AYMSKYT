@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, FriendRequest
+from minted.tests.helpers import LoginRequiredTester
 
-class FriendViewTest(TestCase):
+class NewFriendViewTest(TestCase, LoginRequiredTester):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -28,10 +29,14 @@ class FriendViewTest(TestCase):
                 from_user = self.user,
                 to_user = self.other_user
         )
+        self.url = reverse('friend_request')
 
 
     def test_friend_request_url(self):
-        self.assertEqual(reverse('friend_request'), '/friend_request/')
+        self.assertEqual(self.url, '/friend_request/')
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
         
     def test_unsuccessful_friend_request(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -48,17 +53,6 @@ class FriendViewTest(TestCase):
         response = self.client.post(url, self.form_input, follow=True)
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'friend_request.html')
-        
-    def test_successful_decline(self):
-        self.client.login(email=self.user.email, password="Password123")
-        total_requests_before_decline = FriendRequest.objects.count()
-        url = reverse('decline_request', kwargs={'friend_request_id': self.friend_request_id})
-        response_url = reverse('request_list')
-        response = self.client.post(url, self.form_input, follow=True)
-        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'request_list.html')
-        total_requests_after_decline = FriendRequest.objects.count()
-        self.assertTrue(total_requests_after_decline == total_requests_before_decline - 1)
 
     def test_unsuccessful_friend_request_due_to_sent_to_self(self):
         FriendRequest.objects.all().delete()

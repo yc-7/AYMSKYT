@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from minted.models import User, SpendingLimit
-from django.contrib import messages
+from minted.models import User
+from minted.tests.helpers import LoginRequiredTester
 
 
-class EditSpendingLimitViewTestCase(TestCase):
+class EditSpendingLimitViewTestCase(TestCase, LoginRequiredTester):
     
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -26,8 +26,7 @@ class EditSpendingLimitViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'edit_spending_limit.html')
         
     def test_view_redirects_to_login_if_not_logged_in(self):
-        response = self.client.get(self.url)
-        self.assertRedirects(response, '/log_in/?next=' + self.url)
+        self.assertLoginRequired(self.url)
            
     def test_spending_limit_successfully_changes(self):
         self.client.force_login(self.user)

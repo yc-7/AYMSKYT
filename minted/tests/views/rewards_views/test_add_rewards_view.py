@@ -1,9 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, Reward
-from minted.forms import *
+from minted.forms import RewardForm
+from minted.tests.helpers import LoginRequiredTester
 
-class AddRewardsViewTestCase(TestCase):
+class AddRewardsViewTestCase(TestCase, LoginRequiredTester):
     """Test suite for the add rewards view."""
 
     fixtures = [
@@ -31,6 +32,9 @@ class AddRewardsViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'rewards/add_rewards.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, RewardForm))
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
         
     def test_view_redirects_to_login_if_not_logged_in(self):
         response = self.client.get(self.url)

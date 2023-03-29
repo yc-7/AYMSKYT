@@ -6,12 +6,13 @@ from django.urls import reverse
 from minted.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
+from minted.tests.helpers import LoginRequiredTester
 from minted.forms import ExpenditureForm
 from minted.models import Expenditure
 from minted.tests.helpers import reverse_with_next
 
-class AddExpenditureViewTestCase(TestCase):
-    """Tests for the add expenditure view."""
+class AddExpenditureViewTestCase(TestCase, LoginRequiredTester):
+    """Test suite for the add expenditure view."""
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -67,6 +68,9 @@ class AddExpenditureViewTestCase(TestCase):
         response = self.client.get(self.url, follow = True)
         self.assertRedirects(response, '/create_category/', status_code = 302, target_status_code = 200)
         self.assertTemplateUsed(response, 'create_category.html')
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_successful_expenditure_creation(self):
         self.client.login(email = self.user.email, password = 'Password123')

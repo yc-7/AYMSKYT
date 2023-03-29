@@ -6,9 +6,10 @@ from django.views.generic import CreateView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from minted.notifications import unsubscribe_user_from_push
 
-class NotificationSubscriptionCreateView(AdminProhibitedMixin, CreateView):
+class NotificationSubscriptionCreateView(LoginRequiredMixin, AdminProhibitedMixin, CreateView):
     """View to create a new notification subscription"""
 
     template_name = 'notification_subscriptions/create_notification_subscription.html'
@@ -32,7 +33,7 @@ class NotificationSubscriptionCreateView(AdminProhibitedMixin, CreateView):
             return redirect('edit_notification_subscription')
         return super().post(request, *args, **kwargs)
     
-class NotificationSubscriptionUpdateView(AdminProhibitedMixin, UpdateView):
+class NotificationSubscriptionUpdateView(LoginRequiredMixin, AdminProhibitedMixin, UpdateView):
     """View to update an existing notification subscription"""
 
     form_class = NotificationSubscriptionForm
@@ -51,7 +52,7 @@ class NotificationSubscriptionUpdateView(AdminProhibitedMixin, UpdateView):
         messages.success(self.request, "Notification subscription updated successfully.")
         return response
     
-class PushSubscriptionDeleteView(AdminProhibitedMixin, View):
+class PushSubscriptionDeleteView(LoginRequiredMixin, AdminProhibitedMixin, View):
     """View to delete push subscription"""
 
     http_method_name = ['post']

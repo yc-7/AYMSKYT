@@ -1,11 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
-from minted.models import User, Category, SpendingLimit, Expenditure
+from minted.models import User, Category, Expenditure
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
-from minted.tests.helpers import reverse_with_next
+from minted.tests.helpers import LoginRequiredTester
 
-class BudgetListViewTestCase(TestCase):
+class BudgetListViewTestCase(TestCase, LoginRequiredTester):
     fixtures = [
         'minted/tests/fixtures/default_user.json',
         "minted/tests/fixtures/default_other_user.json",
@@ -43,10 +43,8 @@ class BudgetListViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget_list.html')
 
-    def test_get_budget_list_redirects_when_not_logged_in(self):
-        redirect_url = reverse_with_next('log_in', self.url)
-        response = self.client.get(self.url)
-        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_budget_list_shows_all_user_budgets(self):
         self.client.login(email=self.user.email, password='Password123')
