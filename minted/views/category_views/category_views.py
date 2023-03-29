@@ -4,7 +4,30 @@ from minted.forms import *
 from minted.models import *
 from minted.views.general_user_views.login_view_functions import *
 from django.contrib import messages
+from django.shortcuts import redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+from minted.decorators import staff_prohibited
+from minted.models import Category, SpendingLimit
+from minted.forms import CategoryForm, SpendingLimitForm
+from minted.mixins import AdminProhibitedMixin
 from minted.views.category_views.category_view_functions import *
+
+class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
+    """View that displays a user's categories"""
+
+    model = Category
+    template_name = 'category_list.html'
+    context_object_name = 'categories'
+    
+    def get_context_data(self, *args, **kwargs):
+        """Generate content to be displayed in the template"""
+
+        context = super().get_context_data(*args, **kwargs)
+        current_user = self.request.user
+        context['user'] = current_user
+        context['categories'] = current_user.get_categories
+        return context
 
 @staff_prohibited
 def create_category(request):
@@ -29,13 +52,6 @@ def delete_category(request, category_id):
         SpendingLimit.objects.get(category=category).delete()
         messages.add_message(request, messages.SUCCESS, "Category deleted successfully")
     return redirect('category_list')
-
-@staff_prohibited
-def category_list_view(request):
-    current_user = request.user
-    my_categories = Category.objects.filter(user = current_user)
-    context = {'user': current_user,'categories': my_categories}
-    return render(request, 'category_list.html', context)
 
 @staff_prohibited
 def edit_category(request, category_id):

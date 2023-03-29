@@ -23,38 +23,44 @@ from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 from minted.forms import NewPasswordForm
 
+
 urlpatterns = [
     path('admin', admin.site.index, name='admin'),
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('log_in/', views.log_in, name='log_in'),
+    path('', views.home, name = 'home'),
+
+    path('accounts/', include('allauth.urls')),
+    path('accounts/signup/', views.sign_up, name='sign_up'),
+
+    path('log_in/', views.LogInView.as_view(), name = 'log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('sign_up/', views.sign_up, name='sign_up'),
+    path('sign_up/spending/', views.spending_signup, name='spending_signup'),
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('profile/edit/profile', views.edit_profile, name='edit_profile'),
-    path('profile/edit/change_password/', views.change_password, name='change_password'),
+    path('profile/edit/profile/', views.ProfileUpdateView.as_view(), name = 'edit_profile'),
+    path('profile/edit/change_password/', views.PasswordView.as_view(), name = 'change_password'),
     path('profile/', views.profile , name='profile'),
 
     path('analytics/', views.view_analytics, name='view_analytics'),
     path('leaderboard/points', views.PointsLeaderboardView.as_view(), name = 'points_leaderboard'),
     path('leaderboard/streaks', views.StreaksLeaderboardView.as_view(), name = 'streaks_leaderboard'),
 
-    path('category_list/<str:category_name>/', views.category_expenditures_view, name='category_expenditures'),
+    path('category_list/<str:category_name>/', views.CategoryExpenditureListView.as_view(), name = 'category_expenditures'),
     path('category_list/<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),
     path('category_list/<str:category_name>/new_expenditure/', views.add_expenditure, name='add_expenditure'),
     path('category_list/<int:expenditure_id>/delete', views.delete_expenditure, name='delete_expenditure'),
 
+    path('category_list/', views.CategoryListView.as_view(), name = 'category_list'),
     path('create_category/', views.create_category, name = 'create_category'),
     path('category/<int:category_id>/edit', views.edit_category, name ='edit_category'),
     path('category/<int:category_id>/delete', views.delete_category, name ='delete_category'),
-    path('category_list/', views.category_list_view, name = 'category_list'),
 
-    path('friend_request/', views.friend_request, name='friend_request'),
-    path('friend_list/', views.friend_list_view, name='friend_list'),
-    path('request_list/', views.request_list_view, name='request_list'),
-    path('unfriend/<int:friend_id>', views.unfriend_view, name='unfriend'),
-    path('accept_request/<int:friend_request_id>', views.accept_request, name='accept_request'),
-    path('decline_request/<int:friend_request_id>', views.decline_request, name='decline_request'),
+    path('friend_list/', views.FriendsListView.as_view(), name = 'friend_list'),
+    path('friend_request/', views.NewFriendRequestView.as_view(), name = 'friend_request'),
+    path('request_list/', views.FriendRequestListView.as_view(), name = 'request_list'),
+    path('accept_request/<int:friend_request_id>', views.AcceptFriendRequestView.as_view(), name='accept_request'),
+    path('decline_request/<int:friend_request_id>', views.DeclineFriendRequestView.as_view(), name='decline_request'),
+    path('unfriend/<int:friend_id>', views.UnfriendView.as_view(), name = 'unfriend'),
     
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
     path('budget_list/', views.budget_list, name = 'budget_list'),
@@ -67,8 +73,9 @@ urlpatterns = [
     path('rewards/admin', views.rewards_list, name='rewards_list'),
     path('rewards/<int:reward_id>/edit', views.edit_rewards, name='edit_rewards'),
     
-    path('notification_subscription/create', views.create_notification_subscription, name='create_notification_subscription'),
-    path('notification_subscription/edit', views.edit_notification_subscription, name='edit_notification_subscription'),
+    path('notification_subscription/create', views.NotificationSubscriptionCreateView.as_view(), name='create_notification_subscription'),
+    path('notification_subscription/edit', views.NotificationSubscriptionUpdateView.as_view(), name='edit_notification_subscription'),
+    path('push_subscription/delete', views.PushSubscriptionDeleteView.as_view(), name='delete_push_subscription'),
     
     path('webpush/', include('webpush.urls')),
     path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript')),

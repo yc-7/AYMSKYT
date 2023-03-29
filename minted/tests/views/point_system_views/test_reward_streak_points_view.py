@@ -1,10 +1,10 @@
 from django.test import TestCase
 from minted.models import User
-from django.utils import timezone
-from datetime import datetime, timedelta
+from datetime import datetime
 from minted.views.general_user_views.point_system_views import *
+from minted.tests.helpers import LoginRequiredTester
 
-class TestViews(TestCase):
+class TestViews(TestCase, LoginRequiredTester):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -14,6 +14,9 @@ class TestViews(TestCase):
     def setUp(self):
         self.user = User.objects.get(pk = 1)
         
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_reward_login_points(self):
         initial_points = self.user.points
