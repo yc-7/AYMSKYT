@@ -95,7 +95,7 @@ class User(AbstractUser):
         return categories
 
     def get_expenditures(self):
-        expenditures = Expenditure.objects.filter(category__user = self)
+        expenditures = Expenditure.objects.filter(category__user = self).order_by('-date')
         return expenditures
 
 

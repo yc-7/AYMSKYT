@@ -45,6 +45,7 @@ urlpatterns = [
     path('leaderboard/points', views.PointsLeaderboardView.as_view(), name = 'points_leaderboard'),
     path('leaderboard/streaks', views.StreaksLeaderboardView.as_view(), name = 'streaks_leaderboard'),
 
+    path('all_expenditure_list', views.ExpenditureListView.as_view(), name = 'all_expenditures_list'),
     path('category_list/<str:category_name>/', views.CategoryExpenditureListView.as_view(), name = 'category_expenditures'),
     path('category_list/<str:category_name>/edit_expenditure/<int:expenditure_id>/', views.edit_expenditure, name='edit_expenditure'),
     path('category_list/<str:category_name>/new_expenditure/', views.add_expenditure, name='add_expenditure'),

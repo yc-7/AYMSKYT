@@ -9,6 +9,21 @@ from minted.views.expenditure_receipt_functions import handle_uploaded_receipt_f
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 
+class ExpenditureListView(LoginRequiredMixin, ListView):
+    """View that displays all the user's expenditures"""
+
+    model = Expenditure
+    template_name = 'expenditures/all_expenditures_list.html'
+    context_object_name = 'expenditures'
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        """Return all the user's expenditures"""
+
+        current_user = self.request.user
+        expenditures = current_user.get_expenditures()
+        return expenditures
+
 class CategoryExpenditureListView(LoginRequiredMixin, ListView):
     """View that displays a user's expenditure in a specific category"""
 
