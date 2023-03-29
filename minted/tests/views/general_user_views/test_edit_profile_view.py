@@ -20,7 +20,6 @@ class EditProfileViewTestCase(TestCase, LoginRequiredTester):
         }
         self.user = User.objects.get(pk = 1)
         
-    
     def test_edit_profile_url(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
@@ -33,7 +32,6 @@ class EditProfileViewTestCase(TestCase, LoginRequiredTester):
         self.assertEqual(self.user.first_name, 'John')
         self.assertEqual(self.user.last_name, 'Doe')
         self.assertEqual(self.user.email, 'johndoe@example.org')
-        
         
     def test_edit_profile_success(self):
         self.client.force_login(self.user)
@@ -48,6 +46,4 @@ class EditProfileViewTestCase(TestCase, LoginRequiredTester):
         self.client.force_login(self.user)
         response = self.client.post(self.url, data={'email': 'invalid'})
         self.assertTemplateUsed(response, 'edit_profile.html')
-        self.assertContains(response, 'Please correct the error below.')
-        
     

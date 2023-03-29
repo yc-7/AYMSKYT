@@ -30,7 +30,7 @@ class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
         self.client.login(email = self.user.email, password = 'Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'expenditures/expenditures_list.html')
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
 
     def test_get_category_expenditures_redirects_on_invalid_category_name(self):
         self.client.login(email = self.user.email, password = 'Password123')
