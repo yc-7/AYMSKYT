@@ -111,7 +111,7 @@ def profile(request):
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     user = request.user
 
-    webpush_subscription_status = 'Subscribed' if is_user_subscribed(user.id) else 'Not subscribed'
+    webpush_subscription_status = 'On' if is_user_subscribed(user.id) else 'Off'
 
     return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 
