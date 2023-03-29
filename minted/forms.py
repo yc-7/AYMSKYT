@@ -1,19 +1,9 @@
 """Forms in the Minted app"""
 
 from django import forms
-from django.forms import ModelForm
-from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward, FriendRequest
-from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserChangeForm
+from minted.models import *
 from .mixins import NewPasswordMixin
-
-PASSWORD_REGEX_VALIDATOR = RegexValidator(
-    regex = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
-    message = 'Password must contain an uppercase character, a lowercase character and a number'
-)
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -56,9 +46,12 @@ class SpendingLimitForm(forms.ModelForm):
         model = SpendingLimit
         fields = ['budget', 'timeframe']
 
-class EditProfileForm(UserChangeForm):
-    password = None
+class EditProfileForm(forms.ModelForm):
+    """Form to update user profile details"""
+
     class Meta:
+        """Form options"""
+
         model = User
         fields = ['first_name', 'last_name', 'email']
 
