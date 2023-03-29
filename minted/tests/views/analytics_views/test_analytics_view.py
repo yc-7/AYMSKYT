@@ -44,6 +44,9 @@ class AnalyticsViewTest(TestCase, LoginRequiredTester):
         self.assertTrue(form['start_date'], datetime.date.today())
         self.assertTrue(form['end_date'], one_year_from_today)
         self.assertTrue(form['time_interval'], 'monthly')
+    
+    def test_get_analytics_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_post_invalid_dates(self):
         self.client.login(email=self.user.email, password="Password123")
