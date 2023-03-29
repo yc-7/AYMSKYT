@@ -14,6 +14,6 @@ class LoginRequiredTester(TestCase):
     """Checks that users are redirected if they are not logged in"""
 
     def assertLoginRequired(self, url):
-        redirect_url = redirect_url = reverse_with_next('log_in', self.url)
+        redirect_url = redirect_url = reverse_with_next('log_in', url)
         response = self.client.get(url)
-        self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
+        self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200) 
