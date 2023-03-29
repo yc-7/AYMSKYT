@@ -20,7 +20,6 @@
   {{ colours|json_script:"colours"  }}
   {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
   {{ category_line_chart_data|json_script:"lineChartData" }}
-  {{ all_spending_line_chart_data|json_script:"allSpendingLineChartData" }}
 
   <canvas id="line-graph"></canvas>
   <canvas id="all-spending-line-graph"></canvas>
@@ -28,14 +27,15 @@
 </div>
 
 <script>
+  
   var category_pie_chart_data = JSON.parse(document.getElementById('categoryPieChartData').textContent);
   var category_line_chart_data = JSON.parse(document.getElementById('lineChartData').textContent);
-  var all_spending_line_chart_data = JSON.parse(document.getElementById('allSpendingLineChartData').textContent);
   var colours = JSON.parse(document.getElementById('colours').textContent);
+  colours.push("#000000");
   
-  var pie_chart_config = create_pie_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
   var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours)
-  var all_spending_line_config = create_line_chart_config(all_spending_line_chart_data.datasets, all_spending_line_chart_data.labels, ['#000000'])
+  var pie_chart_config = create_pie_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
+
 
   window.onload = function() {
     var category_pie_chart = document.getElementById('pie-chart').getContext('2d');
@@ -44,8 +44,6 @@
     var category_line_chart = document.getElementById('line-graph').getContext('2d');
     window.myLine = new Chart(category_line_chart, line_config);
 
-    var all_spending_line_chart = document.getElementById('all-spending-line-graph').getContext('2d');
-    window.myLine = new Chart(all_spending_line_chart, all_spending_line_config);
   }
 </script>
 

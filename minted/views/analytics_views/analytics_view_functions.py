@@ -56,9 +56,11 @@ def generate_category_pie_chart_dataset(categories, start_date, end_date):
 
     return category_pie_chart_data
 
-def generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval):
+
+
+def generate_category_line_chart_dataset(categories, start_date, end_date, time_interval):
     labels = create_labels(categories,time_interval, start_date, end_date)
-    
+
     line_dataset = create_line_dataset(categories, time_interval, start_date, end_date)
 
     all_expenses = {}
@@ -66,32 +68,10 @@ def generate_all_spending_line_chart_dataset(categories, start_date, end_date, t
     for item in line_dataset:
         for date, expense in item['expenses_per_time'].items():
             all_expenses[date] = all_expenses.get(date, 0) + expense
-
-    data = create_data(all_expenses.items())
     
-    data_points = {
-        'label': 'Total spending',
-        'data': data,
-        'fill': False,
-        'borderColor': '',
-        'backgroundColor': '',
-        'pointHoverRadius': 8,
-        'pointHoverBorderColor': 'white',
-        'pointBorderColor': 'white',
-        'pointStyle': 'rectRot',
-    }
-
-    all_spending_line_chart_data = {
-        'labels': labels,
-        'datasets': [data_points]
-    }
-    return all_spending_line_chart_data
-
-
-def generate_category_line_chart_dataset(categories, start_date, end_date, time_interval):
-    labels = create_labels(categories,time_interval, start_date, end_date)
-
-    line_dataset = create_line_dataset(categories, time_interval, start_date, end_date)
+    line_dataset.append({
+        'category_name': 'Total spending',
+        'expenses_per_time': all_expenses})
     
     line_data = []
     for item in line_dataset:

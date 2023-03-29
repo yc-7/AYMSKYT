@@ -18,7 +18,7 @@ function create_pie_chart_config(data, labels, colours){
 }
 
 function create_line_chart_config(datasets, labels, colours){
-    for (var i=0; i< datasets.length; i++){
+    for (var i=0; i< colours.length; i++){
         datasets[i].backgroundColor = colours[i]
         datasets[i].borderColor = colours[i]
     }
