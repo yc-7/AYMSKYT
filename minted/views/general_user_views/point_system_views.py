@@ -6,10 +6,6 @@ from django.utils import timezone
 import pytz
 import math
 
-def reward_login_points(user):
-    user.points += 5
-    user.save()
- 
 def reward_streak_points(user):
     points_rewarded = (user.streak_data.streak % 7) * 10
     user.points += points_rewarded 
@@ -22,21 +18,15 @@ def standardise_timeframe(category):
         yearly_budget = float(category.budget.budget) * 4
     elif (category.budget.timeframe == '/month'):
         yearly_budget = float(category.budget.budget) * 12
+    elif (category.budget.timeframe == '/year'):
+        yearly_budget = float(category.budget.budget)
     return yearly_budget
 
 def calculate_category_weightings(user, category, all_budgets):
-    user_total_budget = all_budgets[-1]
-    if (user.budget.timeframe != '/year'):
-        user_yearly_budget = standardise_timeframe(user)
-    else:
-        user_yearly_budget = user_total_budget.budget
-   
+    user_yearly_budget = standardise_timeframe(user)
     category_object = Category.objects.get(user = user.id, name = category.name)
-    if category_object.budget.timeframe != '/year':
-        category_yearly_budget = standardise_timeframe(category_object)
-        weighting_of_category = category_yearly_budget / user_yearly_budget
-    else:
-        weighting_of_category = float(category.budget) / user_yearly_budget
+    category_yearly_budget = standardise_timeframe(category_object)
+    weighting_of_category = category_yearly_budget / user_yearly_budget
     return weighting_of_category
 
 def calculate_budget_points(user, all_budgets, category):
@@ -70,17 +60,6 @@ def user_has_budget_ending_today(user):
         if today == category.end_date:
             return True
     return False
-
-def reward_login_and_streak_points(user):
-    if user.is_superuser:
-        return
-    
-    if user.streak_data is not None:
-        last_login = user.streak_data.last_login_time
-    
-        if last_login.date() < datetime.now().date():
-            reward_login_points(user)
-            reward_streak_points(user)
     
 def update_streak(user):
     if user.is_superuser:
@@ -93,11 +72,13 @@ def update_streak(user):
 
     if days_since_last_login >= 2:
         user.streak_data.streak = 1
-        user.streak_data.last_login_time = now
     
     elif days_since_last_login == 1 or days_since_last_login < 0:
         user.streak_data.streak += 1
-        reward_streak_points(user)
-        user.streak_data.last_login_time = now
-        
+    
+    else:
+        return
+    
+    reward_streak_points(user)
+    user.streak_data.last_login_time = now
     user.streak_data.save()

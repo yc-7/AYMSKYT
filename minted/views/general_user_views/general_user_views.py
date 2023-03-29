@@ -39,7 +39,6 @@ class LogInView(LoginProhibitedMixin, View):
         if user is not None:
             login(request, user)
             update_streak(user)
-            reward_login_and_streak_points(user)
             self.next = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "Log in credentials were invalid!")
@@ -104,7 +103,6 @@ def spending_signup(request):
 def dashboard(request):
     if SocialAccount.objects.filter(user=request.user.id).exists():
             update_streak(request.user)
-            reward_login_and_streak_points(request.user)
     return render(request,'dashboard.html')
 
 @login_required
