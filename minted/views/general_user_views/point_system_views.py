@@ -61,7 +61,7 @@ def reward_budget_points(user):
 def is_today_a_end_date(user):
     categories = user.get_categories()
     all_budgets = generate_budget_list(user, categories)
-    today = datetime.now().date()
+    today = str(datetime.now().date())
     ends_today = []
     for category in all_budgets:
         is_today = False
