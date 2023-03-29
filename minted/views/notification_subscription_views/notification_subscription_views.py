@@ -6,7 +6,7 @@ from django.views.generic import CreateView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import View
-from minted.notifications import unsubscribe_user_from_push
+from minted.notifications import unsubscribe_user_from_push, delete_user_subscriptions
 
 class NotificationSubscriptionCreateView(AdminProhibitedMixin, CreateView):
     """View to create a new notification subscription"""
@@ -57,5 +57,8 @@ class PushSubscriptionDeleteView(AdminProhibitedMixin, View):
     http_method_name = ['post']
 
     def post(self, request):
+        user = self.request.user
+        delete_user_subscriptions(user)
         unsubscribe_user_from_push(request.user.id)
+        
         return redirect('profile')
