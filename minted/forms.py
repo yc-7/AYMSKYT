@@ -19,6 +19,8 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 class LogInForm(forms.Form):
+    """Form to allow registered users to log in"""
+
     email = forms.CharField(label = "Email")
     password = forms.CharField(label = "Password", widget = forms.PasswordInput())
     
@@ -61,6 +63,10 @@ class EditProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        return email.lower()
 
 class NewPasswordForm(NewPasswordMixin):
     """Form for password resets through email link"""
