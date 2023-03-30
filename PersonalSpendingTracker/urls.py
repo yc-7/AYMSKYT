@@ -40,7 +40,6 @@ urlpatterns = [
     path('profile/edit/profile/', views.ProfileUpdateView.as_view(), name = 'edit_profile'),
     path('profile/edit/change_password/', views.PasswordView.as_view(), name = 'change_password'),
     path('profile/', views.profile , name='profile'),
-    path('help/', views.help_page, name= 'help'),
 
     path('analytics/', views.view_analytics, name='view_analytics'),
     path('leaderboard/points', views.PointsLeaderboardView.as_view(), name = 'points_leaderboard'),

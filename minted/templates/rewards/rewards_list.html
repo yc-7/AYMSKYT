@@ -1,12 +1,9 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <div class="container">
-  <div class="card border-light mb-3">
-    <div class="card-body">
-          <h1><b>Reward List</b></h1>
-            <p><a href="{% url 'add_rewards' %}" class="btn btn-primary">New reward</a></p>
+    <h1>Reward List</h1>
+    <p><a href="{% url 'add_rewards' %}" class="btn btn-primary">New reward</a></p>
         {% if rewards %}
-        <div class="row row-cols-1 row-cols-md-3 g-4">
           {% for reward in rewards %}
             <div class="col">
             <div class="card">
@@ -14,7 +11,7 @@
               <img src="{{ reward.cover_image.url }}" class="card-img-top">
               {% endif %}
               <div class="card-body d-flex flex-column">
-                <h5 class="card-title"><a href="{% url 'edit_rewards' reward.id %}"><b>{{ reward.brand_name }}</b></a></h5>
+                <h5 class="card-title"><a href="{% url 'edit_rewards' reward.id %}">{{ reward.brand_name }}</a></h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{ reward.points_required }} points</h6>
                 {% if reward.user_limit != None %}
                 <h6 class="card-subtitle mb-2 text-muted">Coupons remaining: {{ reward.user_limit }}</h6>
@@ -22,18 +19,14 @@
                 <p class="card-text">{{ reward.description }}</p>
                 <form action="" method="post">
                 {% csrf_token %}
-                <p style="text-align:right"><button type="submit" name = 'delete' value={{ reward.id }} class="btn custom-button">Delete</button></p>
+                <p style="text-align:right"><button type="submit" name = 'delete' value={{ reward.id }} class="btn button-admin btn-secondary">Delete</button></p>
                 </form>
                 <div class="card-footer">
                     <small class="text-muted">Expires on {{ reward.expiry_date }}</small>
                 </div>
-              </div>
             </div>
             </div>
           {% endfor %}
-        </div>
         {% endif %}
-    </div>
-  </div>
 </div>
 {% endblock %}

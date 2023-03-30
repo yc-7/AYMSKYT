@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 {% for field in form %}
-<div class="mb-3 col-auto">
+<div class="mb-3">
     {{ field.label_tag }}
     {% if form.is_bound %}
     {% if field.errors %}

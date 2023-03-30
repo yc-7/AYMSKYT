@@ -1,30 +1,23 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <div class = "container">
-    <h1 style="padding-bottom: 2%; font-weight:800;"> Leaderboard </h1>
+    <h1> Leaderboard </h1>
     <div class = "dropdown">
-        <a class = "btn custom-button dropdown-toggle" href = "#" role = "button" data-bs-toggle = "dropdown" aria-expanded = "false"> Stats </a>
+        <a class = "btn btn-secondary dropdown-toggle" href = "#" role = "button" data-bs-toggle = "dropdown" aria-expanded = "false"> Stats </a>
         <div class = "dropdown-menu dropdown-menu-end" aria-labelledby = "dropdownMenuButton">
             <a class = "dropdown-item" href = "{% url 'points_leaderboard' %}"> Points </a>
             <a class = "dropdown-item" href = "{% url 'streaks_leaderboard' %}"> Streaks </a>
         </div>
     </div>
-    <section style="padding-top: 3%;">
-
-        <div class="card bg-white">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th style="text-align:center; width:30%"></th>
-                  <th style="text-align:center; width:30%"></th>
-                </tr>
-                {% block table %}
-                {% endblock %}
-              </thead>
-            </table>
-          </div>
-
-    </section>
+    <table class = "table table-striped">
+        <thead>
+            <tr>
+                <th style = "text-align:center; width:30%"></th>
+                <th style = "text-align:center; width:30%"></th>
+            </tr>
+            {% block table %}
+            {% endblock %}
+    </table>
 </div>
 {% endblock %}
 

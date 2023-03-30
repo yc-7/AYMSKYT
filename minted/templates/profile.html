@@ -21,7 +21,7 @@
                     <p>First name: {{ user.first_name }}</p>
                     <p>Last name: {{ user.last_name }}</p>
                     <p>Email: {{ user.email }}</p>
-                    <a href = "{% url 'edit_profile' %}" class = "btn btn-lg custom-button" style="margin: 20px">
+                    <a href = "{% url 'edit_profile' %}" class = "btn btn-lg custom-button">
                         Edit Details
                     </a>
                     <a href = "{% url 'change_password' %}" class = "btn btn-lg custom-button">
@@ -41,9 +41,6 @@
                     <h1>Budget</h1>
                     <p>Spending limit: {{ user.budget.budget }}</p>
                     <p>Timeframe: {{ user.budget.timeframe }}</p>
-                    <a href = "{% url 'budget_list' %}" class = "btn btn-lg custom-button">
-                        View Budgets
-                    </a>
                     <a href = "{% url 'edit_spending_limit' %}" class = "btn btn-lg custom-button">
                         Edit Limits
                     </a>
@@ -61,7 +58,7 @@
                     </a>
                     <form action = "{% url 'delete_push_subscription' %}" method = "post">
                         {% csrf_token %}
-                        <input type="submit" value="Turn off notifications" class="btn btn-lg custom-button" style="margin:10px">
+                        <input type="submit" value="Turn off notifications" class="btn btn-lg custom-button">
                     </form>
                     <a id="error-message"></a>
                 </div>

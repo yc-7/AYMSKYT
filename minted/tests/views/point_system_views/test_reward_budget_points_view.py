@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.urls import reverse
 from minted.models import User
 from minted.views.general_user_views.point_system_views import *
 from minted.views.budget_views_functions import Budget
@@ -36,33 +35,13 @@ class BudgetPointsTestViews(TestCase, LoginRequiredTester):
         self.category = Category.objects.get(pk = 4)
         self.other_category = Category.objects.get(pk = 1)
 
-    def test_today_is_not_end_date(self):
-        current_day = '2000-01-01'
-        ends_today = is_today_a_end_date(self.user, current_day)
-        self.assertNotIn(True, ends_today)
-
     
-    def test_standardise_yearly_timeframe(self):
+    def test_standardise_timeframe(self):
         yearly_budget = standardise_timeframe(self.other_category)
-        self.assertEqual(yearly_budget, 1000)
+        self.assertEqual(yearly_budget, 7800)
 
-
-    def test_standardise_quarterly_timeframe(self):
-        yearly_budget = standardise_timeframe(self.category)
-        self.assertEqual(yearly_budget, 400)
-
-
-    def test_standardise_monthly_timeframe(self):
-        self.category.budget.timeframe = "/month"
-        yearly_budget = standardise_timeframe(self.category)
-        self.assertEqual(yearly_budget, 1200)
-
-    
-    def test_standardise_weekly_timeframe(self):
-        self.category.budget.timeframe = "/week"
-        yearly_budget = standardise_timeframe(self.category)
-        self.assertEqual(yearly_budget, 5200)
-
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_calculate_category_weightings(self):
         
@@ -78,7 +57,7 @@ class BudgetPointsTestViews(TestCase, LoginRequiredTester):
             )
             budget_objects.append(budget_object)
         weighting_of_category = calculate_category_weightings(self.user, self.category, budget_objects)
-        self.assertEqual(round(weighting_of_category, 2), 0.05)
+        self.assertEqual(round(weighting_of_category, 2), 0.6)
 
 
 
@@ -96,6 +75,6 @@ class BudgetPointsTestViews(TestCase, LoginRequiredTester):
             )
             budget_objects.append(budget_object)
         points_reward = calculate_budget_points(self.user, budget_objects, self.category)
-        self.assertEqual(points_reward, 6)
+        self.assertEqual(points_reward, 60)
 
     

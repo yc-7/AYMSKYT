@@ -18,7 +18,6 @@ from minted.decorators import login_prohibited
 from minted.mixins import LoginProhibitedMixin
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 from minted.views.general_user_views.login_view_functions import *
-from minted.views.analytics_views.analytics_views import dashboard_analytics 
 
 class LogInView(LoginProhibitedMixin, View):
     """View that handles log in"""
@@ -104,10 +103,7 @@ def budget_sign_up(request):
 def dashboard(request):
     if SocialAccount.objects.filter(user=request.user.id).exists():
             update_streak(request.user)
-    return dashboard_analytics(request)
-
-def help_page(request):
-    return render(request, 'help_page.html')
+    return render(request,'dashboard.html')
 
 @login_required
 def profile(request):
