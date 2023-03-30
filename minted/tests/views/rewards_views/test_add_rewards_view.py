@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, Reward
@@ -17,14 +20,24 @@ class AddRewardsViewTestCase(TestCase, LoginRequiredTester):
     def setUp(self):
         self.reward = Reward.objects.get(pk=1)
         self.url = reverse('add_rewards')
+        settings.UPLOAD_DIR = 'uploads_test/'
+        self.cover_image = SimpleUploadedFile(
+            "example_cover_image.png",
+            b"example cover image content"
+        )
         self.form_input = {
             "brand_name": "Amazon",
             "points_required": "20",
-            "expiry_date": "2023-03-30",
+            "expiry_date": "9999-03-30",
             "description": "20% off",
+            "cover_image": self.cover_image,
             "code_type": "random"}
         self.user = User.objects.get(pk = 2)
         self.other_user = User.objects.get(pk = 1)
+    
+    def tearDown(self):
+        if os.path.exists(settings.UPLOAD_DIR):
+            shutil.rmtree(settings.UPLOAD_DIR)
         
     def test_add_rewards_url(self):
         self.client.force_login(self.user)
