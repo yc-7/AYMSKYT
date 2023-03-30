@@ -27,6 +27,26 @@ $ pip3 install -r requirements.txt
 Set up environment variables:
 - *Copy `.env.sample` into a new file `.env`  at the root directory and replace with your own variables*
 
+  ```dotenv
+  # The following variables are required:
+  
+  # Notifications
+  VAPID_PUBLIC_KEY = YOUR_VAPID_PUBLIC_KEY
+  VAPID_PRIVATE_KEY = YOUR_VAPID_PRIVATE_KEY
+  VAPID_ADMIN_EMAIL = YOUR_VAPID_ADMIN_EMAIL
+  
+  # Password resets
+  EMAIL_HOST = MAIL_SERVICE_SMTP
+  EMAIL_HOST_USER = EMAIL_USER_ID
+  EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+  EMAIL_PORT = EMAIL_PORT
+  EMAIL_USE_TLS = BOOLEAN_USE_TLS
+  
+  # OAuth
+  CLIENT_ID = YOUR-CLIENT-ID
+  SECRET = YOUR-SECRET
+  ```
+
 Make migrations:
 ```
 $ python3 manage.py makemigrations
@@ -34,6 +54,10 @@ $ python3 manage.py makemigrations
 Migrate the database:
 ```
 $ python3 manage.py migrate
+```
+Create social app for oauth
+```
+$ python3 manage.py create_social_app
 ```
 Create default notification subscriptions:
 ```
