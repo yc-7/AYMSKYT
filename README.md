@@ -1,12 +1,31 @@
-# Minted - Personal Spending Tracker
+# Team AYMSKYT Major Group Project
+## Minted - A1 Personal Spending Tracker
+
+## Team members
+
+The members of the the team are:
+
+- Amber Leung
+- Yu Han Chen
+- Maja Szczepanczyk
+- Stephanie Lawal
+- Kyron Caesar
+- Yasamin Divsalar
+- Thang Nguyen
+
+## Project structure
+
+The project is called `PersonalSpendingTracker`. It consists of a single app called `minted` where all functionality resides.
 
 ## Deployed version of the application:
-The deployed version of the application can be found at **[Minted](https://minted-aymskyt.azurewebsites.net/)**
+The deployed version of the application can be found at **[Minted](https://minted-aymskyt.azurewebsites.net/)**.
 
 ## Installation instructions:
-To setup for development, you must edit `settings.py` inside the *PersonalSpendingTracker* directory to be `DEBUG=True` from the existing `DEBUG=False`
+To setup for development, you must edit `settings.py` inside the *PersonalSpendingTracker* directory to be 
+`DEBUG = True` from the existing `DEBUG = False`
 
-To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:
+To install the software and use it in your local development environment, you must first set up and activate a 
+local development environment.  From the root of the project:
 ```
 $ virtualenv venv
 $ source venv/bin/activate
@@ -86,6 +105,13 @@ $ python3 manage.py crontab remove
 ```
 
 ## Sources:
+
 *Packages:*
-The packages used by this application are specified in `requirements.txt`.
+
+The packages used by this application are specified in `requirements.txt`
 The exact version of each package used by this application can also be found in this same file.
+
+For the implementation of notifications we used this [guide](https://www.digitalocean.com/community/tutorials/how-to-send-web-push-notifications-from-django-applications)
+and adapted it to work with our project.
+
+Some code has been taken and adapted from the 5CCS2SEG Clucker project.
