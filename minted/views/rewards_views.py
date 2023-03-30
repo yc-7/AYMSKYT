@@ -6,7 +6,7 @@ from .general_user_views.login_view_functions import *
 from django.contrib import messages
 from django.db.models import Q
 import datetime
-from minted.views.expenditure_receipt_functions import handle_uploaded_reward_file, delete_file
+from minted.views.expenditure_views.expenditure_receipt_functions import handle_uploaded_reward_file, delete_file
 
 
 @staff_prohibited

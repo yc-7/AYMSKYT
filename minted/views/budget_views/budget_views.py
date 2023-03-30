@@ -1,7 +1,6 @@
 from django.shortcuts import redirect, render
 from minted.decorators import staff_prohibited, login_required
-from ..models import *
-from django.contrib import messages
+from minted.models import *
 from .budget_views_functions import *
     
 
