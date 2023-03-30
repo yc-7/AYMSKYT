@@ -57,3 +57,11 @@ i.bi-person-circle {
   font-size: 2rem;
   color: #d462a1;
 }
+
+.pagination > li > a {
+  background-color: #72e0ad;
+}
+
+.pagination > li > a:hover {
+  background-color: skyblue;
+}
