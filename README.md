@@ -20,6 +20,16 @@ The project is called `PersonalSpendingTracker`. It consists of a single app cal
 ## Deployed version of the application:
 The deployed version of the application can be found at **[Minted](https://minted-aymskyt.azurewebsites.net/)**.
 
+The default admin user log in details are:
+
+Email: admin@example.org
+Password: Password123
+
+The default user login details are:
+
+Email: john.doe@example.org
+Password: Password123
+
 ## Installation instructions:
 To setup for development, you must edit `settings.py` inside the *PersonalSpendingTracker* directory to be 
 `DEBUG = True` from the existing `DEBUG = False`
@@ -113,5 +123,8 @@ The exact version of each package used by this application can also be found in 
 
 For the implementation of notifications we used this [guide](https://www.digitalocean.com/community/tutorials/how-to-send-web-push-notifications-from-django-applications)
 and adapted it to work with our project.
+
+For the functionality of signing and logging in with google we used this [video](https://youtu.be/GQySb3W2feo)
+to help guide us through the process along with this [document](https://django-allauth.readthedocs.io/en/latest/).
 
 Some code has been taken and adapted from the 5CCS2SEG Clucker project.
