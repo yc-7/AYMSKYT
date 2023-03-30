@@ -48,6 +48,16 @@ class SpendingLimitForm(forms.ModelForm):
         model = SpendingLimit
         fields = ['budget', 'timeframe']
 
+    def clean(self):
+        """Clean the data and generate messages for any errors"""
+
+        super().clean()
+        budget = self.cleaned_data.get('budget')
+        if budget == 0:
+            self.add_error('budget', 'Your budget cannot be 0')
+        elif budget <= 0:
+            self.add_error('budget', 'Your budget cannot be negative')
+
 class EditProfileForm(forms.ModelForm):
     """Form to update user profile details"""
 
@@ -148,14 +158,11 @@ class FriendReqForm(forms.Form):
 
             if (self.user == self.to_user):
                 self.add_error('email', 'You cannot send a friend request to yourself :/')
-
-            if (FriendRequest.objects.filter(from_user = self.to_user, to_user = self.user).count() != 0):
+            elif (FriendRequest.objects.filter(from_user = self.to_user, to_user = self.user).exists()):
                 self.add_error('email', 'This person has already sent you a friend request!')
-
-            if (FriendRequest.objects.filter(from_user = self.user, to_user = self.to_user).count() != 0):
+            elif (FriendRequest.objects.filter(from_user = self.user, to_user = self.to_user).exists()):
                 self.add_error('email', 'You have already sent a friend request to this person')
-
-            if self.to_user in self.user.friends.all():
+            elif (self.to_user in self.user.friends.all()):
                 self.add_error('email', 'You are already friends with this user')
 
     def save(self):
