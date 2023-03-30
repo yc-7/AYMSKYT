@@ -38,7 +38,6 @@ class LogInView(LoginProhibitedMixin, View):
         if user is not None:
             login(request, user)
             update_streak(user)
-            reward_login_and_streak_points(user)
             self.next = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "Log in credentials were invalid!")
