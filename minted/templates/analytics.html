@@ -25,7 +25,9 @@
   {{ colours|json_script:"colours"  }}
   {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
   {{ category_line_chart_data|json_script:"lineChartData" }}
-  {{ all_spending_line_chart_data|json_script:"allSpendingLineChartData" }}
+  {{ time_interval|json_script:"timeInterval"}}
+  {{ start_date|json_script:"startDate"}}
+  {{ end_date|json_script:"endDate"}}
 
   <div class="container">
     <div class="row row-cols-1 row-cols-md-2 g-4">
@@ -39,13 +41,14 @@
       <div class="col">
         <div class="card bg-light">
           <div class="card-body text-center">
-            <canvas id="all-spending-line-graph"></canvas>
+            <canvas id="line-graph"></canvas>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 <section>
   <div class="container">
     <div class="accordion" id="accordion" style="padding-bottom: 2%;">
@@ -62,6 +65,7 @@
         </div>
       </div>
     </div>
+
     <div class="card bg-light">
 
       {%if budget%}
@@ -90,22 +94,66 @@
 
     </div>
   </div>
+
+  <div class="container">
+        <div class="card bg-light">
+          <div class="card-body text-center">
+            <div id="stats_container" style="padding:30px;">
+              {%if extreme_labels.max_labels%}
+                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
+                  {% for category in extreme_labels.max_labels %}
+                    <b>{{ category }}</b>
+                    {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.max_labels|length > 1%}
+                      and
+                    {% endif %}
+                  {% endfor %}
+                </h4>
+              {% endif %}
+  
+  
+              {%if extreme_labels.min_labels%}
+                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the least on
+                  {% for category in extreme_labels.min_labels %}
+                    <b>{{ category}}</b>
+                    {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.min_labels|length > 1%}
+                      and
+                    {% endif %}
+                  {% endfor %}
+                </h4>
+              {% endif %}
+  
+              <h4> You are currently on budget for <b>{{categories_on_budget_percentage}}%</b> of your categories </h4>
+              <h4> You currently have <b>{{percent_of_budget_remaining}}%</b> of your overall budget left </h4>
+            </div>
+          </div>
+        </div>
+  </div>
+
 </section>
 
+
+
 <script>
-  var category_pie_chart_data = JSON.parse(document.getElementById('categoryPieChartData').textContent);
-  var all_spending_line_chart_data = JSON.parse(document.getElementById('allSpendingLineChartData').textContent);
-  var colours = JSON.parse(document.getElementById('colours').textContent);
   
+  var category_pie_chart_data = JSON.parse(document.getElementById('categoryPieChartData').textContent);
+  var category_line_chart_data = JSON.parse(document.getElementById('lineChartData').textContent);
+  var colours = JSON.parse(document.getElementById('colours').textContent);
+  var time_interval = JSON.parse(document.getElementById('timeInterval').textContent);
+  var start_date = JSON.parse(document.getElementById('startDate').textContent);
+  var end_date = JSON.parse(document.getElementById('endDate').textContent);
+  colours.push("#000000");
+  
+  var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours, time_interval, start_date, end_date)
   var pie_chart_config = create_pie_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
-  var all_spending_line_config = create_line_chart_config(all_spending_line_chart_data.datasets, all_spending_line_chart_data.labels, ['#602385'])
+
 
   window.onload = function() {
     var category_pie_chart = document.getElementById('pie-chart').getContext('2d');
     window.myPie = new Chart(category_pie_chart, pie_chart_config);
 
-    var all_spending_line_chart = document.getElementById('all-spending-line-graph').getContext('2d');
-    window.myLine = new Chart(all_spending_line_chart, all_spending_line_config);
+    var category_line_chart = document.getElementById('line-graph').getContext('2d');
+    window.myLine = new Chart(category_line_chart, line_config);
+
   }
 
 </script>

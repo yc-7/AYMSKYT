@@ -2,7 +2,7 @@ from minted.decorators import staff_prohibited
 from django.shortcuts import render
 from minted.forms import TimeFrameForm
 from minted.models import Category
-from minted.views.analytics_views.analytics_view_functions import generate_category_line_chart_dataset, generate_category_pie_chart_dataset, generate_all_spending_line_chart_dataset, generate_all_spending_pie_chart_dataset
+from minted.views.analytics_views.analytics_view_functions import *
 import datetime
 from minted.views.budget_views import *  
 
@@ -35,17 +35,29 @@ def view_analytics(request):
     colours = [category.colour for category in categories]
     category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date, float(budget))
     category_line_chart_data = generate_category_line_chart_dataset(categories, start_date, end_date, time_interval)
-    all_spending_line_chart_data = generate_all_spending_line_chart_dataset(categories, start_date, end_date, time_interval)
-    
-    return render(request, 'analytics.html', {'form': form, 'category_pie_chart_data': category_pie_chart_data, 'category_line_chart_data': category_line_chart_data, 'all_spending_line_chart_data': all_spending_line_chart_data, 'colours': colours, 'budget':all_budgets})
+    overall_min_and_max_spending_categories = get_overall_max_and_min_spending_categories(category_pie_chart_data)
+    categories_on_budget_percentage = calculate_categories_on_budget_percentage(request)
+    percent_of_budget_remaining = calculate_percentage_of_budget_remaining(request)
+
+    return render(request, 'analytics.html', {
+        'form': form, 
+        'category_pie_chart_data': category_pie_chart_data, 
+        'category_line_chart_data': category_line_chart_data, 
+        'colours': colours, 'time_interval': time_interval, 
+        'start_date':start_date, 'end_date':end_date,
+        'extreme_labels':overall_min_and_max_spending_categories,
+        'categories_on_budget_percentage': categories_on_budget_percentage,
+        'percent_of_budget_remaining': percent_of_budget_remaining,
+        'budget':all_budgets})
 
 def dashboard_analytics(request):
-    now = datetime.date.today()
-    beginning_of_month = datetime.date(now.year, now.month, 1)
+    
+    categories = Category.objects.filter(user = request.user)
+    all_budgets = generate_budget_list(request.user, categories)
+    user_budget = all_budgets[-1]
 
-    # Defaults
-    start_date = beginning_of_month
-    end_date = datetime.date.today()
+    start_date = user_budget.start_date
+    end_date = user_budget.end_date
     budget = request.user.budget.budget
 
     categories = Category.objects.filter(user = request.user)
@@ -60,3 +72,4 @@ def dashboard_analytics(request):
 
 
 
+    
