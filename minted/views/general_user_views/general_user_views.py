@@ -10,7 +10,7 @@ from django.contrib import messages
 from allauth.socialaccount.models import SocialAccount
 from minted.forms import *
 from minted.models import *
-from minted.decorators import login_prohibited, login_required, staff_prohibited, login_prohibited
+from minted.decorators import login_prohibited, login_required, staff_prohibited
 from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.conf import settings
