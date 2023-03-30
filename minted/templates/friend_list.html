@@ -6,24 +6,19 @@
 <div class = "container">
     <h1 class="bi-people-fill"> Friends </h1>
     <table class = "table table-striped">
-        <thead>
-            <tr>
-				<th style = "text-align:center; width:auto"></th>
-				<th style = "text-align:center; width:30%"></th>
-				<th style = "text-align:center; width:30%"></th>
-            </tr>
-        </thead>
         {% if friends %}
         {% for friend in friends %}
-        <td>
-            <td style = "text-align:center"> {{ friend }} </td>
+        <tr>
             <td>
-                <form action = "{% url 'unfriend' friend.id %}" method = "post">
-                {% csrf_token %}
-                <td style = "text-align:center"><input type = "submit" value = "Unfriend" class = "btn custom-button"/></td>
-                </form>
+                <td style = "text-align:center"> {{ friend }} </td>
+                <td>
+                    <form action = "{% url 'unfriend' friend.id %}" method = "post">
+                    {% csrf_token %}
+                    <td style = "text-align:center"><input type = "submit" value = "Unfriend" class = "btn custom-button"/></td>
+                    </form>
+                </td>
             </td>
-        </td>
+        </tr>
         {% endfor %}
         {% else %}
         <tr>
@@ -33,5 +28,6 @@
     </table>
     <a href = "{% url 'request_list' %}" class = "btn custom-button"> Friend requests </a>
     <a href = "{% url 'friend_request' %}" class = "btn custom-button"> Add friends </a>
+    {% include 'partials/pagination_bar.html' %}
 </div>
 {% endblock %}

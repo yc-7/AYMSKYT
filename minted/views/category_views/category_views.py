@@ -12,6 +12,8 @@ from minted.models import Category, SpendingLimit
 from minted.forms import CategoryForm, SpendingLimitForm
 from minted.mixins import AdminProhibitedMixin
 from minted.views.category_views.category_view_functions import *
+from django.core.paginator import Paginator
+
 
 class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     """View that displays a user's categories"""
@@ -19,14 +21,24 @@ class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     model = Category
     template_name = 'category_list.html'
     context_object_name = 'categories'
-    
+    paginate_by = settings.CATEGORIES_PER_PAGE
+
+
+    def get_queryset(self):
+        current_user = self.request.user
+        user_category_list = current_user.get_categories()
+        return user_category_list
+
     def get_context_data(self, *args, **kwargs):
         """Generate content to be displayed in the template"""
 
         context = super().get_context_data(*args, **kwargs)
         current_user = self.request.user
         context['user'] = current_user
-        context['categories'] = current_user.get_categories
+        paginator = Paginator(self.object_list, self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
         return context
 
 @staff_prohibited
@@ -37,30 +49,31 @@ def create_category(request):
     if request.method == 'POST':
         category_form = CategoryForm(request.POST, user=request.user)
         spending_form = SpendingLimitForm(request.POST)
-        if category_form.is_valid() and spending_form.is_valid():
+
+        valid_forms = category_form.is_valid() and spending_form.is_valid()
+        if valid_forms:
             create_category_from_forms(request.user, category_form, spending_form, request.POST.get('colour_value', ""))
+
             return redirect('category_list')           
     return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
 
 @staff_prohibited
 def delete_category(request, category_id):
     if request.method == 'POST':
-        if len(Category.objects.filter(id=category_id)) == 0:
+        if Category.objects.filter(id=category_id).count() == 0:
             messages.add_message(request, messages.ERROR, "Category does not exist")
             return redirect('create_category')
         category = Category.objects.get(id=category_id)
-        SpendingLimit.objects.get(category=category).delete()
+        category.budget.delete()
         messages.add_message(request, messages.SUCCESS, "Category deleted successfully")
     return redirect('category_list')
 
 @staff_prohibited
 def edit_category(request, category_id):
-    if not category_id:
-        return redirect('category_list')
     
-    number_of_existing_categories = len(Category.objects.filter(id=category_id)) 
+    category_exists = len(Category.objects.filter(id=category_id)) != 0
     
-    if number_of_existing_categories == 0:
+    if not category_exists:
         messages.add_message(request, messages.ERROR, "Category does not exist")
         return redirect('create_category')
 
@@ -80,7 +93,12 @@ def edit_category(request, category_id):
     if request.method == 'POST':
         category_form = CategoryForm(instance=category, data=request.POST)
         spending_form = SpendingLimitForm(request.POST)
-        if category_form.is_valid() and spending_form.is_valid():
+        valid_forms = category_form.is_valid() and spending_form.is_valid()
+        if valid_forms:
+            if category_already_exists_for_edit(category_form, category, request.user):
+                category_form.add_error('name', 'You already have a category with this name')
+                return render(request, 'edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id})
+            
             messages.add_message(request, messages.SUCCESS, "Category updated!")
             edit_category_from_forms(category_form, spending_form, spending_limit, request.POST.get('colour_value', ""))
             return redirect('category_list')

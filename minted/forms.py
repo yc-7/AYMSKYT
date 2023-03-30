@@ -122,7 +122,7 @@ class CategoryForm(forms.ModelForm):
     def clean(self):
         super().clean()
         if Category.objects.filter(user=self.user, name=self.cleaned_data.get('name')).exists():
-            self.add_error('name', 'You already have a category with this name.')
+            self.add_error('name', 'You already have a category with this name')
     
 class FriendReqForm(forms.Form):
     """Form to send friend requests to another user"""

@@ -6,12 +6,6 @@
 <div class = "container">
     <h1> Friend Requests </h1>
     <table class = "table table-striped">
-        <thead>
-            <tr>
-                <th style = "text-align:center; width:50%"></th>
-                <th style = "text-align:center; width:50%"></th>
-            </tr>
-        </thead>
         {% if requests %}
         {% for request in requests %}
 		<tr>
@@ -40,5 +34,6 @@
         </tr>
         {% endif %}
     </table>
+    {% include 'partials/pagination_bar.html' %}
 </div>
 {% endblock %}

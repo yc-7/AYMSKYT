@@ -240,3 +240,9 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
+
+#Page lengths
+FRIENDS_PER_PAGE = 8
+REQUESTS_PER_PAGE = 8
+EXPENDITURES_PER_PAGE = 8
+CATEGORIES_PER_PAGE = 8
