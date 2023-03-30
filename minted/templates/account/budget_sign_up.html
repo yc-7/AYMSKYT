@@ -4,14 +4,14 @@
         <div class="row g-2">
             <div class="col-sm-12 col-md-6 offset-md-3">
                 <div class="h1 mb-5" style="font-weight: 800;">Set Your Budget</div>
-                <form action="{% url 'spending_signup' %}" method="post">
+                <form action="{% url 'budget_sign_up' %}" method="post">
                     {% csrf_token %}
                     {% include 'partials/bootstrap_form.html' with form=form %}
                     <br>
                     <input type="submit" value="Continue" class="btn btn-lg custom-button">
                 </form>
                 <br>
-                <form action="{% url 'spending_signup' %}" method="post">
+                <form action="{% url 'budget_sign_up' %}" method="post">
                     {% csrf_token %}
                     <button class="btn btn-lg custom-button" type="submit" name="cancel">Cancel</button>
                 </form>

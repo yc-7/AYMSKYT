@@ -65,13 +65,13 @@ def sign_up(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             request.session['user_data'] = form.cleaned_data
-            return redirect('spending_signup')
+            return redirect('budget_sign_up')
     else:
         form = SignUpForm()
-    return render(request, 'account/signup.html', { 'form': form })
+    return render(request, 'account/sign_up.html', { 'form': form })
 
 @login_prohibited
-def spending_signup(request):
+def budget_sign_up(request):
     user_data = request.session.get('user_data')
     if SocialAccount.objects.filter(user=request.user.id).exists() == False and user_data == None:
         return redirect('sign_up')
@@ -98,7 +98,7 @@ def spending_signup(request):
                 return redirect(redirect_url)
     else:
         form = SpendingLimitForm()
-    return render(request, 'account/spending_signup.html', { 'form': form })
+    return render(request, 'account/budget_sign_up.html', { 'form': form })
 
 @staff_prohibited
 def dashboard(request):
