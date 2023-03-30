@@ -19,7 +19,6 @@ class ClaimRewardViewTestCase(TestCase, LoginRequiredTester):
         self.reward = Reward.objects.get(pk=1)
         self.url = reverse('claim_reward', kwargs={ 'brand_name': self.reward.brand_name, 'reward_id': self.reward.reward_id })
         self.user = User.objects.get(pk=1)
-        self.claim = RewardClaim.objects.get(pk=1)
         self.other_reward = Reward.objects.get(pk=3)
         self.limited_reward = Reward.objects.get(pk=4)
 
@@ -68,3 +67,24 @@ class ClaimRewardViewTestCase(TestCase, LoginRequiredTester):
 
         response = self.client.get(self.url, follow=True)
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+    def test_successful_reward_claim(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        self.user.points = self.reward.points_required
+        self.user.save()
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.reward.brand_name, 'reward_id': self.reward.reward_id  })
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_limit_decreases_when_successful_reward_claim(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        self.user.points = self.limited_reward.points_required
+        self.user.save()
+        user_limit_before = self.limited_reward.user_limit
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.limited_reward.brand_name, 'reward_id': self.limited_reward.reward_id  })
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.limited_reward.refresh_from_db()
+        user_limit_after = self.limited_reward.user_limit
+        self.assertEqual(user_limit_before, user_limit_after+1)

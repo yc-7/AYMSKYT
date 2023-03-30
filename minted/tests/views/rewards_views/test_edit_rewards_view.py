@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, Reward
@@ -16,11 +19,17 @@ class EditRewardsViewTestCase(TestCase, LoginRequiredTester):
     def setUp(self):
         self.reward = Reward.objects.get(pk=1)
         self.url = reverse('edit_rewards', kwargs={'reward_id':self.reward.id})
+        settings.UPLOAD_DIR = 'uploads_test/'
+        self.cover_image = SimpleUploadedFile(
+            "example_cover_image.png",
+            b"example cover image content"
+        )
         self.form_input = {
             "brand_name": "Apple",
             "points_required": "20",
-            "expiry_date": "2023-03-30",
+            "expiry_date": "9999-03-30",
             "description": "20% off AirPods Max",
+            "cover_image": self.cover_image,
             "code_type": "random"}
         self.user = User.objects.get(pk = 2)
         self.other_user = User.objects.get(pk = 1)
@@ -42,6 +51,13 @@ class EditRewardsViewTestCase(TestCase, LoginRequiredTester):
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'dashboard.html')
         
+    def test_view_redirects_if_reward_does_not_exist(self):
+        self.client.login(email=self.user.email, password='Password123')
+        self.url = reverse('edit_rewards', kwargs={'reward_id':999})
+        redirect_url = reverse('rewards_list')
+        response = self.client.get(self.url, follow=True)
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+    
     def test_edit_rewards_success(self):
         self.client.force_login(self.user)
         self.form_input['points_required'] = '50'
@@ -56,7 +72,7 @@ class EditRewardsViewTestCase(TestCase, LoginRequiredTester):
         self.reward.refresh_from_db()
         self.assertEqual(self.reward.points_required, 50)
         self.assertEqual(self.reward.code_type, 'qr')
-        
+
     def test_form_invalid_data(self):
         self.client.force_login(self.user)
         response = self.client.post(self.url, data={'code_type': 'QR'})
