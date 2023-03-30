@@ -51,7 +51,7 @@ class Subscription(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class NotificationSubscription(models.Model):
     """Model for user notification subscriptions"""
     FREQUENCY_CHOICES = (
@@ -91,18 +91,19 @@ class User(AbstractUser):
         return f'{self.first_name} {self.last_name}'
 
     def get_categories(self):
-        categories = Category.objects.filter(user=self)
+        categories = Category.objects.filter(user = self).order_by('name')
         return categories
 
     def get_expenditures(self):
-        expenditures = Expenditure.objects.filter(category__user=self)
-        #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
+        expenditures = Expenditure.objects.filter(category__user = self)
         return expenditures
 
 
 class FriendRequest(models.Model):
-	from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
-	to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
+    """Model for friend requests"""
+    
+    from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
+    to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
     
 class Category(models.Model):
     """Model for expenditure categories"""
@@ -166,7 +167,7 @@ class Category(models.Model):
         daily_expenses = get_spending_for_days(all_days, expenses)
 
         return daily_expenses
-    
+
 
 class Expenditure(models.Model):
     """Model for expenditures"""
@@ -250,7 +251,7 @@ class RewardClaim(models.Model):
                     except IntegrityError as e:
                         unique = False
         return super(RewardClaim, self).save(*args, **kwargs)
-    
+
     def delete(self, *args, **kwargs):
         if self.claim_qr == True:
             self.claim_qr.delete()
@@ -280,6 +281,3 @@ class RewardClaim(models.Model):
         for n in range(num):
             digits += str(randint(0, 9))
         return digits
-
-
-

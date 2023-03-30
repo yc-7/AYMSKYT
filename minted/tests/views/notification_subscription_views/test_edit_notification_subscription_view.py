@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import NotificationSubscription, User
+from minted.tests.helpers import LoginRequiredTester
 
-class notificationSubscriptionEditViewTestCase(TestCase):
+class notificationSubscriptionEditViewTestCase(TestCase, LoginRequiredTester):
     """Test suite for the notification subscription edit view."""
 
     fixtures = [
@@ -24,6 +25,9 @@ class notificationSubscriptionEditViewTestCase(TestCase):
 
     def test_edit_notification_subscription_url(self):
         self.assertEqual(self.url, "/notification_subscription/edit")
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_get_edit_notification_subscription(self):
         notification_subscription = NotificationSubscription.objects.get(pk=1)

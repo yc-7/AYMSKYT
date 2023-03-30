@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Category, Expenditure, SpendingLimit, Subscription, NotificationSubscription, Streak, Reward
+from .models import *
 
 # Register your models here.
 @admin.register(User)
@@ -49,4 +49,10 @@ class SubscriptionAdmin(admin.ModelAdmin):
 class NotificationSubscriptionAdmin(admin.ModelAdmin):
     list_display = [
         'frequency'
+    ]
+
+@admin.register(FriendRequest)
+class FriendRequestSubscriptionAdmin(admin.ModelAdmin):
+    list_display = [
+        'from_user', 'to_user'
     ]

@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import Category, User
+from minted.tests.helpers import LoginRequiredTester
 
-class CategoryExpendituresViewTestCase(TestCase):
+class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
     """Test suite for the category expenditure view."""
 
     fixtures = [
@@ -22,11 +23,14 @@ class CategoryExpendituresViewTestCase(TestCase):
     def test_category_expenditures_url(self):
         self.assertEqual(self.url,f"/category_list/{self.category_name}/")
 
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
+
     def test_get_category_expenditures(self):
         self.client.login(email = self.user.email, password = 'Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'expenditures/expenditures_list.html')
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
 
     def test_get_category_expenditures_redirects_on_invalid_category_name(self):
         self.client.login(email = self.user.email, password = 'Password123')
