@@ -1,0 +1,40 @@
+<style>
+    .pagination > li > a {
+        background-color: #72e0ad;
+    }
+
+    .pagination > li > a:hover {
+        background-color: skyblue;
+    }
+</style>
+{% if is_paginated and page_obj.paginator.num_pages > 1 %}
+    <div class = "pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+        </a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active">
+            <a class="page-link">{{num}} <span class="sr-only"></span></a>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{num}}">{{num}}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+            </a>
+        </li>    
+        {% endif %}
+    </div>
+  {% endif %}

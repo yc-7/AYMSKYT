@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.views import View
@@ -16,13 +17,14 @@ class FriendsListView(LoginRequiredMixin, ListView):
     template_name = 'friend_list.html'
     context_object_name = 'friends'
     http_method_names = ['get']
+    paginate_by = settings.FRIENDS_PER_PAGE
     
     def get_queryset(self):
         """Return the user's friends"""
 
         current_user = self.request.user
-        my_friends_list = current_user.friends.all()
-        return my_friends_list
+        user_friends_list = current_user.friends.all()
+        return user_friends_list
 
 class NewFriendRequestView(LoginRequiredMixin, FormView):
     """View that handles sending friend requests"""
@@ -62,6 +64,7 @@ class FriendRequestListView(LoginRequiredMixin, ListView):
     template_name = 'request_list.html'
     context_object_name = 'requests'
     http_method_names = ['get']
+    paginate_by = settings.REQUESTS_PER_PAGE
     
     def get_queryset(self):
         """Return the user's friend requests"""

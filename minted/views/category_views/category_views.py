@@ -12,6 +12,8 @@ from minted.models import Category, SpendingLimit
 from minted.forms import CategoryForm, SpendingLimitForm
 from minted.mixins import AdminProhibitedMixin
 from minted.views.category_views.category_view_functions import *
+from django.core.paginator import Paginator
+
 
 class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     """View that displays a user's categories"""
@@ -19,14 +21,25 @@ class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     model = Category
     template_name = 'category_list.html'
     context_object_name = 'categories'
-    
+    paginate_by = settings.CATEGORIES_PER_PAGE
+
+
+    def get_queryset(self):
+        current_user = self.request.user
+        user_category_list = current_user.get_categories()
+        return user_category_list
+
     def get_context_data(self, *args, **kwargs):
         """Generate content to be displayed in the template"""
 
         context = super().get_context_data(*args, **kwargs)
         current_user = self.request.user
         context['user'] = current_user
-        context['categories'] = current_user.get_categories
+        paginator = Paginator(self.object_list, self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
+        print(context)
         return context
 
 @staff_prohibited
