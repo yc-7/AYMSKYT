@@ -34,8 +34,8 @@ urlpatterns = [
 
     path('log_in/', views.LogInView.as_view(), name = 'log_in'),
     path('log_out/', views.log_out, name='log_out'),
-    path('sign_up/', views.sign_up, name='sign_up'),
-    path('sign_up/spending/', views.spending_signup, name='spending_signup'),
+    path('sign_up/profile', views.sign_up, name='sign_up'),
+    path('sign_up/budget/', views.budget_sign_up, name='budget_sign_up'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/edit/profile/', views.ProfileUpdateView.as_view(), name = 'edit_profile'),
     path('profile/edit/change_password/', views.PasswordView.as_view(), name = 'change_password'),

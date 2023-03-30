@@ -67,7 +67,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_CHOICE_SESSION_KEY = None
 
-LOGIN_REDIRECT_URL = 'spending_signup'
+LOGIN_REDIRECT_URL = 'budget_sign_up'
 LOGOUT_REDIRECT_URL = '/'
 
 ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm', 'login': 'minted.forms.LogInForm'}

@@ -35,7 +35,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user_data = kwargs.pop('user_data', None)
-        super(SignUpForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def save(self, budget):
         """Creates a new user"""
