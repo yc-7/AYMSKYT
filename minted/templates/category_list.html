@@ -7,6 +7,7 @@
   <h1 style=" font-weight:800;">Categories</h1>
     <p class="pt-3"><a href="{% url 'create_category' %}" class="btn custom-button"><i class = "bi bi-plus-lg"></i> New Category</a>
     <a href="{% url 'budget_list' %}" class="btn custom-button"> View Budgets</a></p>
+    <div class="card bg-white">
     <table class="table table-striped">
         <thead>
           <tr>
@@ -21,7 +22,7 @@
           {% for category in categories %}
             <tr class="clickable" ><form action="{% url 'edit_category' category.id %}" method="get">
               {% csrf_token %}
-                <td style="text-align:center; font-weight:800"><a href="{% url 'category_expenditures' category.name %}">{{ category.name }}</a></td>
+                <td style="text-align:center; font-weight:800">{{ category.name }}</a></td>
                 <td style="text-align:center">{{ category.budget }}</td>
                 <td style="text-align:center">
                   <a href = "{% url 'add_expenditure' category.name %}" class = "btn btn-primary" role = "button" >
@@ -43,5 +44,6 @@
           </tr>
         {% endif %}
       </table>
+    </div>
 </div>
 {% endblock %}
