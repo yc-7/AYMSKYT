@@ -14,10 +14,10 @@
                 {% include 'partials/bootstrap_form.html' with form=form %}
                 <input type="submit" value="Log in" class="btn btn-lg custom-button">
             </form>
-            <div>
+            <div style="padding-top: 2%;">
                 Don't have an account? <a href="{% url 'sign_up' %}"> Sign Up</a>
             </div>
-            <div>
+            <div style="padding-top: 2%">
                 Forgot Password? <a href="{% url 'password_reset' %}">Reset Password</a>
             </div>
         </div>

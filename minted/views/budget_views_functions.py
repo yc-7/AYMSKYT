@@ -14,6 +14,7 @@ class Budget:
         self.spent_text = f"£{str(round(spent, 2))} out of £{str(budget)} spent"
         self.start_date = start_date
         self.end_date = end_date
+        self.percentage_spent = round((float(spent) / float(budget))*100)
 
 def total_spending_limit(filtered_expenditures, budget, timeframe):
     if timeframe == '/week':

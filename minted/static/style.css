@@ -1,6 +1,9 @@
+.container{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
 .navbar-brand {
   color: #d462a1;
-  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 40px;
 
@@ -13,13 +16,12 @@
 
 .nav-link{
   color: #d462a1;
-  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
 }
 
-.container{
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
+.bold-pink{
+  color: #d462a1;
+  font-weight: 800;
 }
 
 
@@ -32,6 +34,13 @@
 .custom-button{
   background-color: #d462a1; 
   color: white; 
+  border-radius: 18px;
+}
+
+.custom-button:hover{
+  background-color: #47235e; 
+  color: white; 
+  
 }
 
 .card {
@@ -49,4 +58,21 @@ body{
 i.bi-person-circle {
   font-size: 2rem;
   color: #d462a1;
+}
+
+a {
+  color:  #d462a1 ;
+}
+
+a:hover {
+  color: #47235e;
+}
+
+@media (max-width: 767px) {
+  .card-body {
+    padding: 10px;
+  }
+  canvas {
+    font-size: 12px;
+  }
 }

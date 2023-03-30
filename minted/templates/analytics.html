@@ -8,45 +8,107 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'chartjs_chart_generators.js' %}"></script>
 
-<div id = "container">
-  <form action="{% url 'view_analytics' %}" method="post">
+<div class="container " style="font-size: large;" >
+  <h1 style="padding-bottom: 2%; font-weight:800;">Analytics</h1>
+  <form action="{% url 'view_analytics' %}" method="post" class="row g-2 align-items-center">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Update" class="btn btn-primary">
+    {% include 'partials/bootstrap_form.html' with form=form %}
+    <div class="col-auto">
+      <input type="submit" value="Update" class="btn btn-lg custom-button">
+    </div>
   </form>
 </div>
-<div id="container" style="width: 50%;">
 
+
+<section class="p-5">
+  
   {{ colours|json_script:"colours"  }}
   {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
   {{ category_line_chart_data|json_script:"lineChartData" }}
   {{ all_spending_line_chart_data|json_script:"allSpendingLineChartData" }}
 
-  <canvas id="line-graph"></canvas>
-  <canvas id="all-spending-line-graph"></canvas>
-  <canvas id="pie-chart"></canvas>
-</div>
+  <div class="container">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      <div class="col">
+        <div class="card bg-light">
+          <div class="card-body text-center">
+            <canvas id="pie-chart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card bg-light">
+          <div class="card-body text-center">
+            <canvas id="all-spending-line-graph"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="accordion" id="accordion" style="padding-bottom: 2%;">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="color: #47235e ;">
+            <h2>Your Spending</h2>
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion">
+          <div class="accordion-body" style="color: #47235e ;">
+            Here you can see the percentage you have spent from your budgets. Your category budgets may have different tracking periods to your overall budget. Click <span class="bold-pink">Budgets</span>  in the navbar to get the details.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card bg-light">
+
+      {%if budget%}
+      {% for spendings in budget %}
+      <div class="p-3">
+        <h3>{{ spendings.name }}</h3>
+        <div class="progress" style="height: 30px; border-radius: 15px;">
+          <div class="progress-bar progress-bar-striped progress-bar-animated
+               {% if spendings.percentage_spent < 70 %}
+               bg-success
+               {% elif spendings.percentage_spent < 90 %}
+               bg-warning
+               {% else %}
+               bg-danger
+               {% endif %}"
+               style="width: {% if spendings.percentage_spent <= 100 %}{{ spendings.percentage_spent }}{% else %}100{% endif %}%; font-weight:800;" 
+               aria-valuenow="{{ spendings.percentage_spent }}" 
+               aria-valuemin="0" 
+               aria-valuemax="100">
+            {{ spendings.percentage_spent }}%
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+    </div>
+  </div>
+</section>
 
 <script>
   var category_pie_chart_data = JSON.parse(document.getElementById('categoryPieChartData').textContent);
-  var category_line_chart_data = JSON.parse(document.getElementById('lineChartData').textContent);
   var all_spending_line_chart_data = JSON.parse(document.getElementById('allSpendingLineChartData').textContent);
   var colours = JSON.parse(document.getElementById('colours').textContent);
   
   var pie_chart_config = create_pie_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
-  var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours)
-  var all_spending_line_config = create_line_chart_config(all_spending_line_chart_data.datasets, all_spending_line_chart_data.labels, ['#000000'])
+  var all_spending_line_config = create_line_chart_config(all_spending_line_chart_data.datasets, all_spending_line_chart_data.labels, ['#602385'])
 
   window.onload = function() {
     var category_pie_chart = document.getElementById('pie-chart').getContext('2d');
     window.myPie = new Chart(category_pie_chart, pie_chart_config);
 
-    var category_line_chart = document.getElementById('line-graph').getContext('2d');
-    window.myLine = new Chart(category_line_chart, line_config);
-
     var all_spending_line_chart = document.getElementById('all-spending-line-graph').getContext('2d');
     window.myLine = new Chart(all_spending_line_chart, all_spending_line_config);
   }
+
 </script>
+
 
 {% endblock %}
