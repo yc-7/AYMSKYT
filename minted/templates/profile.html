@@ -53,7 +53,7 @@
                     <a href = "{% url 'create_notification_subscription' %}" class = "btn btn-lg custom-button">
                         Change notification settings
                     </a>
-                    <a onclick = "registerSw()" class = btn btn-lg custom-button">
+                    <a onclick = "registerSw()" class = "btn btn-lg custom-button">
                         Refresh Browser Subscription
                     </a>
                     <form action = "{% url 'delete_push_subscription' %}" method = "post">
@@ -61,20 +61,6 @@
                         <input type = "submit" value = "Delete Subscription" class = "btn btn-lg custom-button">
                     </form>
                     <a id="error-message"></a>
-                </div><br>
-
-                <div>
-                    <i class="bi-people-fill" style="font-size:35px; color:#d462a1"></i>
-                    <h1>Manage Friends</h1>
-                    <a href = "{% url 'request_list' %}" class = "btn btn-lg custom-button">
-                        View pending friend requests
-                    </a>
-                    <a href = "{% url 'friend_list' %}" class = "btn btn-lg custom-button">
-                        View your friends list
-                    </a>
-                    <a href = "{% url 'friend_request' %}" class = "btn btn-lg custom-button">
-                        Add a friend
-                    </a>
                 </div>
             </div>
         </div>
