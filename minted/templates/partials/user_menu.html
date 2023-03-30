@@ -6,6 +6,7 @@
     </div> 
     {% else %}
     <div class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <a class="nav-link" href="{% url 'category_list' %}">Categories</a>
         <li class="nav-item dropdown">
             <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rewards</a>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -16,8 +17,6 @@
                 <li><a class="dropdown-item" href="{% url 'my_rewards' %}">My Rewards</a></li>
             </ul>
         </li>
-        <a class="nav-link" href="{% url 'category_list' %}">Categories</a>
-        <a class="nav-link" href="{% url 'budget_list' %}">Budgets</a>
         <a class="nav-link" href="{% url 'view_analytics' %}">Analytics</a>
         <a class="nav-link" href="{% url 'points_leaderboard' %}">Leaderboard</a>
         {% if request.user.points %}
@@ -34,7 +33,8 @@
                 <i class="bi-person-circle"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{% url 'profile' %}">View Profile</a></li>
+                <li><a class = "dropdown-item" href = "{% url 'profile' %}"> Profile </a></li>
+                <li><a class = "dropdown-item" href = "{% url 'friend_list' %}"> Friends </a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>

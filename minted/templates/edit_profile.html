@@ -3,15 +3,11 @@
 | Edit Profile
 {% endblock %}
 {% block content %}
-<div class="container">
-    <form method="post">
+<div class = "container">
+    <form method = "post">
         {% csrf_token %}
         {% include 'partials/bootstrap_form.html' with form=form %}
-        <button type="submit">Submit</button>
+        <button type = "submit" class = "btn btn-lg custom-button"> Submit </button>
     </form>
-    <a href="{% url 'change_password' %}" class="btn btn-lg btn-info">
-        Change Password
-      </a>
-    <br>
 </div>
 {% endblock %}

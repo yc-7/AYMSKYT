@@ -1,0 +1,31 @@
+{% extends 'base_content.html' %}
+{% load socialaccount %}
+{% block content %}
+    <div class="container">
+        <div class="row g-2">
+            <div class="col-sm-12 col-md-6 offset-md-3">
+                <div class="h1 mb-5" style="font-weight: 800;">Sign Up</div>
+                <form action="{% url 'sign_up' %}" method="post">
+                    {% csrf_token %}
+                    {% include 'partials/bootstrap_form.html' with form=form %}
+                    <br>
+                    <input type="submit" value="Continue" class="btn btn-lg custom-button">
+                </form>
+                <br>
+                <div class="container" style="display: inline-block; text-align: center;">
+                    <hr>
+                    <p class="position-relative" style="top: -28px;">
+                        <span style="background-color: #72e0ad;">OR</span>
+                    </p>
+                </div>
+                <br>
+                <form action="{% provider_login_url 'google' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-lg custom-button" type="submit">
+                        Continue with Google
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

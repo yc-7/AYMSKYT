@@ -19,14 +19,15 @@ def calculate_total_spending_between_dates(user, start_date, end_date):
 def calculate_biggest_purchase(user):
     expenditures = user.get_expenditures() 
     expense_amounts = []
-    for expense in expenditures:
-        expense_amounts.append(expense.amount)
-    max_value = max(expense_amounts)
-    biggest_expense_index = [i for i in range(len(expense_amounts)) if expense_amounts[i] == max_value]
-    biggest_expense_names = [expenditures[i].title for i in biggest_expense_index]
-    expenses_dict = {'names': biggest_expense_names,
-                     'amount': max_value}
-    return expenses_dict
+    if expenditures:
+        for expense in expenditures:
+            expense_amounts.append(expense.amount)
+        max_value = max(expense_amounts)
+        biggest_expense_index = [i for i in range(len(expense_amounts)) if expense_amounts[i] == max_value]
+        biggest_expense_names = [expenditures[i].title for i in biggest_expense_index]
+        expenses_dict = {'names': biggest_expense_names,
+                        'amount': max_value}
+        return expenses_dict
 
 def calculate_categories_on_budget_percentage(user):
     categories = user.get_categories()
@@ -140,16 +141,22 @@ def get_overall_max_and_min_spending_categories(category_pie_chart_data):
     pie_data = category_pie_chart_data['data']
     pie_labels = category_pie_chart_data['labels']
 
-    max_value = max(pie_data)
     min_value = min(pie_data)
-
-    max_values = [i for i, value in enumerate(pie_data) if value == max_value]
     min_values = [i for i, value in enumerate(pie_data) if value == min_value] 
+    min_labels = [pie_labels[i] for i in min_values] 
+    extreme_labels_dict = {'min_labels': min_labels}  
 
-    max_labels = [pie_labels[i] for i in max_values]
-    min_labels = [pie_labels[i] for i in min_values]       
+    contains_expenditure = []
+    for value in pie_data:
+        if value > 0:
+            contains_expenditure.append(True)
+    if True in contains_expenditure:
+        max_value = max(pie_data)
+        max_values = [i for i, value in enumerate(pie_data) if value == max_value]
+        max_labels = [pie_labels[i] for i in max_values] 
+        extreme_labels_dict['max_labels']= max_labels 
 
-    return {'max_labels': max_labels, 'min_labels': min_labels}
+    return extreme_labels_dict
 
 
 

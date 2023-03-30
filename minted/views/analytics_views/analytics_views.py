@@ -42,20 +42,25 @@ def view_analytics(request):
     total_spending = calculate_total_spending(user)
     total_spending_between_dates = calculate_total_spending_between_dates(user, start_date, end_date)
     biggest_purchase = calculate_biggest_purchase(user)
-
-    return render(request, 'analytics.html', {
-        'form': form, 
-        'category_pie_chart_data': category_pie_chart_data, 
-        'category_line_chart_data': category_line_chart_data, 
-        'colours': colours, 'time_interval': time_interval, 
-        'start_date':start_date, 'end_date':end_date,
+    stats = {
         'extreme_labels':overall_min_and_max_spending_categories,
         'categories_on_budget_percentage': categories_on_budget_percentage,
         'percent_of_budget_remaining': percent_of_budget_remaining,
         'budget':all_budgets, 
         'total_spending': total_spending,
         'total_spending_between_dates': total_spending_between_dates,
-        'biggest_purchase': biggest_purchase})
+        'biggest_purchase': biggest_purchase
+
+    }
+
+    return render(request, 'analytics.html', {
+        'form': form, 
+        'category_pie_chart_data': category_pie_chart_data, 
+        'category_line_chart_data': category_line_chart_data, 
+        'colours': colours, 'time_interval': time_interval, 
+        'start_date':start_date, 
+        'end_date':end_date,
+        'stats': stats})
 
 def dashboard_analytics(request):
     
