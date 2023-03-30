@@ -21,7 +21,14 @@
             <div>
                 Forgot Password? <a href="{% url 'password_reset' %}">Reset Password</a>
             </div>
-            <hr>
+            <br>
+                <div class="container" style="display: inline-block; text-align: center;">
+                    <hr>
+                    <p class="position-relative" style="top: -28px;">
+                        <span style="background-color: #72e0ad;">OR</span>
+                    </p>
+                </div>
+            <br>
             <form action="{% provider_login_url 'google' %}" method="post">
                 {% csrf_token %}
                 <button class="btn btn-lg custom-button" type="submit">Continue with Google</button>

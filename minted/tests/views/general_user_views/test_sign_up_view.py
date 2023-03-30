@@ -23,6 +23,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
             'password_confirmation': 'Password123'
         }
 
+
     def test_sign_up_url(self):
         self.assertEqual(self.url, '/sign_up/profile')
 
