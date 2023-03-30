@@ -19,10 +19,12 @@ from string import ascii_uppercase
 
 class Streak(models.Model):
         
-    last_login_time = models.DateTimeField(blank = True, null= True, auto_now = True)
+    last_login_time = models.DateTimeField(blank = True, null= True, auto_now_add = True)
     streak = models.IntegerField(
         default = 1, 
-        validators= [MinValueValidator(0),]
+        validators= [
+            MinValueValidator(0)
+        ]
     )
 
 class SpendingLimit(models.Model):
@@ -49,7 +51,7 @@ class Subscription(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class NotificationSubscription(models.Model):
     """Model for user notification subscriptions"""
     FREQUENCY_CHOICES = (
@@ -86,23 +88,22 @@ class User(AbstractUser):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return  self.first_name+" "+self.last_name
+        return f'{self.first_name} {self.last_name}'
 
     def get_categories(self):
-        categories = Category.objects.filter(user=self)
+        categories = Category.objects.filter(user = self).order_by('name')
         return categories
 
     def get_expenditures(self):
-        expenditures = Expenditure.objects.filter(category__user=self)
-        #expenditures = Expenditure.objects.filter(category__user=self).select_related('category') #this also works
+        expenditures = Expenditure.objects.filter(category__user = self)
         return expenditures
 
 
 class FriendRequest(models.Model):
-	from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
-	to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
-	is_active = models.BooleanField(blank = False, null = False, default = True)
-
+    """Model for friend requests"""
+    
+    from_user = models.ForeignKey(User, related_name = 'from_user', on_delete = models.CASCADE)
+    to_user = models.ForeignKey(User, related_name = 'to_user', on_delete = models.CASCADE)
     
 class Category(models.Model):
     """Model for expenditure categories"""
@@ -117,6 +118,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
     def get_expenditures(self):
         expenditures = Expenditure.objects.filter(category=self)
@@ -165,7 +167,7 @@ class Category(models.Model):
         daily_expenses = get_spending_for_days(all_days, expenses)
 
         return daily_expenses
-    
+
 
 class Expenditure(models.Model):
     """Model for expenditures"""
@@ -249,6 +251,11 @@ class RewardClaim(models.Model):
                     except IntegrityError as e:
                         unique = False
         return super(RewardClaim, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.claim_qr == True:
+            self.claim_qr.delete()
+        super(Reward, self).delete(*args, **kwargs)
     
     def _create_claim_qr(self):
         qr_name = f'{self._create_claim_code}{self.reward_type.reward_id}_qr'
@@ -274,6 +281,3 @@ class RewardClaim(models.Model):
         for n in range(num):
             digits += str(randint(0, 9))
         return digits
-
-
-

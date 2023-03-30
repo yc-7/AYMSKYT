@@ -4,13 +4,15 @@ from django.test import TestCase
 from django.urls import reverse
 from minted.models import Expenditure, User
 from django.conf import settings
+from minted.tests.helpers import LoginRequiredTester
 
-class ExpenditureDeletionViewTestCase(TestCase):
+class ExpenditureDeletionViewTestCase(TestCase, LoginRequiredTester):
     """Test suite for the expenditure deletion view."""
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
         'minted/tests/fixtures/default_other_user.json',
+        'minted/tests/fixtures/default_third_user.json',
         'minted/tests/fixtures/default_categories.json',
         'minted/tests/fixtures/default_expenditures.json', 
         'minted/tests/fixtures/default_spending_limit.json'
@@ -29,6 +31,9 @@ class ExpenditureDeletionViewTestCase(TestCase):
 
     def test_delete_expenditure_url(self):
         self.assertEqual(self.url,f"/category_list/{self.expenditure_id}/delete")
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_get_delete_expenditure_redirects(self):
         self.client.login(email = self.user.email, password = 'Password123')

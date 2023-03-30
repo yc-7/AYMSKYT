@@ -8,6 +8,7 @@ coverage==6.5.0
 cryptography==39.0.2
 Django==4.1.5
 django-cleanup==7.0.0
+django-allauth==0.52.0
 django-crontab==0.7.1
 django-storages==1.13.2
 django-webpush==0.3.4

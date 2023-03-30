@@ -36,8 +36,9 @@ font-size: 18px;
 }
 
 .custom-button{
-  background-color: #d462a1; 
-  color: white; 
+  background-color: #d462a1;
+  color: white;
+  margin: 3px 1px 3px;
 }
 
 .card {
@@ -55,4 +56,12 @@ body{
 i.bi-person-circle {
   font-size: 2rem;
   color: #d462a1;
+}
+
+.pagination > li > a {
+  background-color: #72e0ad;
+}
+
+.pagination > li > a:hover {
+  background-color: skyblue;
 }

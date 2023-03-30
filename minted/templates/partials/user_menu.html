@@ -19,6 +19,7 @@
         <a class="nav-link" href="{% url 'category_list' %}">Categories</a>
         <a class="nav-link" href="{% url 'budget_list' %}">Budgets</a>
         <a class="nav-link" href="{% url 'view_analytics' %}">Analytics</a>
+        <a class="nav-link" href="{% url 'points_leaderboard' %}">Leaderboard</a>
         {% if request.user.points %}
             <a class="nav-link text-black">Points: {{request.user.points}}</a>
         {% else %}
@@ -33,7 +34,8 @@
                 <i class="bi-person-circle"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{% url 'profile' %}">View Profile</a></li>
+                <li><a class = "dropdown-item" href = "{% url 'profile' %}"> Profile </a></li>
+                <li><a class = "dropdown-item" href = "{% url 'friend_list' %}"> Friends </a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>

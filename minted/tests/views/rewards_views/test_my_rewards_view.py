@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import RewardClaim, User
+from minted.tests.helpers import LoginRequiredTester
 
-
-class MyRewardsViewTestCase(TestCase):
+class MyRewardsViewTestCase(TestCase, LoginRequiredTester):
     """Unit tests for the My Rewards view"""
 
     fixtures = [
@@ -20,6 +20,9 @@ class MyRewardsViewTestCase(TestCase):
     
     def test_my_rewards_url(self):
         self.assertEqual(self.url, '/rewards/my_rewards/')
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_get_my_rewards(self):
         self.client.login(email=self.user.email, password='Password123')
