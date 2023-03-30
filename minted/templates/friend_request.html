@@ -1,18 +1,18 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Add Friends
+{% endblock %}
 {% block content %}
-
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12 col-md-6 offset-md-3">
-            <h1>Add a friend!</h1>
-
-            <form action="{% url 'friend_request'%}" method="post">
+<div class = "container">
+    <div class = "row">
+        <div class = "col-sm-12 col-md-6 offset-md-3">
+            <h1> Add a friend! </h1>
+            <form action = "{% url 'friend_request'%}" method = "post">
                 {% csrf_token %}
                 {% include 'partials/bootstrap_form.html' with form=form %}
-                <input type="submit" value="Add as friend" class="btn btn-primary">
+                <input type = "submit" value = "Add friend" class = "btn custom-button">
             </form>
         </div>
     </div>
 </div>
-
 {% endblock %}

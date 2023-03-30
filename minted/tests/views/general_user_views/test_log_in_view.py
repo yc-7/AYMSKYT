@@ -7,12 +7,12 @@ from minted.models import User
 from minted.tests.helpers import LogInTester, reverse_with_next
 
 class LogInViewTestCase(TestCase, LogInTester):
-    """Tests of the log in view."""
+    """Tests for the log in view"""
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
-        "minted/tests/fixtures/default_other_user.json",
-        "minted/tests/fixtures/default_spending_limit.json"
+        'minted/tests/fixtures/default_other_user.json',
+        'minted/tests/fixtures/default_spending_limit.json'
     ]
 
     def setUp(self):
@@ -98,6 +98,16 @@ class LogInViewTestCase(TestCase, LogInTester):
         self.assertTrue(self._is_logged_in())
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
         self.assertTemplateUsed(response, 'create_category.html')
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 0)
+
+    def test_log_in_is_case_insensitive(self):
+        form_input = {'email': 'JOHNDOE@EXAMPlE.ORG', 'password': 'Password123'}
+        response = self.client.post(self.url, form_input, follow = True)
+        self.assertTrue(self._is_logged_in())
+        response_url = reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_USER)
+        self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
+        self.assertTemplateUsed(response, 'dashboard.html')
         messages_list = list(response.context['messages'])
         self.assertEqual(len(messages_list), 0)
 
