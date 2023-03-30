@@ -22,7 +22,8 @@
     <tr class="clickable">
       <form action="{% url 'edit_category' category.id %}" method="get">
         {% csrf_token %}
-        <td style="text-align:center"><b>{{ category.name }}</b></a>
+        <td style="text-align:center">
+        <a href="{% url 'category_expenditures' category.name %}"><b>{{ category.name }}</b></a>
         </td>
         <td style="text-align:center">{{ category.budget }}</td>
         <td style="text-align:center">
