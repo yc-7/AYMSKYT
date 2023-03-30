@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, Category
-from django import forms
-from minted.forms import SpendingLimitForm
 
 class CreateCategoryViewTest(TestCase):
     fixtures = ['minted/tests/fixtures/default_categories.json', 
