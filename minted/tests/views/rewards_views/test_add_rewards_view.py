@@ -6,6 +6,7 @@ from django.urls import reverse
 from minted.models import User, Reward
 from minted.forms import RewardForm
 from minted.tests.helpers import LoginRequiredTester
+import shutil
 
 class AddRewardsViewTestCase(TestCase, LoginRequiredTester):
     """Test suite for the add rewards view."""
@@ -20,7 +21,7 @@ class AddRewardsViewTestCase(TestCase, LoginRequiredTester):
     def setUp(self):
         self.reward = Reward.objects.get(pk=1)
         self.url = reverse('add_rewards')
-        settings.UPLOAD_DIR = 'uploads_test/'
+        settings.REWARDS_DIR = 'uploads_test/'
         self.cover_image = SimpleUploadedFile(
             "example_cover_image.png",
             b"example cover image content"
@@ -36,8 +37,8 @@ class AddRewardsViewTestCase(TestCase, LoginRequiredTester):
         self.other_user = User.objects.get(pk = 1)
     
     def tearDown(self):
-        if os.path.exists(settings.UPLOAD_DIR):
-            shutil.rmtree(settings.UPLOAD_DIR)
+        if os.path.exists(settings.REWARDS_DIR):
+            shutil.rmtree(settings.REWARDS_DIR)
         
     def test_add_rewards_url(self):
         self.client.force_login(self.user)

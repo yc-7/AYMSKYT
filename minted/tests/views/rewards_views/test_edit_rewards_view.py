@@ -1,4 +1,5 @@
 import os
+import shutil
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -19,7 +20,7 @@ class EditRewardsViewTestCase(TestCase, LoginRequiredTester):
     def setUp(self):
         self.reward = Reward.objects.get(pk=1)
         self.url = reverse('edit_rewards', kwargs={'reward_id':self.reward.id})
-        settings.UPLOAD_DIR = 'uploads_test/'
+        settings.REWARDS_DIR = 'uploads_test/'
         self.cover_image = SimpleUploadedFile(
             "example_cover_image.png",
             b"example cover image content"
@@ -33,6 +34,10 @@ class EditRewardsViewTestCase(TestCase, LoginRequiredTester):
             "code_type": "random"}
         self.user = User.objects.get(pk = 2)
         self.other_user = User.objects.get(pk = 1)
+
+    def tearDown(self):
+        if os.path.exists(settings.REWARDS_DIR):
+            shutil.rmtree(settings.REWARDS_DIR)
         
     def test_edit_rewards_url(self):
         self.client.force_login(self.user)
