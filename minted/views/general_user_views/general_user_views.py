@@ -39,7 +39,6 @@ class LogInView(LoginProhibitedMixin, View):
         if user is not None:
             login(request, user)
             update_streak(user)
-            reward_login_and_streak_points(user)
             self.next = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "Log in credentials were invalid!")
@@ -104,7 +103,6 @@ def budget_sign_up(request):
 def dashboard(request):
     if SocialAccount.objects.filter(user=request.user.id).exists():
             update_streak(request.user)
-            reward_login_and_streak_points(request.user)
     return render(request,'dashboard.html')
 
 @login_required
@@ -113,7 +111,7 @@ def profile(request):
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     user = request.user
 
-    webpush_subscription_status = 'Subscribed' if is_user_subscribed(user.id) else 'Not subscribed'
+    webpush_subscription_status = 'On' if is_user_subscribed(user.id) else 'Off'
 
     return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 

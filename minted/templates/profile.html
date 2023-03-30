@@ -49,16 +49,16 @@
                 <div>
                     <i class="bi-bell-fill" style="font-size:35px; color:#d462a1"></i>
                     <h1>Register Notifications</h1>
-                    <a>Current browser notification subscription status: {{ subscription_status }}</a><br>
-                    <a href = "{% url 'create_notification_subscription' %}" class = "btn btn-lg custom-button">
+                    <a>Notification status: {{ subscription_status }}</a><br>
+                    <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg btn-info m-1">
                         Change notification settings
                     </a>
-                    <a onclick = "registerSw()" class = "btn btn-lg custom-button">
-                        Refresh Browser Subscription
+                    <a onclick="registerSw()" class="btn btn-lg btn-info">
+                        Turn on notifications
                     </a>
                     <form action = "{% url 'delete_push_subscription' %}" method = "post">
                         {% csrf_token %}
-                        <input type = "submit" value = "Delete Subscription" class = "btn btn-lg custom-button">
+                        <input type="submit" value="Turn off notifications" class="btn btn-lg btn-info">
                     </form>
                     <a id="error-message"></a>
                 </div>
