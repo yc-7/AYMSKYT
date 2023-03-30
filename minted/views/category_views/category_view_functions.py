@@ -1,14 +1,5 @@
 from minted.models import Category
 
-def category_already_exists_for_create(category_form, user):
-    """Returns whether a user already has a category with the name provided in form"""
-    user_categories = Category.objects.filter(user = user)
-    new_category_name = category_form.cleaned_data.get('name')
-    category_with_same_name_exists = user_categories.filter(name=new_category_name).count() > 0
-    if category_with_same_name_exists:
-        return True
-    return False
-
 def category_already_exists_for_edit(category_form, category, user):
     """Returns whether a user already has a category with the name provided in form"""
     user_categories = Category.objects.filter(user = user)

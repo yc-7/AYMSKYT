@@ -40,10 +40,6 @@ def create_category(request):
 
         valid_forms = category_form.is_valid() and spending_form.is_valid()
         if valid_forms:
-            if category_already_exists_for_create(category_form, request.user):
-                category_form.add_error('name', 'You already have a category with this name')
-                return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
-
             create_category_from_forms(request.user, category_form, spending_form, request.POST.get('colour_value', ""))
 
             return redirect('category_list')           
@@ -62,8 +58,6 @@ def delete_category(request, category_id):
 
 @staff_prohibited
 def edit_category(request, category_id):
-    if not category_id:
-        return redirect('category_list')
     
     category_exists = len(Category.objects.filter(id=category_id)) != 0
     

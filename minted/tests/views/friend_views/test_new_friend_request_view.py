@@ -23,6 +23,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
             first_name = 'Ross',
             last_name = 'Hendricks',
             email = 'ross@example.org',
+            password = 'Password123',
             points = 5
         )
         created_request = FriendRequest.objects.create(

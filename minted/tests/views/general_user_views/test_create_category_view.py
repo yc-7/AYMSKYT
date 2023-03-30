@@ -59,3 +59,5 @@ class CreateCategoryViewTest(TestCase):
         self.assertEqual(category_count_start, category_count_end)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create_category.html')
+        form = response.context['category_form']
+        self.assertEqual(form.errors['name'], ['You already have a category with this name'])
