@@ -76,3 +76,12 @@ a:hover {
     font-size: 12px;
   }
 }
+
+.custom-progress-bar {
+  font-weight: 800;
+}
+
+.custom-progress-bar .progress-bar {
+  width: var(--percentage-spent);
+}
+
