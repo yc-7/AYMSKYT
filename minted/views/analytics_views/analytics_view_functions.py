@@ -1,9 +1,35 @@
 from minted.views.budget_views import generate_budget_list
-from minted.models import *
+from minted.models import Category
 
-def calculate_categories_on_budget_percentage(request):
-    user = request.user
-    categories = Category.objects.filter(user = user)
+
+def calculate_total_spending(user):
+    expenditures = user.get_expenditures() 
+    total_amount_spent = sum([expense.amount for expense in expenditures])
+    return total_amount_spent
+
+def calculate_total_spending_between_dates(user, start_date, end_date):
+    categories = user.get_categories()
+    total_amount_spent = 0
+    for category in categories:
+        expenditures = category.get_expenditures_between_dates(start_date, end_date) 
+        total_amount_spent += sum([expense.amount for expense in expenditures])
+    
+    return total_amount_spent
+
+def calculate_biggest_purchase(user):
+    expenditures = user.get_expenditures() 
+    expense_amounts = []
+    for expense in expenditures:
+        expense_amounts.append(expense.amount)
+    max_value = max(expense_amounts)
+    biggest_expense_index = [i for i in range(len(expense_amounts)) if expense_amounts[i] == max_value]
+    biggest_expense_names = [expenditures[i].title for i in biggest_expense_index]
+    expenses_dict = {'names': biggest_expense_names,
+                     'amount': max_value}
+    return expenses_dict
+
+def calculate_categories_on_budget_percentage(user):
+    categories = user.get_categories()
     all_budgets = generate_budget_list(user, categories)
     on_budget = []
     for budget in all_budgets[:-1]:
@@ -15,8 +41,7 @@ def calculate_categories_on_budget_percentage(request):
     percentage_of_on_budget = (count_true / len(all_budgets[:-1])) * 100
     return percentage_of_on_budget
 
-def calculate_percentage_of_budget_remaining(request):
-    user = request.user
+def calculate_percentage_of_budget_remaining(user):
     categories = Category.objects.filter(user = user)
     all_budgets = generate_budget_list(user, categories)
     overall_user_budget = all_budgets[-1]

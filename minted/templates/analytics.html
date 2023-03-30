@@ -50,12 +50,12 @@
 </section>
 
 <section>
-  <div class="container">
+  <div class="container" style="padding-bottom: 2%;">
     <div class="accordion" id="accordion" style="padding-bottom: 2%;">
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingOne">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="color: #47235e ;">
-            <h2>Your Spending</h2>
+            <h2>Your Spending Progress</h2>
           </button>
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion">
@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    <div class="card bg-light">
+    <div class="card bg-light" style="padding-bottom: 2%;">
 
       {%if budget%}
       {% for spendings in budget %}
@@ -82,10 +82,13 @@
                      bg-danger
                      {% endif %}"
                      style="--percentage-spent: {% if spendings.percentage_spent <= 100 %}{{ spendings.percentage_spent }}{% else %}100{% endif %}%;" 
+                     
                      aria-valuenow="{{ spendings.percentage_spent }}" 
                      aria-valuemin="0" 
                      aria-valuemax="100">
-            {{ spendings.percentage_spent }}%
+            
+              {{ spendings.percentage_spent }}%
+            
           </div>
         </div>
       </div>
@@ -96,38 +99,56 @@
   </div>
 
   <div class="container">
-        <div class="card bg-light">
-          <div class="card-body text-center">
-            <div id="stats_container" style="padding:30px;">
-              {%if extreme_labels.max_labels%}
-                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
+    <div class="accordion" id="accordion" style="padding-bottom: 2%;">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="color: #47235e ;">
+            <h2>View Your Spending Stats</h2>
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion">
+          <div class="accordion-body" style="color: #47235e ;">
+            <div class="card-body text-center">
+            {%if extreme_labels.max_labels%}
+                <h5>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
                   {% for category in extreme_labels.max_labels %}
                     <b>{{ category }}</b>
                     {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.max_labels|length > 1%}
                       and
                     {% endif %}
                   {% endfor %}
-                </h4>
+                </h5>
               {% endif %}
   
   
               {%if extreme_labels.min_labels%}
-                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the least on
+                <h5>Between {{ start_date }} and {{ end_date }}, you have overall spent the least on
                   {% for category in extreme_labels.min_labels %}
                     <b>{{ category}}</b>
                     {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.min_labels|length > 1%}
                       and
                     {% endif %}
                   {% endfor %}
-                </h4>
+                </h5>
               {% endif %}
   
-              <h4> You are currently on budget for <b>{{categories_on_budget_percentage}}%</b> of your categories </h4>
-              <h4> You currently have <b>{{percent_of_budget_remaining}}%</b> of your overall budget left </h4>
-            </div>
+              <h5> You are currently on budget for <b>{{categories_on_budget_percentage}}%</b> of your categories </h5>
+              <h5> You currently have <b>{{percent_of_budget_remaining}}%</b> of your overall budget left </h5>
+              <h5> Since joining Minted, you have spent <b>£{{total_spending}}</b></h5>
+              <h5> Between {{ start_date }} and {{ end_date }}, you have spent <b>£{{ total_spending_between_dates }}</b></h5>
+              <h5> Your biggest purchase since joining minted has been <b>£{{ biggest_purchase.amount}}</b> on 
+                {% for name in biggest_purchase.names %}
+                    <b>{{ name}}</b>
+                    {% if forloop.counter != biggest_purchase.names|length and biggest_purchase.names|length > 1%}
+                      and
+                    {% endif %}
+                  {% endfor %}
+              </h5>
+              </div>
           </div>
         </div>
-  </div>
+      </div>
+    </div>
 
 </section>
 
