@@ -20,7 +20,7 @@
                 <input type="submit" value="Update" class="btn btn-primary">
               </form>
             </div>
-            <div id="container" style="padding:20px">
+            <div id="container" style="padding:30px;">
 
               {{ colours|json_script:"colours"  }}
               {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
@@ -28,15 +28,44 @@
               {{ time_interval|json_script:"timeInterval"}}
               {{ start_date|json_script:"startDate"}}
               {{ end_date|json_script:"endDate"}}
+              
 
 
-              <div class="line-graph-container" style="float:left; width: 50%">
+              <div class="line-graph-container" style="float:left; width: 50%; padding-bottom:40px">
                 <canvas id="line-graph"></canvas>
               </div>
-              <div class="pie-chart-container" style="float:right; width: 50%">
+              <div class="pie-chart-container" style="float:right; width: 50%; padding-bottom:40px">
                 <canvas id="pie-chart"></canvas>
               </div>
 
+            </div>
+
+            <div id="stats_container" style="padding:30px;">
+              {%if extreme_labels.max_labels%}
+                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
+                  {% for category in extreme_labels.max_labels %}
+                    <b>{{ category }}</b>
+                    {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.max_labels|length > 1%}
+                      and
+                    {% endif %}
+                  {% endfor %}
+                </h4>
+              {% endif %}
+
+
+              {%if extreme_labels.min_labels%}
+                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the least on
+                  {% for category in extreme_labels.min_labels %}
+                    <b>{{ category}}</b>
+                    {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.min_labels|length > 1%}
+                      and
+                    {% endif %}
+                  {% endfor %}
+                </h4>
+              {% endif %}
+
+              <h4> You are currently on budget for <b>{{categories_on_budget_percentage}}%</b> of your categories </h4>
+              <h4> You currently have <b>{{percent_of_budget_remaining}}%</b> of your overall budget left </h4>
             </div>
       </div>
   </div>
