@@ -22,13 +22,13 @@ The deployed version of the application can be found at **[Minted](https://minte
 
 The default admin user log in details are:
 
-Email: admin@example.org
-Password: Password123
+Email: `admin@example.org`  
+Password: `Password123`
 
 The default user login details are:
 
-Email: john.doe@example.org
-Password: Password123
+Email: `john.doe@example.org`  
+Password: `Password123`
 
 ## Installation instructions:
 To setup for development, you must edit `settings.py` inside the *PersonalSpendingTracker* directory to be 
