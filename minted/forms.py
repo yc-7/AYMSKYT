@@ -59,7 +59,7 @@ class EditProfileForm(forms.ModelForm):
 
     def clean_email(self):
         """Makes the email input all lowercase"""
-        
+
         email = self.cleaned_data.get('email')
         return email.lower()
 
@@ -85,6 +85,9 @@ class PasswordForm(NewPasswordForm):
     """Form enabling users to change their password"""
 
     password = forms.CharField(label = 'Current password', widget = forms.PasswordInput())
+
+    # Make 'current password' field appear at the top of the form above NewPasswordForm fields
+    field_order = ['password']
 
     def clean(self):
         """Clean the data and generate messages for any errors"""

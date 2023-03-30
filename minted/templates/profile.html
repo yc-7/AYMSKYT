@@ -11,7 +11,6 @@
         <meta name="user_id" content="{{ user.id }}">
     {% endif %}
 </head>
-
 <div class="row justify-content-center">
     <div class="float-start container my-auto text-center" style="width:400px" >
         <div class="card bg-light">
@@ -22,8 +21,11 @@
                     <p>First name: {{ user.first_name }}</p>
                     <p>Last name: {{ user.last_name }}</p>
                     <p>Email: {{ user.email }}</p>
-                    <a href="{% url 'edit_profile' %}" class="btn btn-lg btn-info">
+                    <a href = "{% url 'edit_profile' %}" class = "btn btn-lg custom-button">
                         Edit Details
+                    </a>
+                    <a href = "{% url 'edit_profile' %}" class = "btn btn-lg custom-button">
+                        Change Password
                     </a>
                 </div>
             </div>
@@ -39,7 +41,7 @@
                     <h1>Budget</h1>
                     <p>Spending limit: {{ user.budget.budget }}</p>
                     <p>Timeframe: {{ user.budget.timeframe }}</p>
-                    <a href="{% url 'edit_spending_limit' %}" class="btn btn-lg btn-info">
+                    <a href = "{% url 'edit_spending_limit' %}" class = "btn btn-lg custom-button">
                         Edit Limits
                     </a>
                 </div><br>
@@ -48,15 +50,15 @@
                     <i class="bi-bell-fill" style="font-size:35px; color:#d462a1"></i>
                     <h1>Register Notifications</h1>
                     <a>Current browser notification subscription status: {{ subscription_status }}</a><br>
-                    <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg btn-info m-1">
+                    <a href = "{% url 'create_notification_subscription' %}" class = "btn btn-lg custom-button">
                         Change notification settings
                     </a>
-                    <a onclick="registerSw()" class="btn btn-lg btn-info">
+                    <a onclick = "registerSw()" class = btn btn-lg custom-button">
                         Refresh Browser Subscription
                     </a>
-                    <form action="{% url 'delete_push_subscription' %}" method="post">
+                    <form action = "{% url 'delete_push_subscription' %}" method = "post">
                         {% csrf_token %}
-                        <input type="submit" value="Delete Subscription" class="btn btn-lg btn-info">
+                        <input type = "submit" value = "Delete Subscription" class = "btn btn-lg custom-button">
                     </form>
                     <a id="error-message"></a>
                 </div><br>
@@ -64,13 +66,13 @@
                 <div>
                     <i class="bi-people-fill" style="font-size:35px; color:#d462a1"></i>
                     <h1>Manage Friends</h1>
-                    <a href="{% url 'request_list' %}" class = "btn btn-lg btn-info m-1">
+                    <a href = "{% url 'request_list' %}" class = "btn btn-lg custom-button">
                         View pending friend requests
                     </a>
-                    <a href="{% url 'friend_list' %}" class = "btn btn-lg btn-info m-1">
+                    <a href = "{% url 'friend_list' %}" class = "btn btn-lg custom-button">
                         View your friends list
                     </a>
-                    <a href="{% url 'friend_request' %}" class = "btn btn-lg btn-info m-1">
+                    <a href = "{% url 'friend_request' %}" class = "btn btn-lg custom-button">
                         Add a friend
                     </a>
                 </div>
