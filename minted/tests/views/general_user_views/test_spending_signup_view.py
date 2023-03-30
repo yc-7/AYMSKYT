@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from minted.models import User, SpendingLimit
+from allauth.socialaccount.models import SocialAccount, SocialApp
+from django.contrib.sites.models import Site
 from minted.forms import SpendingLimitForm
 
 class SpendingSignupViewTestCase(TestCase):
@@ -9,7 +11,8 @@ class SpendingSignupViewTestCase(TestCase):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
-        'minted/tests/fixtures/default_spending_limit.json'
+        'minted/tests/fixtures/default_spending_limit.json',
+        'minted/tests/fixtures/default_third_user.json'
     ]
 
     def setUp(self):
@@ -19,6 +22,12 @@ class SpendingSignupViewTestCase(TestCase):
             'timeframe': '/week'
         }
         self.user = User.objects.get(pk=1)
+        self.social_account = SocialAccount.objects.create(
+            user=self.user,
+            provider='google',
+            uid='123456789'
+        )
+
 
     def test_spending_signup_url(self):
         self.assertEqual(self.url,'/sign_up/spending/')
@@ -55,6 +64,19 @@ class SpendingSignupViewTestCase(TestCase):
         redirect_url = reverse('sign_up')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'account/signup.html')
+    
+    def test_spending_signup_with_social_account(self):
+        self.client.force_login(self.user)
+        session = self.client.session
+        session['user_data'] = None
+        session.save()
+        before_count = User.objects.count()
+        response = self.client.post(self.url, {**self.form_input}, follow=True)
+        after_count = User.objects.count()
+        self.assertEqual(after_count, before_count)
+        response_url = reverse('dashboard')
+        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'dashboard.html')
 
     def test_unsuccessful_sign_up(self):
         session = self.client.session

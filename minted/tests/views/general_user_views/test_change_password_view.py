@@ -4,10 +4,10 @@ from django.test import TestCase
 from django.urls import reverse
 from minted.forms import PasswordForm
 from minted.models import User
-from minted.tests.helpers import reverse_with_next
+from minted.tests.helpers import LoginRequiredTester, reverse_with_next
 
-class ChangePasswordViewTest(TestCase):
-    """Test suite for the change password view"""
+class ChangePasswordViewTest(TestCase, LoginRequiredTester):
+    """Test suite for the password view."""
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -26,6 +26,9 @@ class ChangePasswordViewTest(TestCase):
     def test_change_password_url(self):
          self.assertEqual(self.url, '/profile/edit/change_password/')
 
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
+
     def test_get_change_password_when_logged_in(self):
         self.client.login(email = self.user.email, password = 'Password123')
         response = self.client.get(self.url)
@@ -34,10 +37,8 @@ class ChangePasswordViewTest(TestCase):
         form = response.context['form']
         self.assertTrue(isinstance(form, PasswordForm))
 
-    def test_get_change_password_redirects_when_not_logged_in(self):
-        redirect_url = reverse_with_next('log_in', self.url)
-        response = self.client.get(self.url)
-        self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_post_change_password_redirects_when_not_logged_in(self):
         redirect_url = reverse_with_next('log_in', self.url)
