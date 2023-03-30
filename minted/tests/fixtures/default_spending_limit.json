@@ -6,8 +6,7 @@
             "budget": "150.00",
             "timeframe": "/week"
         }
-    }, 
-
+    },
     {
         "model": "minted.SpendingLimit",
         "pk": 2,
@@ -16,7 +15,6 @@
             "timeframe": "/quarter"
         }
     },
-
     {
         "model": "minted.SpendingLimit",
         "pk": 3,

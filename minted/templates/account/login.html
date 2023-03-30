@@ -3,11 +3,12 @@
 | Log In
 {% endblock %}
 {% block content %}
+{% load socialaccount %}
+
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-md-6 offset-md-3">
             <div class="h1 mb-5" style="font-weight: 800;">Log in</div>
-
             <form action="{% url 'log_in' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
@@ -20,6 +21,18 @@
             <div>
                 Forgot Password? <a href="{% url 'password_reset' %}">Reset Password</a>
             </div>
+            <br>
+                <div class="container" style="display: inline-block; text-align: center;">
+                    <hr>
+                    <p class="position-relative" style="top: -28px;">
+                        <span style="background-color: #72e0ad;">OR</span>
+                    </p>
+                </div>
+            <br>
+            <form action="{% provider_login_url 'google' %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-lg custom-button" type="submit">Continue with Google</button>
+            </form>
         </div>
     </div>
 </div>

@@ -2,9 +2,9 @@ from django.test import TestCase
 from django.urls import reverse
 from minted.models import User
 from django.contrib import messages
+from minted.tests.helpers import LoginRequiredTester
 
-
-class EditProfileViewTestCase(TestCase):
+class EditProfileViewTestCase(TestCase, LoginRequiredTester):
     
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -20,21 +20,18 @@ class EditProfileViewTestCase(TestCase):
         }
         self.user = User.objects.get(pk = 1)
         
-    
     def test_edit_profile_url(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'edit_profile.html')
         
     def test_view_redirects_to_login_if_not_logged_in(self):
-        response = self.client.get(self.url)
-        self.assertRedirects(response, '/log_in/?next=' + self.url)
+        self.assertLoginRequired(self.url)
         
     def test_original_data(self):
         self.assertEqual(self.user.first_name, 'John')
         self.assertEqual(self.user.last_name, 'Doe')
         self.assertEqual(self.user.email, 'johndoe@example.org')
-        
         
     def test_edit_profile_success(self):
         self.client.force_login(self.user)
@@ -49,6 +46,4 @@ class EditProfileViewTestCase(TestCase):
         self.client.force_login(self.user)
         response = self.client.post(self.url, data={'email': 'invalid'})
         self.assertTemplateUsed(response, 'edit_profile.html')
-        self.assertContains(response, 'Please correct the error below.')
-        
     

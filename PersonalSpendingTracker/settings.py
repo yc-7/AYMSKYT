@@ -47,11 +47,45 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'webpush',
     'django_crontab',
+    'django.contrib.sites',
     'django_cleanup.apps.CleanupConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+
+SITE_ID = 2
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CHOICE_SESSION_KEY = None
+
+LOGIN_REDIRECT_URL = 'spending_signup'
+LOGOUT_REDIRECT_URL = '/'
+
+ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm', 'login': 'minted.forms.LogInForm'}
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+CLIENT_ID = os.environ['CLIENT_ID']
+SECRET = os.environ['SECRET']
 
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
@@ -69,7 +103,7 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
-    ('0 0 * * *', 'minted.cron.give_budget_rewards'), #Everyday at midnight 
+    ('0 0 * * *', 'minted.cron.give_budget_points'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [
@@ -202,4 +236,7 @@ MESSAGE_TAGS={
 # User model for authentication and login purposes
 AUTH_USER_MODEL = 'minted.User'
 
-
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
