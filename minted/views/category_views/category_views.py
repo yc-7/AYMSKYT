@@ -39,7 +39,6 @@ class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context['page_obj'] = page_obj
-        print(context)
         return context
 
 @staff_prohibited

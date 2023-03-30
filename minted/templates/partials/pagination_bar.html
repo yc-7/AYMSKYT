@@ -1,12 +1,3 @@
-<style>
-    .pagination > li > a {
-        background-color: #72e0ad;
-    }
-
-    .pagination > li > a:hover {
-        background-color: skyblue;
-    }
-</style>
 {% if is_paginated and page_obj.paginator.num_pages > 1 %}
     <div class = "pagination">
         {% if page_obj.has_previous %}
