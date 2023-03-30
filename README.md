@@ -61,7 +61,7 @@ Set up environment variables:
   EMAIL_PORT = EMAIL_PORT
   EMAIL_USE_TLS = BOOLEAN_USE_TLS
   
-  # OAuth
+  # Google OAuth
   CLIENT_ID = YOUR-CLIENT-ID
   SECRET = YOUR-SECRET
   ```
