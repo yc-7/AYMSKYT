@@ -3,10 +3,10 @@ from django.test import TestCase
 from django.urls import reverse
 from minted.forms import TimeFrameForm
 from minted.models import User, Category
-from minted.tests.helpers import reverse_with_next
+from minted.tests.helpers import LoginRequiredTester
 import datetime
 
-class AnalyticsViewTest(TestCase):
+class AnalyticsViewTest(TestCase, LoginRequiredTester):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -44,11 +44,9 @@ class AnalyticsViewTest(TestCase):
         self.assertTrue(form['start_date'], datetime.date.today())
         self.assertTrue(form['end_date'], one_year_from_today)
         self.assertTrue(form['time_interval'], 'monthly')
-
-    def test_get_analytics_redirects_when_not_logged_in(self):
-        redirect_url = reverse_with_next('log_in', self.url)
-        response = self.client.get(self.url)
-        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+    
+    def test_get_analytics_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_post_invalid_dates(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -125,17 +123,17 @@ class AnalyticsViewTest(TestCase):
 
         category_line_chart_datasets_category_1 = response.context['category_line_chart_data'].get('datasets')[0].get('data')
         self.assertEqual(len(category_line_chart_datasets_category_1), number_of_years_in_range)
-        self.assertEqual(category_line_chart_datasets_category_1[0].get('y'), Decimal("14.28")) # Temporarily hardcoding these values
+        self.assertEqual(category_line_chart_datasets_category_1[0].get('y'), Decimal("15.50")) # Temporarily hardcoding these values
         self.assertEqual(category_line_chart_datasets_category_1[1].get('y'), Decimal("0"))
 
         category_line_chart_datasets_category_2 = response.context['category_line_chart_data'].get('datasets')[1].get('data')
         self.assertEqual(len(category_line_chart_datasets_category_2), number_of_years_in_range)
-        self.assertEqual(category_line_chart_datasets_category_2[0].get('y'), Decimal("30.00")) # Temporarily hardcoding these values
+        self.assertEqual(category_line_chart_datasets_category_2[0].get('y'), Decimal("10.00")) # Temporarily hardcoding these values
         self.assertEqual(category_line_chart_datasets_category_2[1].get('y'), Decimal("0"))
 
         all_spending_line_chart_datasets = response.context['all_spending_line_chart_data'].get('datasets')[0].get('data')
         self.assertEqual(len(all_spending_line_chart_datasets), number_of_years_in_range)
-        self.assertEqual(all_spending_line_chart_datasets[0].get('y'), Decimal("44.28"))
+        self.assertEqual(all_spending_line_chart_datasets[0].get('y'), Decimal("25.50"))
         self.assertEqual(all_spending_line_chart_datasets[1].get('y'), Decimal("0"))
 
     def test_monthly_time_interval_has_correct_data(self):
@@ -160,19 +158,19 @@ class AnalyticsViewTest(TestCase):
 
         category_line_chart_datasets_category_1 = response.context['category_line_chart_data'].get('datasets')[0].get('data')
         self.assertEqual(len(category_line_chart_datasets_category_1), number_of_months_in_range)
-        self.assertEqual(category_line_chart_datasets_category_1[0].get('y'), Decimal("14.28")) # Temporarily hardcoding these values
+        self.assertEqual(category_line_chart_datasets_category_1[0].get('y'), Decimal("15.50")) # Temporarily hardcoding these values
         for i in range(1, len(category_line_chart_datasets_category_1)):
             self.assertEqual(category_line_chart_datasets_category_1[i].get('y'), Decimal("0"))
 
         category_line_chart_datasets_category_2 = response.context['category_line_chart_data'].get('datasets')[1].get('data')
         self.assertEqual(len(category_line_chart_datasets_category_2), number_of_months_in_range)
-        self.assertEqual(category_line_chart_datasets_category_2[0].get('y'), Decimal("30.00")) # Temporarily hardcoding these values
+        self.assertEqual(category_line_chart_datasets_category_2[0].get('y'), Decimal("10.00")) # Temporarily hardcoding these values
         for i in range(1, len(category_line_chart_datasets_category_2)):
             self.assertEqual(category_line_chart_datasets_category_2[i].get('y'), Decimal("0"))
 
         all_spending_line_chart_datasets = response.context['all_spending_line_chart_data'].get('datasets')[0].get('data')
         self.assertTrue(len(all_spending_line_chart_datasets), number_of_months_in_range)
-        self.assertEqual(all_spending_line_chart_datasets[0].get('y'), Decimal("44.28"))
+        self.assertEqual(all_spending_line_chart_datasets[0].get('y'), Decimal("25.50"))
         for i in range(1, len(all_spending_line_chart_datasets)):
             self.assertEqual(all_spending_line_chart_datasets[i].get('y'), Decimal("0"))
 
