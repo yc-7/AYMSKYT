@@ -4,10 +4,15 @@
 {% endblock %}
 {% block content %}
 <div class = "container vh-100">
-    <a href = "{% url 'category_list' %}"> All Categories </a>
+    <a href="{% url 'category_list' %}">
+        <button class="btn bg-transparent" href="{% url 'category_list' %}">
+            <i class="bi bi-chevron-left"></i>
+            Categories
+        </button> 
+    </a>
     <div class = "card border-light mb-3" style = "margin-top: 0.5rem">
         <div class = "card-body">
-            <h1 class = "card-title" style = "margin-top: 0.5rem; margin-left: 0.5rem"> {{ category.name }} </h1>
+            <h1 class = "card-title" style = "margin-top: 0.5rem; margin-left: 0.5rem; margin-bottom: 2rem;"> {{ category.name }} </h1>
             <table class = "table table-hover">
                 {% for expenditure in expenditures %}
                    {% include 'expenditures/partials/expenditures_layout.html' with expenditure=expenditure %}

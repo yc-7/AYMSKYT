@@ -67,7 +67,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_CHOICE_SESSION_KEY = None
 
-LOGIN_REDIRECT_URL = 'spending_signup'
+LOGIN_REDIRECT_URL = 'budget_sign_up'
 LOGOUT_REDIRECT_URL = '/'
 
 ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm', 'login': 'minted.forms.LogInForm'}
@@ -103,7 +103,7 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
-    ('0 0 * * *', 'minted.cron.give_budget_rewards'), #Everyday at midnight 
+    ('0 0 * * *', 'minted.cron.give_budget_points'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [

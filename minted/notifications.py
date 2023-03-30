@@ -48,3 +48,9 @@ def unsubscribe_user_from_push(user_id: int) -> bool:
         subscription.delete()
     
     return True
+
+def delete_user_subscriptions(user: User):
+    """ Delete all of a users subscriptions"""
+    user_subscription = user.notification_subscription
+    if user_subscription:
+        user_subscription.delete()

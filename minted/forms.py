@@ -1,24 +1,16 @@
 """Forms in the Minted app"""
 
 from django import forms
-from django.forms import ModelForm
-from django.core.validators import RegexValidator
-from minted.models import User, SpendingLimit, Expenditure, Category, NotificationSubscription, Subscription, Streak, Reward, FriendRequest
-from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserChangeForm
+from minted.models import *
 from .mixins import NewPasswordMixin
-
-PASSWORD_REGEX_VALIDATOR = RegexValidator(
-    regex = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
-    message = 'Password must contain an uppercase character, a lowercase character and a number'
-)
 
 class DateInput(forms.DateInput):
     input_type = 'date'
 
 class LogInForm(forms.Form):
+    """Form to allow registered users to log in"""
+
     email = forms.CharField(label = "Email")
     password = forms.CharField(label = "Password", widget = forms.PasswordInput())
     
@@ -33,7 +25,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user_data = kwargs.pop('user_data', None)
-        super(SignUpForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def save(self, budget):
         """Creates a new user"""
@@ -56,11 +48,20 @@ class SpendingLimitForm(forms.ModelForm):
         model = SpendingLimit
         fields = ['budget', 'timeframe']
 
-class EditProfileForm(UserChangeForm):
-    password = None
+class EditProfileForm(forms.ModelForm):
+    """Form to update user profile details"""
+
     class Meta:
+        """Form options"""
+
         model = User
         fields = ['first_name', 'last_name', 'email']
+
+    def clean_email(self):
+        """Makes the email input all lowercase"""
+
+        email = self.cleaned_data.get('email')
+        return email.lower()
 
 class NewPasswordForm(NewPasswordMixin):
     """Form for password resets through email link"""
@@ -84,6 +85,9 @@ class PasswordForm(NewPasswordForm):
     """Form enabling users to change their password"""
 
     password = forms.CharField(label = 'Current password', widget = forms.PasswordInput())
+
+    # Make 'current password' field appear at the top of the form above NewPasswordForm fields
+    field_order = ['password']
 
     def clean(self):
         """Clean the data and generate messages for any errors"""
@@ -118,7 +122,7 @@ class CategoryForm(forms.ModelForm):
     def clean(self):
         super().clean()
         if Category.objects.filter(user=self.user, name=self.cleaned_data.get('name')).exists():
-            self.add_error('name', 'You already have a category with this name.')
+            self.add_error('name', 'You already have a category with this name')
     
 class FriendReqForm(forms.Form):
     """Form to send friend requests to another user"""

@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import Reward, User
@@ -17,6 +20,12 @@ class RewardListViewTestCase(TestCase, LoginRequiredTester):
         self.url = reverse('rewards_list')
         self.user = User.objects.get(pk=2)
         self.other_user = User.objects.get(pk=1)
+        self.reward = Reward.objects.get(pk=1)
+        settings.UPLOAD_DIR = 'uploads_test/'
+        self.cover_image = SimpleUploadedFile(
+            "example_cover_image.png",
+            b"example cover image content"
+        )
     
     def test_rewards_list_url(self):
         self.assertEqual(self.url, '/rewards/admin')
@@ -42,3 +51,16 @@ class RewardListViewTestCase(TestCase, LoginRequiredTester):
         rewards_count = Reward.objects.all().count()
         response = self.client.get(self.url)
         self.assertEqual(len(response.context['rewards']), rewards_count)
+
+    def test_delete_reward(self):
+        self.client.login(email = self.user.email, password='Password123')
+        rewards_before = Reward.objects.count()
+        self.reward.cover_image = self.cover_image
+        self.reward.save()
+        remove = {'delete': '1'}
+        response = self.client.post(self.url, remove, follow = True)
+        rewards_after = Reward.objects.count()
+        response_url = reverse('rewards_list')
+        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'rewards/rewards_list.html')
+        self.assertEqual(rewards_before, rewards_after+1)

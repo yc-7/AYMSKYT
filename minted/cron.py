@@ -2,7 +2,7 @@ from minted.models import User
 from minted.notifications import send_push, is_user_subscribed
 from minted.views.budget_views_functions import current_user_limit
 from minted.models import Subscription
-from minted.views.general_user_views.point_system_views import reward_budget_points, is_today_a_end_date
+from minted.views.general_user_views.point_system_views import reward_budget_points, user_has_budget_ending_today
 
 def send_budget_notifications(frequency: int):
 	"""
@@ -49,6 +49,5 @@ def send_monthly_notifications():
 def give_budget_points():
 	all_users = User.objects.all()
 	for user in all_users:
-			budget_ends_today = is_today_a_end_date(user)
-			if budget_ends_today.contains(True):
-				reward_budget_points(user)
+		if user_has_budget_ending_today(user):
+			reward_budget_points(user)
