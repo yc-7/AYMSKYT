@@ -24,11 +24,17 @@
                     </ul>
                 </div>
             </h3>
+            {% if rewards %}
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for reward in rewards %}
-                   {% include 'rewards/partials/rewards_grid.html' with reward=reward date=date user=user %}
+                    {% include 'rewards/partials/rewards_grid.html' with reward=reward date=date user=user %}
                 {% endfor %}
-            </div>               
+            </div>
+            {% else %}
+            <h5 class="card-body text-center text-muted" style="margin-top: 10rem; margin-bottom: 10rem;">
+                No Rewards Available Yet...
+            </h5>
+            {% endif %}              
         </div>
     </div>
 </div>
