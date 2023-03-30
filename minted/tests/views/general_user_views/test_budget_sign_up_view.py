@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from allauth.socialaccount.models import SocialAccount
 from minted.models import User
 from minted.forms import SpendingLimitForm
 from minted.tests.helpers import LogInTester
@@ -27,6 +28,11 @@ class BudgetSignupViewTestCase(TestCase, LogInTester):
             'new_password': 'Password123',
             'password_confirmation': 'Password123'
         }
+        self.social_account = SocialAccount.objects.create(
+            user = self.user,
+            provider = 'google',
+            uid = '123456789'
+        )
 
     def test_budget_sign_up_url(self):
         self.assertEqual(self.url,'/sign_up/budget/')
@@ -79,6 +85,19 @@ class BudgetSignupViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, self.form_input, follow = True)
         after_count = User.objects.count()
         self.assertEqual(before_count, after_count - 1)
+        response_url = reverse('dashboard')
+        self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
+        self.assertTemplateUsed(response, 'dashboard.html')
+
+    def test_successful_budget_sign_up_with_social_account(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        session = self.client.session
+        session['user_data'] = None
+        session.save()
+        before_count = User.objects.count()
+        response = self.client.post(self.url, self.form_input, follow = True)
+        after_count = User.objects.count()
+        self.assertEqual(before_count, after_count)
         response_url = reverse('dashboard')
         self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
         self.assertTemplateUsed(response, 'dashboard.html')
