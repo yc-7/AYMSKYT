@@ -1,33 +1,38 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Friends List
+{% endblock %}
 {% block content %}
-<div class="container">
-    <h1>Friends</h1>
-    <table class="table table-striped">
+<div class = "container">
+    <h1 class="bi-people-fill"> Friends </h1>
+    <table class = "table table-striped">
         <thead>
-          <tr>
-            <th style="text-align:center; width:auto"></th>
-            <th style="text-align:center; width:30%"></th>
-            <th style="text-align:center; width:30%"></th>
-          </tr>
+            <tr>
+				<th style = "text-align:center; width:50%"></th>
+                <th style = "text-align:center; width:50%"></th>
+            </tr>
         </thead>
         {% if friends %}
-          {% for friend in friends %}
-          <td>
-                <td style="text-align:center">{{friend}}</td>
-                <td><form action="{% url 'unfriend' friend.id %}" method="post">
+        {% for friend in friends %}
+        <tr>
+            <td>
+                <td style = "text-align:center"> {{ friend }} </td>
+                <td>
+                    <form action = "{% url 'unfriend' friend.id %}" method = "post">
                     {% csrf_token %}
-                    <td style="text-align:center"><input type="submit" value="Unfriend"  class="btn btn-primary"/>
+                    <td style = "text-align:center"><input type = "submit" value = "Unfriend" class = "btn custom-button"/></td>
+                    </form>
                 </td>
-                  </form>
-          </td>
-          
+            </td>
         </tr>
-          {% endfor %}
+        {% endfor %}
         {% else %}
-          <tr>
-              <td colspan=4 style="text-align:left">You have no friends... </td>
-          </tr>
-          {% endif %}
-      </table>
+        <tr>
+            <td colspan = 4 style = "text-align:left"> You have no friends... </td>
+        </tr>
+        {% endif %}
+    </table>
+    <a href = "{% url 'request_list' %}" class = "btn custom-button"> Friend requests </a>
+    <a href = "{% url 'friend_request' %}" class = "btn custom-button"> Add friends </a>
 </div>
 {% endblock %}

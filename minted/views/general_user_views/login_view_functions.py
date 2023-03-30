@@ -6,7 +6,7 @@ def get_user(form):
 
     user = None
     if form.is_valid():
-        email = form.cleaned_data.get('email')
+        email = (form.cleaned_data.get('email')).lower()
         password = form.cleaned_data.get('password')
         user = authenticate(email = email, password = password)
     return user
