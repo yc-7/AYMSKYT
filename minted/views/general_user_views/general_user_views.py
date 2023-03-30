@@ -10,11 +10,10 @@ from django.contrib import messages
 from allauth.socialaccount.models import SocialAccount
 from minted.forms import *
 from minted.models import *
-from minted.decorators import login_prohibited, login_required, staff_prohibited
+from minted.decorators import login_prohibited, login_required, staff_prohibited, login_prohibited
 from minted.views.general_user_views.login_view_functions import *
 from minted.views.general_user_views.point_system_views import *
 from django.conf import settings
-from minted.decorators import login_prohibited
 from minted.mixins import LoginProhibitedMixin
 from minted.notifications import unsubscribe_user_from_push, is_user_subscribed
 from minted.views.general_user_views.login_view_functions import *
@@ -39,6 +38,7 @@ class LogInView(LoginProhibitedMixin, View):
         if user is not None:
             login(request, user)
             update_streak(user)
+            reward_login_and_streak_points(user)
             self.next = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "Log in credentials were invalid!")
@@ -68,6 +68,7 @@ def sign_up(request):
     else:
         form = SignUpForm()
     return render(request, 'account/signup.html', { 'form': form })
+
 
 @login_prohibited
 def spending_signup(request):
@@ -111,7 +112,7 @@ def profile(request):
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     user = request.user
 
-    webpush_subscription_status = 'On' if is_user_subscribed(user.id) else 'Off'
+    webpush_subscription_status = 'Subscribed' if is_user_subscribed(user.id) else 'Not subscribed'
 
     return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 
