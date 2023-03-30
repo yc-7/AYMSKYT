@@ -8,32 +8,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'chartjs_chart_generators.js' %}"></script>
 
-<div id = "container">
-  <form action="{% url 'view_analytics' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Update" class="btn btn-primary">
-  </form>
-</div>
-<div id="container" style="width: 50%;">
+<div class="container-fluid">
+  <div class="card border-light mb-3">
+      <div class="card-body">
+        <h3><b> View your Spending Analytics</b></h3>
+            <div id = "form_container" style= "padding:30px">
+              <form action="{% url 'view_analytics' %}" method="post">
+                {% csrf_token %}
+                {{ form.as_table|safe }}
+                
+                <input type="submit" value="Update" class="btn btn-primary">
+              </form>
+            </div>
+            <div id="container" style="padding:20px">
 
-  {{ colours|json_script:"colours"  }}
-  {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
-  {{ category_line_chart_data|json_script:"lineChartData" }}
+              {{ colours|json_script:"colours"  }}
+              {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
+              {{ category_line_chart_data|json_script:"lineChartData" }}
+              {{ time_interval|json_script:"timeInterval"}}
+              {{ start_date|json_script:"startDate"}}
+              {{ end_date|json_script:"endDate"}}
 
-  <canvas id="line-graph"></canvas>
-  <canvas id="all-spending-line-graph"></canvas>
-  <canvas id="pie-chart"></canvas>
+
+              <div class="line-graph-container" style="float:left; width: 50%">
+                <canvas id="line-graph"></canvas>
+              </div>
+              <div class="pie-chart-container" style="float:right; width: 50%">
+                <canvas id="pie-chart"></canvas>
+              </div>
+
+            </div>
+      </div>
+  </div>
 </div>
+      
 
 <script>
   
   var category_pie_chart_data = JSON.parse(document.getElementById('categoryPieChartData').textContent);
   var category_line_chart_data = JSON.parse(document.getElementById('lineChartData').textContent);
   var colours = JSON.parse(document.getElementById('colours').textContent);
+  var time_interval = JSON.parse(document.getElementById('timeInterval').textContent);
+  var start_date = JSON.parse(document.getElementById('startDate').textContent);
+  var end_date = JSON.parse(document.getElementById('endDate').textContent);
   colours.push("#000000");
   
-  var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours)
+  var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours, time_interval, start_date, end_date)
   var pie_chart_config = create_pie_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
 
 

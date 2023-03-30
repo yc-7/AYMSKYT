@@ -22,6 +22,8 @@ def standardise_timeframe(category):
         yearly_budget = float(category.budget.budget) * 4
     elif (category.budget.timeframe == '/month'):
         yearly_budget = float(category.budget.budget) * 12
+    else:
+        yearly_budget = category.budget.budget
     return yearly_budget
 
 
@@ -58,14 +60,13 @@ def reward_budget_points(user):
                 user.points += reward_points
                 user.save()
 
-def is_today_a_end_date(user):
+def is_today_a_end_date(user, date):
     categories = user.get_categories()
     all_budgets = generate_budget_list(user, categories)
-    today = datetime.now().date()
     ends_today = []
     for category in all_budgets:
         is_today = False
-        if today == category.end_date:
+        if date == category.end_date:
             is_today = True
         ends_today.append(is_today)
     return ends_today
