@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
-from minted.models import Category, User
+from minted.models import Category, User, Expenditure
 from minted.tests.helpers import LoginRequiredTester
 
 class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
@@ -19,6 +20,17 @@ class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
         self.category_name = 'Entertainment'
         self.url = reverse('category_expenditures', kwargs={'category_name':self.category_name})
         self.user = User.objects.get(pk = 1)
+        self.category = Category.objects.get(pk=1)
+
+    def _create_test_expenditures(self, expenditure_count):
+        for user_id in range(expenditure_count):
+            Expenditure.objects.create(
+                category =  self.category,
+                title = 'Entertainment',
+                amount = 30,
+                date = "2023-01-26",
+
+            )
 
     def test_category_expenditures_url(self):
         self.assertEqual(self.url,f"/category_list/{self.category_name}/")
@@ -50,5 +62,23 @@ class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
 
         for expenditure in response.context['expenditures']:
             self.assertEqual(self.category_name, expenditure.category.name)
-        
+
+    def test_get_category_expenditures_list_with_pagination(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        self._create_test_expenditures(settings.EXPENDITURES_PER_PAGE*2)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['expenditures']), settings.EXPENDITURES_PER_PAGE)
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
+        self.assertTrue(response.context['is_paginated'])
+        page_one_url = reverse('category_expenditures', kwargs={'category_name': self.category.name}) + '?page=1'
+        response = self.client.get(page_one_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['expenditures']), settings.EXPENDITURES_PER_PAGE)
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
+        page_two_url = reverse('category_expenditures', kwargs={'category_name': self.category.name}) + '?page=2'
+        response = self.client.get(page_two_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['expenditures']), settings.EXPENDITURES_PER_PAGE)
+        self.assertTemplateUsed(response, 'expenditures/expenditure_list.html')
 

@@ -23,7 +23,7 @@ class FriendsListView(LoginRequiredMixin, ListView):
         """Return the user's friends"""
 
         current_user = self.request.user
-        user_friends_list = current_user.friends.all()
+        user_friends_list = current_user.friends.all().order_by('first_name')
         return user_friends_list
 
 class NewFriendRequestView(LoginRequiredMixin, FormView):
@@ -69,7 +69,7 @@ class FriendRequestListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         """Return the user's friend requests"""
         current_user = self.request.user
-        friend_requests_sent_to_current_user = FriendRequest.objects.filter(to_user = current_user)
+        friend_requests_sent_to_current_user = FriendRequest.objects.filter(to_user = current_user).order_by('from_user')
         return friend_requests_sent_to_current_user
 
 class AcceptFriendRequestView(LoginRequiredMixin, View):
