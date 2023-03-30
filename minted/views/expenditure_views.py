@@ -16,6 +16,7 @@ class CategoryExpenditureListView(LoginRequiredMixin, ListView):
     template_name = 'expenditures/expenditure_list.html'
     context_object_name = 'expenditures'
     http_method_names = ['get']
+    paginate_by = settings.EXPENDITURES_PER_PAGE
 
     def get(self, request, *args, **kwargs):
         """Handle get request and redirect if category_name is invalid"""

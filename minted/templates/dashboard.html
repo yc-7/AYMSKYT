@@ -3,7 +3,180 @@
 | Dashboard
 {% endblock %}
 {% block content %}
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'chartjs_chart_generators.js' %}"></script>
+
+
 <body>
-    <h1 class="p-4"> login success </h1>
+    <h1 class="p-4" id="welcome" data-username="{{ user.first_name }}"> </h1>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeMessageElement = document.getElementById('welcome');
+            const currentTime = new Date();
+            const currentHour = currentTime.getHours();
+            const userName = welcomeMessageElement.dataset.username;
+        
+            let welcomeMessage;
+        
+            if (currentHour >= 5 && currentHour < 12) {
+                welcomeMessage = 'Good morning';
+            } else if (currentHour >= 12 && currentHour < 18) {
+                welcomeMessage = 'Good afternoon';
+            } else if (currentHour >= 18 && currentHour < 22) {
+                welcomeMessage = 'Good evening';
+            } else {
+                welcomeMessage = 'Good night';
+            }
+
+            welcomeMessage += `, ${userName}!`;
+            welcomeMessageElement.textContent = welcomeMessage;
+        });
+        
+    </script>
+
+    
+    <section class="p-3">
+        <div class="container">
+            <div class="row text-center g-4">
+                {% with expenditures=user.get_expenditures %}
+                {% if expenditures %}   
+                
+                    <div class="col-md">
+                        {{ spend_this_month_data|json_script:"spendThisMonthData" }}
+                        <canvas id="over-view-chart"></canvas>
+                    </div>
+                    <div class="col-md">
+                        <div class="card bg-light text-light">
+                            <div class="card-body text-center">
+                                <div class="h1 mb-3">
+                                    <i class=" bi-calendar-month-fill" style="color:#d462a1"></i>
+                                </div>
+                                <h3 class="card-title mb-3" style="color:#602385;">
+                                    So far this {{user.budget.get_timeframe_display}}, you've spent:
+                                </h3>
+                                <h2 class="card-title mb-3" style="color:#d462a1;">
+                                    <div>
+                                        <p > £{{ spend_this_month_data.data.0|floatformat:2}}</p>
+                                        <p>Out of </p> 
+    
+                                        <p> £{{ user.budget.budget|floatformat:2}}</p>
+    
+    
+                                    </div>
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+            {% else %}
+            <div class="col-md">
+                <div class="card bg-light text-light">
+                    <div class="card-body text-center">
+                        <div class="h1 mb-3">
+                            <img src="{% static 'leaf.svg' %}" alt="icon" style="height: 50px; width: 50px; fill: #7EDBB0;">
+                        </div>
+                        <h3 class="card-title mb-3" style="color:#602385;">
+                            Welcome to <span style="font-weight: 800;">minted </span> 
+                        </h3>
+                        <h2 class="card-title mb-3" style="color:#d462a1; font-size: 22px;">
+                            <div>
+                                <p>
+                                    To get started, add some spending categories that you'd like to track and set budgets for them. 
+                                </p>
+                                <p>
+                                    Next, add expenditures by clicking on the desired category.
+                                </p>
+                                <p>
+                                    Once you've added some expenditures, you'll see an overview of your spending here!
+                                </p>
+                            </div>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+
+            
+            {% endif %}
+        {% endwith %}
+
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        var spend_this_month_data = JSON.parse(document.getElementById('spendThisMonthData').textContent);
+        
+        var colours = [(`rgba(${147}, ${56}, ${201}, 1)`)];
+
+        var spend_this_month_config = create_pie_chart_config(spend_this_month_data.data, spend_this_month_data.labels, colours)
+        
+
+        window.onload = function() {
+            var this_month_spend_chart = document.getElementById('over-view-chart').getContext('2d');
+            window.myLine = new Chart(this_month_spend_chart, spend_this_month_config);
+        }
+
+    </script>
+    
+    <section class="p-5">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-md">
+                    <div class="card bg-light text-light">
+                        <div class="card-body text-center">
+                            <div class="h1 mb-3">
+                                <i class=" bi-fire" style="color:#d462a1"></i>
+                            </div>
+                            <h3 class="card-title mb-3" style="color:#602385;">
+                                Log In Streak
+                            </h3>
+                            <p class="card-text" style="color:#d462a1; font-size: 40px;">
+
+                                {{ user.streak_data.streak }} 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <a href="{% url 'rewards' %}" style=" text-decoration : none">
+                        <div class="card bg-light text-light">
+                            <div class="card-body text-center">
+                                <div class="h1 mb-3">
+                                    <i class=" bi-stars" style="color:#d462a1;"></i>
+                                </div>
+                                <h3 class="card-title mb-3" style="color:#602385;">
+                                    Shop
+                                </h3>
+                                <p class="card-text" style="color:#602385;">
+                                Redeem your points for vouchers
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md"><div class="card bg-light text-light">
+                    <a href="{% url 'friend_list' %}"  style=" text-decoration : none">
+                        <div class="card-body text-center">
+                            <div class="h1 mb-3">
+                                <i class=" bi-people-fill" style="color: #d462a1;"></i>
+                            </div>
+                            <h3 class="card-title mb-3" style="color:#602385;">
+                                Friends
+                            </h3>
+                            <p class="card-text" style="color:#602385;">
+                                See the leaderboard or add friends.
+                            </p>
+                        </div>
+                    </a>
+                </div></div>
+            </div>
+        </div>
+    </section>
+    <div>
+         <a href = "{% url 'help' %}" class = "btn btn-lg custom-button" role = "button"> <i class="bi bi-info-circle-fill"></i> Need Help? </a>
+    </div>
 </body>
 {% endblock %}

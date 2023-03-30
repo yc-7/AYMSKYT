@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
-from minted.models import User, Category
+from minted.models import User, Category, SpendingLimit
 from django import forms
 from minted.forms import CategoryForm
 
@@ -21,7 +22,18 @@ class EditExpenditureViewTestCase(TestCase):
             'timeframe': '/month',
         }
         self.user = User.objects.get(pk = 1)
+    
+    def _create_test_categories(self, category_count):
+        for i in range(category_count):
+            Category.objects.create(
+                user =  self.user,
+                name = f'category{i}',
+                budget = SpendingLimit.objects.create(
+                    budget= "150.00",
+                    timeframe="/week"
+                )
 
+            )
 
     def test_edit_category_url(self):
         self.assertEqual(self.url,f'/category/{self.category_id}/edit')
@@ -85,3 +97,24 @@ class EditExpenditureViewTestCase(TestCase):
         response_url = reverse('category_list')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'category_list.html')
+    
+    def test_get_category_list_view_with_pagination(self): 
+        self.category_id = 3
+        self.client.login(email=self.user.email, password="Password123")
+        self._create_test_categories(settings.CATEGORIES_PER_PAGE*2)
+        response = self.client.get(reverse('category_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['categories']), settings.CATEGORIES_PER_PAGE)
+        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTrue(response.context['is_paginated'])
+        page_one_url = reverse('category_list') + '?page=1'
+        response = self.client.get(page_one_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['categories']), settings.CATEGORIES_PER_PAGE)
+        self.assertTemplateUsed(response, 'category_list.html')
+        page_two_url = reverse('category_list') + '?page=2'
+        response = self.client.get(page_two_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['categories']), settings.CATEGORIES_PER_PAGE)
+        self.assertTemplateUsed(response, 'category_list.html')
+        

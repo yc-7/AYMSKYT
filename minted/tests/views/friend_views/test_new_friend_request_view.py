@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, FriendRequest
@@ -31,6 +32,20 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
                 to_user = self.other_user
         )
         self.url = reverse('friend_request')
+    
+    def _create_test_requests(self, request_count):
+        for user_id in range(request_count):
+            FriendRequest.objects.create(
+                from_user =  User.objects.create_user(
+                    email=f'user{user_id}@test.org',
+                    password='Password123',
+                    first_name=f'First{user_id}',
+                    last_name=f'Last{user_id}',
+                    points = 10
+                ),
+                to_user = self.user 
+            )
+
 
 
     def test_friend_request_url(self):
@@ -99,6 +114,24 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'friend_request.html')
     
+    def test_get_request_list_view_with_pagination(self): 
+        self.client.login(email=self.user.email, password="Password123")
+        self._create_test_requests(settings.REQUESTS_PER_PAGE*2)
+        response = self.client.get(reverse('request_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['requests']), settings.REQUESTS_PER_PAGE)
+        self.assertTemplateUsed(response, 'request_list.html')
+        self.assertTrue(response.context['is_paginated'])
+        page_one_url = reverse('request_list') + '?page=1'
+        response = self.client.get(page_one_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['requests']), settings.REQUESTS_PER_PAGE)
+        self.assertTemplateUsed(response, 'request_list.html')
+        page_two_url = reverse('request_list') + '?page=2'
+        response = self.client.get(page_two_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['requests']), settings.REQUESTS_PER_PAGE)
+        self.assertTemplateUsed(response, 'request_list.html')
 
 
 
