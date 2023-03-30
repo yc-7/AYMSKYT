@@ -23,7 +23,7 @@ class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
         self.category = Category.objects.get(pk=1)
 
     def _create_test_expenditures(self, expenditure_count):
-        for user_id in range(expenditure_count):
+        for _ in range(expenditure_count):
             Expenditure.objects.create(
                 category =  self.category,
                 title = 'Entertainment',
