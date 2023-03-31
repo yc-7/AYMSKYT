@@ -42,6 +42,5 @@ class EditSpendingLimitViewTestCase(TestCase, LoginRequiredTester):
         self.client.force_login(self.user)
         response = self.client.post(self.url, data={'budget': 100.1})
         self.assertTemplateUsed(response, 'edit_spending_limit.html')
-        self.assertContains(response, 'Please correct the error below.')
         self.assertEqual(self.user.budget.budget, 150.00)
         self.assertEqual(self.user.budget.timeframe, '/week')

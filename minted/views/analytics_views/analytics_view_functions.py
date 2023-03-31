@@ -1,4 +1,4 @@
-from minted.views.budget_views import generate_budget_list
+from minted.views.budget_views_functions import get_budgets
 from minted.models import Category
 
 
@@ -31,7 +31,7 @@ def calculate_biggest_purchase(user):
 
 def calculate_categories_on_budget_percentage(user):
     categories = user.get_categories()
-    all_budgets = generate_budget_list(user, categories)
+    all_budgets = get_budgets(user, categories)
     on_budget = []
     for budget in all_budgets[:-1]:
         if budget.spent <= budget.budget:
@@ -44,7 +44,7 @@ def calculate_categories_on_budget_percentage(user):
 
 def calculate_percentage_of_budget_remaining(user):
     categories = Category.objects.filter(user = user)
-    all_budgets = generate_budget_list(user, categories)
+    all_budgets = get_budgets(user, categories)
     overall_user_budget = all_budgets[-1]
     user_spent = float(overall_user_budget.spent)
     user_budget = float(overall_user_budget.budget)

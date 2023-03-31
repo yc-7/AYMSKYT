@@ -1,6 +1,6 @@
 {% extends 'base_content.html' %}
 {% block title %}
-| Budgets
+| Budgets List
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -20,19 +20,19 @@
             <td style="text-align:center">Start date</td>
             <td style="text-align:center">End date</td>
           </tr>
-        {%if budget%}
-        {% for spendings in budget %}
+        {% if budgets %}
+        {% for budget in budgets %}
           <tr>
-              <td style="text-align:center">{{ spendings.name }}</td>
-              {% if spendings.spent > spendings.budget %}
-                <td style="text-align:center; color: red">{{ spendings.spent_text }}</td>
-              {% elif spendings.spent >= spendings.ninty_percentage_of_budget %}
-                <td style="text-align:center; color: darkorange">{{ spendings.spent_text }}</td>
+              <td style="text-align:center">{{ budget.name }}</td>
+              {% if budget.spent > budget.budget %}
+                <td style="text-align:center; color: red">{{ budget.spent_text }}</td>
+              {% elif budget.spent >= budget.ninty_percentage_of_budget %}
+                <td style="text-align:center; color: darkorange">{{ budget.spent_text }}</td>
               {% else %}
-                <td style="text-align:center">{{ spendings.spent_text }}</td>
+                <td style="text-align:center">{{ budget.spent_text }}</td>
               {% endif %}
-              <td style="text-align:center">{{ spendings.start_date }}</td>
-              <td style="text-align:center">{{ spendings.end_date }}</td>
+              <td style="text-align:center">{{ budget.start_date }}</td>
+              <td style="text-align:center">{{ budget.end_date }}</td>
           </tr>
         {% endfor %}
         {% endif %}
