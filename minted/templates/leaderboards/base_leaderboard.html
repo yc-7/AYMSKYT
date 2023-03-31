@@ -11,10 +11,11 @@
         <a href="{% url 'friend_list' %}" class="btn custom-button ">Manage Friends</a>
     </div>
     <section style="padding-top: 3%;">
-
         <div class="card bg-white">
-            <table class="table table-striped">
-              <thead>
+          <div class="table-responsive">
+            <div style="overflow: auto; max-height: 600px;">
+              <table class="table text-center mx-auto">
+                <thead style="position: sticky; top: 0px;">
                 <tr>
                   <th style="text-align:center; width:30%"></th>
                   <th style="text-align:center; width:30%"></th>
@@ -24,7 +25,7 @@
               </thead>
             </table>
           </div>
-
+        </div>
     </section>
 </div>
 {% endblock %}
