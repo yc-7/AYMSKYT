@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.conf import settings
 from django.contrib import messages
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
@@ -14,6 +15,7 @@ class BudgetListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     model = SpendingLimit
     template_name = 'budget_list.html'
     context_object_name = 'budgets'
+    paginate_by = settings.BUDGETS_PER_PAGE
 
     def get_queryset(self):
         """Return the user's budgets"""
