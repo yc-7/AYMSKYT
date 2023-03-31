@@ -3,19 +3,10 @@ from django.contrib import messages
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from minted.views.budget_views_functions import *
+from minted.views.budget_views_functions import generate_budget_list
 from minted.mixins import AdminProhibitedMixin
 from minted.forms import SpendingLimitForm
-
-def generate_budget_list(user, categories):
-    all_budgets = []
-
-    for category in categories:
-        all_budgets.append(current_category_limit(category))
-    if user.budget is not None:
-        all_budgets.append(current_user_limit(user))
-
-    return all_budgets
+from minted.models import SpendingLimit
 
 class BudgetListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     """View that displays a user's budgets"""

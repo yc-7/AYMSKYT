@@ -4,7 +4,7 @@ from minted.forms import TimeFrameForm
 from minted.models import Category , Expenditure
 from minted.views.analytics_views.analytics_view_functions import *
 import datetime
-from minted.views.budget_views import *  
+from minted.views.budget_views_functions import *  
 
 @staff_prohibited
 def view_analytics(request):

@@ -110,3 +110,13 @@ def current_user_limit(user):
     budget = user.budget.budget
     name = 'Overall'
     return get_current_spending(name, spending_limits, budget, timeframe)
+
+def generate_budget_list(user, categories):
+    all_budgets = []
+
+    for category in categories:
+        all_budgets.append(current_category_limit(category))
+    if user.budget is not None:
+        all_budgets.append(current_user_limit(user))
+
+    return all_budgets
