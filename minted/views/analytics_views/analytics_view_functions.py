@@ -40,7 +40,7 @@ def calculate_categories_on_budget_percentage(user):
             on_budget.append(False)
     count_true = sum(on_budget)
     percentage_of_on_budget = (count_true / len(all_budgets[:-1])) * 100
-    return percentage_of_on_budget
+    return round(percentage_of_on_budget)
 
 def calculate_percentage_of_budget_remaining(user):
     categories = Category.objects.filter(user = user)
@@ -53,7 +53,7 @@ def calculate_percentage_of_budget_remaining(user):
         percentage_of_budget_remaining = ((user_budget - user_spent) / user_budget) * 100
     else:
         percentage_of_budget_remaining = 0
-    return percentage_of_budget_remaining
+    return round(percentage_of_budget_remaining)
 
 def get_category_expenses_for_time_interval(category, time_interval, start_date, end_date):
     if time_interval == 'yearly':
