@@ -97,7 +97,7 @@ class LogInViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, form_input, follow = True)
         self.assertTrue(self._is_logged_in())
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
         messages_list = list(response.context['messages'])
         self.assertEqual(len(messages_list), 0)
 

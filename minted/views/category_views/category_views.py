@@ -19,7 +19,7 @@ class CategoryListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
     """View that displays a user's categories"""
 
     model = Category
-    template_name = 'category_list.html'
+    template_name = 'categories/category_list.html'
     context_object_name = 'categories'
     paginate_by = settings.CATEGORIES_PER_PAGE
 
@@ -55,7 +55,7 @@ def create_category(request):
             create_category_from_forms(request.user, category_form, spending_form, request.POST.get('colour_value', ""))
 
             return redirect('category_list')           
-    return render(request, 'create_category.html', {'category_form': category_form, 'spending_form': spending_form})
+    return render(request, 'categories/create_category.html', {'category_form': category_form, 'spending_form': spending_form})
 
 @staff_prohibited
 def delete_category(request, category_id):
@@ -97,11 +97,11 @@ def edit_category(request, category_id):
         if valid_forms:
             if category_already_exists_for_edit(category_form, category, request.user):
                 category_form.add_error('name', 'You already have a category with this name')
-                return render(request, 'edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id})
+                return render(request, 'categories/edit_category.html', {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id})
             
             messages.add_message(request, messages.SUCCESS, "Category updated!")
             edit_category_from_forms(category_form, spending_form, spending_limit, request.POST.get('colour_value', ""))
             return redirect('category_list')
     
     context = {'category_form': category_form, 'spending_form': spending_form, 'category_id': category.id, 'category_colour': category_colour}
-    return render(request, 'edit_category.html', context)
+    return render(request, 'categories/edit_category.html', context)
