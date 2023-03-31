@@ -64,7 +64,7 @@ urlpatterns = [
     path('unfriend/<int:friend_id>', views.UnfriendView.as_view(), name = 'unfriend'),
     
     path('profile/edit/spending_limit', views.edit_spending_limit, name='edit_spending_limit'),
-    path('budget_list/', views.budget_list, name = 'budget_list'),
+    path('budget_list/', views.BudgetListView.as_view(), name = 'budget_list'),
 
     path('rewards/', views.rewards_homepage, name='rewards'),
     path('rewards/<str:brand_name>/<str:reward_id>/', views.claim_reward, name='claim_reward'),
