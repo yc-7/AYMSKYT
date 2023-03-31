@@ -106,6 +106,7 @@ def dashboard(request):
             update_streak(request.user)
     return dashboard_analytics(request)
 
+@staff_prohibited
 def help_page(request):
     return render(request, 'help_page.html')
 

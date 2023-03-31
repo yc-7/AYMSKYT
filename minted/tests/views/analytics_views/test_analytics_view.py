@@ -3,10 +3,10 @@ from django.test import TestCase
 from django.urls import reverse
 from minted.forms import TimeFrameForm
 from minted.models import User, Category
-from minted.tests.helpers import LoginRequiredTester
+from minted.tests.helpers import LoginRequiredTester, AdminProhibitedTester
 import datetime
 
-class AnalyticsViewTest(TestCase, LoginRequiredTester):
+class AnalyticsViewTest(TestCase, LoginRequiredTester, AdminProhibitedTester):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -26,6 +26,7 @@ class AnalyticsViewTest(TestCase, LoginRequiredTester):
             'time_interval': 'monthly',
         }
         self.user = User.objects.get(pk = 1)
+        self.other_user = User.objects.get(pk=2)
 
 
     def test_analytics_url(self):
@@ -47,6 +48,10 @@ class AnalyticsViewTest(TestCase, LoginRequiredTester):
     
     def test_get_analytics_redirects_to_login_if_not_logged_in(self):
         self.assertLoginRequired(self.url)
+    
+    def test_view_redirects_if_admin_user(self):
+        self.client.force_login(self.other_user)
+        self.assertAdminProhibited(self.url)
 
     def test_post_invalid_dates(self):
         self.client.login(email=self.user.email, password="Password123")

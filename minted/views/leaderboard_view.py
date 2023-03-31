@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from minted.mixins import AdminProhibitedMixin
 from django.views.generic import ListView
 from minted.models import User
 
-class LeaderboardView(LoginRequiredMixin, ListView):
+class LeaderboardView(AdminProhibitedMixin, LoginRequiredMixin, ListView):
     """View that displays the leaderboard"""
 
     model = User
