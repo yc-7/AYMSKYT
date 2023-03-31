@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import  User
-from minted.tests.helpers import LoginRequiredTester
+from minted.tests.helpers import LoginRequiredTester, AdminProhibitedTester
 
-class StreaksLeaderboardViewTestCase(TestCase, LoginRequiredTester):
+class StreaksLeaderboardViewTestCase(TestCase, LoginRequiredTester, AdminProhibitedTester):
     """Unit tests for the streaks leaderboard view"""
 
     fixtures = [
@@ -24,6 +24,10 @@ class StreaksLeaderboardViewTestCase(TestCase, LoginRequiredTester):
 
     def test_view_redirects_to_login_if_not_logged_in(self):
         self.assertLoginRequired(self.url)
+
+    def test_view_redirects_if_admin_user(self):
+        self.client.force_login(self.other_user)
+        self.assertAdminProhibited(self.url)
 
     def test_get_streaks_leaderboard(self):
         self.client.login(email = self.user.email, password = 'Password123')

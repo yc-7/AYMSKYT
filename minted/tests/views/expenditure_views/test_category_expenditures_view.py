@@ -2,9 +2,9 @@ from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import Category, User, Expenditure
-from minted.tests.helpers import LoginRequiredTester
+from minted.tests.helpers import LoginRequiredTester, AdminProhibitedTester
 
-class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
+class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester, AdminProhibitedTester):
     """Test suite for the category expenditure view."""
 
     fixtures = [
@@ -21,6 +21,7 @@ class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
         self.url = reverse('category_expenditures', kwargs={'category_name':self.category_name})
         self.user = User.objects.get(pk = 1)
         self.category = Category.objects.get(pk=1)
+        self.other_user = User.objects.get(pk=2)
 
     def _create_test_expenditures(self, expenditure_count):
         for _ in range(expenditure_count):
@@ -37,6 +38,10 @@ class CategoryExpendituresViewTestCase(TestCase, LoginRequiredTester):
 
     def test_view_redirects_to_login_if_not_logged_in(self):
         self.assertLoginRequired(self.url)
+    
+    def test_view_redirects_if_admin_user(self):
+        self.client.force_login(self.other_user)
+        self.assertAdminProhibited(self.url)
 
     def test_get_category_expenditures(self):
         self.client.login(email = self.user.email, password = 'Password123')
