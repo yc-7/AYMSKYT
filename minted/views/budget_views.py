@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from minted.views.budget_views_functions import generate_budget_list
+from minted.views.budget_views_functions import get_budgets
 from minted.mixins import AdminProhibitedMixin
 from minted.forms import SpendingLimitForm
 from minted.models import SpendingLimit
@@ -20,7 +20,7 @@ class BudgetListView(LoginRequiredMixin, AdminProhibitedMixin, ListView):
 
         current_user = self.request.user
         categories = current_user.get_categories()
-        budgets = generate_budget_list(current_user, categories)
+        budgets = get_budgets(current_user, categories)
         return budgets
 
 class EditSpendingLimitView(LoginRequiredMixin, AdminProhibitedMixin, UpdateView):
