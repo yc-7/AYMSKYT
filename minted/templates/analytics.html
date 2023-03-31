@@ -85,7 +85,7 @@
         <div class="accordion" id="accordion" style="padding-bottom: 2%;">
           <div class="accordion-item" id="accordion-item">
             <h2 class="accordion-header" id="heading">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ spendings.name }}"  aria-controls={{ spendings.name }} style="color: #47235e ;"> 
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}" aria-controls="collapse-{{ forloop.counter }}" data-name="{{ spendings.name }}" style="color: #47235e ;">
                   <div class="row">
                     <div class="col-12">
                       <h3><b>{{ spendings.name }}</b></h3>
@@ -93,7 +93,7 @@
                   </div>
               </button>
             </h2>
-            <div id={{ spendings.name }} class="accordion-collapse collapse" aria-labelledby={{ spendings.name }} data-bs-parent="#accordion">
+            <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#accordion" data-name="{{ spendings.name }}">
               <div class="accordion-body" style="color: #47235e ;">
                 <div class="card-body text-center">
                   <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -149,7 +149,7 @@
         </h2>
         <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordion">
           <div class="accordion-body" style="color: #47235e ;">
-            <div class="card-body text-center p-4 ">
+            <div class="card-body text-center p-4">
             {% if stats%}
             {%if stats.extreme_labels.max_labels%}
                 <h5>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
@@ -235,6 +235,24 @@
 
   }
 
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const nameElements = document.querySelectorAll('[data-name]');
+    
+    nameElements.forEach(function(element) {
+      const originalName = element.getAttribute('data-name');
+      const newName = originalName.replace(/ /g, '_');
+      
+      if (element.classList.contains('accordion-button')) {
+        element.setAttribute('data-bs-target', '#collapse-' + newName);
+        element.setAttribute('aria-controls', 'collapse-' + newName);
+      } else {
+        element.setAttribute('id', 'collapse-' + newName);
+      }
+    });
+  });
 </script>
 
 
