@@ -60,7 +60,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         url = reverse('friend_request')
         response = self.client.post(url, self.form_input, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'friend_request.html')
+        self.assertTemplateUsed(response, 'friends/friend_request.html')
         
     def test_successful_friend_request(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -68,7 +68,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         response_url = reverse('friend_request')
         response = self.client.post(url, self.form_input, follow=True)
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'friend_request.html')
+        self.assertTemplateUsed(response, 'friends/friend_request.html')
 
     def test_unsuccessful_friend_request_due_to_sent_to_self(self):
         FriendRequest.objects.all().delete()
@@ -79,7 +79,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         form = response.context['form']
         self.assertIn('email', form.errors)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'friend_request.html')
+        self.assertTemplateUsed(response, 'friends/friend_request.html')
     
     def test_unsuccessful_friend_request_due_to_pending_friend_request_from_other_user(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -90,7 +90,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         form = response.context['form']
         self.assertIn('email', form.errors)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'friend_request.html')
+        self.assertTemplateUsed(response, 'friends/friend_request.html')
 
     def test_unsuccessful_friend_request_due_to_pending_friend_request_to_other_user(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -101,7 +101,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         form = response.context['form']
         self.assertIn('email', form.errors)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'friend_request.html')
+        self.assertTemplateUsed(response, 'friends/friend_request.html')
 
     def test_unsuccessful_friend_request_due_to_already_friends(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -112,7 +112,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         form = response.context['form']
         self.assertIn('email', form.errors)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'friend_request.html')
+        self.assertTemplateUsed(response, 'friends/friend_request.html')
     
     def test_get_request_list_view_with_pagination(self): 
         self.client.login(email=self.user.email, password="Password123")
@@ -120,18 +120,18 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
         response = self.client.get(reverse('request_list'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['requests']), settings.REQUESTS_PER_PAGE)
-        self.assertTemplateUsed(response, 'request_list.html')
+        self.assertTemplateUsed(response, 'friends/request_list.html')
         self.assertTrue(response.context['is_paginated'])
         page_one_url = reverse('request_list') + '?page=1'
         response = self.client.get(page_one_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['requests']), settings.REQUESTS_PER_PAGE)
-        self.assertTemplateUsed(response, 'request_list.html')
+        self.assertTemplateUsed(response, 'friends/request_list.html')
         page_two_url = reverse('request_list') + '?page=2'
         response = self.client.get(page_two_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['requests']), settings.REQUESTS_PER_PAGE)
-        self.assertTemplateUsed(response, 'request_list.html')
+        self.assertTemplateUsed(response, 'friends/request_list.html')
 
 
 

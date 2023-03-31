@@ -35,4 +35,4 @@ class FriendViewTest(TestCase, LoginRequiredTester):
         self.assertEqual(response.status_code, 200)
         friend_requests_sent_to_current_user = FriendRequest.objects.filter(to_user = self.user).count()
         self.assertEqual(friend_requests_sent_to_current_user, len(response.context['requests']))
-        self.assertTemplateUsed(response, 'request_list.html')
+        self.assertTemplateUsed(response, 'friends/request_list.html')
