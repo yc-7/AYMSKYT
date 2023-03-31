@@ -1,4 +1,4 @@
-from minted.views.budget_views_functions import *  
+from minted.views.budget_views.budget_views_functions import *  
 from minted.models import *
 import datetime
 from datetime import datetime, timedelta

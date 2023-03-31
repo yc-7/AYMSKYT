@@ -1,4 +1,4 @@
-from minted.views.budget_views_functions import get_budgets
+from minted.views.budget_views.budget_views_functions import get_budgets
 from minted.models import Category
 
 

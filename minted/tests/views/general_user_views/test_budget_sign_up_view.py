@@ -51,7 +51,7 @@ class BudgetSignupViewTestCase(TestCase, LogInTester):
         response = self.client.get(self.url, follow = True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_post_budget_sign_up_redirects_when_logged_in(self):
         self.client.login(email = self.user.email, password = 'Password123')
@@ -61,7 +61,7 @@ class BudgetSignupViewTestCase(TestCase, LogInTester):
         self.assertEqual(after_count, before_count)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
     
     def test_get_budget_sign_up_redirects_with_no_user_data(self):
         self.session['user_data'] = None
@@ -87,7 +87,7 @@ class BudgetSignupViewTestCase(TestCase, LogInTester):
         self.assertEqual(before_count, after_count - 1)
         response_url = reverse('dashboard')
         self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_successful_budget_sign_up_with_social_account(self):
         self.client.login(email = self.user.email, password = 'Password123')
@@ -100,7 +100,7 @@ class BudgetSignupViewTestCase(TestCase, LogInTester):
         self.assertEqual(before_count, after_count)
         response_url = reverse('dashboard')
         self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_unsuccessful_sign_up(self):
         self.session.save()
@@ -122,7 +122,7 @@ class BudgetSignupViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, self.form_input, follow = True)
         response_url = reverse('dashboard')
         self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
         user = User.objects.get(first_name = 'Jane')
         self.assertEqual(user.email, 'janedoe@example.org')
 

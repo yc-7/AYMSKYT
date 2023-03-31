@@ -37,7 +37,7 @@ class FriendViewTest(TestCase, LoginRequiredTester, AdminProhibitedTester):
         response = self.client.post(self.url, follow=True)
         friend_count_end_count = self.user.friends.all().count()
         self.assertEqual(friend_count_start_count, friend_count_end_count+1)
-        self.assertTemplateUsed(response, 'friend_list.html')
+        self.assertTemplateUsed(response, 'friends/friend_list.html')
         redirect_url = reverse('friend_list')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
 
@@ -47,7 +47,7 @@ class FriendViewTest(TestCase, LoginRequiredTester, AdminProhibitedTester):
         response = self.client.get(self.url, follow=True)
         friend_end_count = self.user.friends.all().count()
         self.assertEqual(friend_start_count, friend_end_count)
-        self.assertTemplateUsed(response, 'friend_list.html')
+        self.assertTemplateUsed(response, 'friends/friend_list.html')
         redirect_url = reverse('friend_list')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
 

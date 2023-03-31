@@ -1,0 +1,33 @@
+<section class="p-5">
+    <div class="container">
+      <div class="card bg-light">
+        <h2 class="card-title mb-3 text-center p-3">
+          Transactions
+        </h2>
+        <div class="table-responsive">
+          <div style="overflow: auto; max-height: 300px;">
+            <table class="table text-center mx-auto">
+              <thead style="position: sticky; top: 0px;">
+                <tr style="color: white; background: #d462a1;">
+                  <th style="width: 33.33%;">Title</th>
+                  <th style="width: 33.33%;">Amount</th>
+                  <th style="width: 33.33%;">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if transactions %}
+                {% for transaction in transactions %}
+                <tr style="color: #602385;">
+                  <td style="width: 33.33%;">{{ transaction.title }}</td>
+                  <td style="width: 33.33%;">£{{ transaction.amount }}</td>
+                  <td style="width: 33.33%;">{{ transaction.date }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

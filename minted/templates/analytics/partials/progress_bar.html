@@ -1,0 +1,18 @@
+<div class="progress custom-progress-bar" style="height: 30px; border-radius: 10px;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated
+                   {% if spendings.percentage_spent < 70 %}
+                   bg-success
+                   {% elif spendings.percentage_spent < 90 %}
+                   bg-warning
+                   {% else %}
+                   bg-danger
+                   {% endif %}"
+                   style="width: {% if spendings.percentage_spent <= 100 %}{{ spendings.percentage_spent }}{% else %}100{% endif %}%;"
+                   aria-valuenow="{{ spendings.percentage_spent }}" 
+                   aria-valuemin="0" 
+                   aria-valuemax="100">
+  
+        {{ spendings.percentage_spent }}%
+  
+    </div>
+  </div>

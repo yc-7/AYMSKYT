@@ -1,0 +1,37 @@
+<section class="p-5">
+  
+    {{ colours|json_script:"colours"  }}
+    {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
+    {{ category_line_chart_data|json_script:"lineChartData" }}
+    {{ time_interval|json_script:"timeInterval"}}
+    {{ start_date|json_script:"startDate"}}
+    {{ end_date|json_script:"endDate"}}
+  
+    <div class="container">
+      {% if stats.budget|length > 1 %}
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+          <div class="card bg-light">
+            <div class="card-body text-center">
+              <canvas id="pie-chart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col">  
+          <div class="card bg-light">
+            <div class="card-body text-center">
+              <canvas id="line-graph"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="card bg-light">
+        <div class="card-body text-center">
+          <h4> You have no graph data to view. Create some categories and add expenditures to get started! </h4>
+        </div>
+      </div> 
+      {% endif %}
+      
+    </div>
+  </section>

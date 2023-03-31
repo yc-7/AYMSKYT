@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
-from minted.models import User, FriendRequest
+from minted.models import User
 from minted.tests.helpers import LoginRequiredTester, AdminProhibitedTester
 
 class FriendViewTest(TestCase, LoginRequiredTester, AdminProhibitedTester):
@@ -54,7 +54,7 @@ class FriendViewTest(TestCase, LoginRequiredTester, AdminProhibitedTester):
         self.assertEqual(response.status_code, 200)
         user_friend_count = self.user.friends.all().count()
         self.assertEqual(user_friend_count, len(response.context['friends']))
-        self.assertTemplateUsed(response, 'friend_list.html')
+        self.assertTemplateUsed(response, 'friends/friend_list.html')
     
     def test_get_friend_list_with_pagination(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -63,17 +63,17 @@ class FriendViewTest(TestCase, LoginRequiredTester, AdminProhibitedTester):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['friends']), settings.FRIENDS_PER_PAGE)
-        self.assertTemplateUsed(response, 'friend_list.html')
+        self.assertTemplateUsed(response, 'friends/friend_list.html')
         self.assertTrue(response.context['is_paginated'])
         page_one_url = reverse('friend_list') + '?page=1'
         response = self.client.get(page_one_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['friends']), settings.FRIENDS_PER_PAGE)
-        self.assertTemplateUsed(response, 'friend_list.html')
+        self.assertTemplateUsed(response, 'friends/friend_list.html')
         page_two_url = reverse('friend_list') + '?page=2'
         response = self.client.get(page_two_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['friends']), settings.FRIENDS_PER_PAGE)
-        self.assertTemplateUsed(response, 'friend_list.html')
+        self.assertTemplateUsed(response, 'friends/friend_list.html')
 
         

@@ -27,7 +27,7 @@ class DeleteCategoryViewTest(TestCase):
         response = self.client.get(url, follow=True)
         response_url = reverse('category_list')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
     
     def test_successful_deletion(self):        
         self.client.login(email = self.user.email, password = 'Password123')
@@ -45,7 +45,7 @@ class DeleteCategoryViewTest(TestCase):
         
         response_url = reverse('category_list')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
 
     
     def test_unsuccessful_deletion(self):        
@@ -65,5 +65,5 @@ class DeleteCategoryViewTest(TestCase):
         
         response_url = reverse('create_category')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
     

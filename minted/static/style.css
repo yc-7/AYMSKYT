@@ -33,8 +33,9 @@
 
 .custom-button{
   background-color: #d462a1; 
-  color: white; 
-  border-radius: 18px;
+  color: white;
+  margin: 3px 1px 3px;
+  border-radius: 12px;
 }
 
 .custom-button:hover{

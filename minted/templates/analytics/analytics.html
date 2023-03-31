@@ -1,0 +1,79 @@
+{% extends 'base_content.html' %}
+{% block title %}
+| Analytics
+{% endblock %}
+{% block content %}
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'chartjs_chart_generators.js' %}"></script>
+
+{% include 'analytics/partials/analytics_time_frame_form.html' %}
+{% include 'analytics/partials/charts.html' %}
+
+<section>
+  <div class="container" style="padding-bottom: 2%;">
+    {% include 'analytics/partials/spending_progress_accordion.html' %}
+    {% if stats.budget|length > 1 %}
+    <div class="card bg-light" style="padding-bottom: 2%;">
+
+      {%if stats.budget%}
+      {% for spendings in stats.budget %}
+      <div class="p-3">
+        {% include 'analytics/partials/spending_accordion.html' %}
+        {% include 'analytics/partials/progress_bar.html' %}
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+  {% include 'analytics/partials/statistics.html' %}
+</section>
+
+
+<script>
+  
+  var category_pie_chart_data = JSON.parse(document.getElementById('categoryPieChartData').textContent);
+  var category_line_chart_data = JSON.parse(document.getElementById('lineChartData').textContent);
+  var colours = JSON.parse(document.getElementById('colours').textContent);
+  var time_interval = JSON.parse(document.getElementById('timeInterval').textContent);
+  var start_date = JSON.parse(document.getElementById('startDate').textContent);
+  var end_date = JSON.parse(document.getElementById('endDate').textContent);
+  colours.push("#000000");
+  
+  var line_config = create_line_chart_config(category_line_chart_data.datasets, category_line_chart_data.labels, colours, time_interval, start_date, end_date)
+  var pie_chart_config = create_pie_chart_config(category_pie_chart_data.data, category_pie_chart_data.labels, colours)
+
+
+  window.onload = function() {
+    var category_pie_chart = document.getElementById('pie-chart').getContext('2d');
+    window.myPie = new Chart(category_pie_chart, pie_chart_config);
+
+    var category_line_chart = document.getElementById('line-graph').getContext('2d');
+    window.myLine = new Chart(category_line_chart, line_config);
+
+  }
+
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const nameElements = document.querySelectorAll('[data-name]');
+    
+    nameElements.forEach(function(element) {
+      const originalName = element.getAttribute('data-name');
+      const newName = originalName.replace(/ /g, '_').replace(/(:|\.|\[|\]|,|=|@|+)/g, '\\$1');
+      
+      if (element.classList.contains('accordion-button')) {
+        element.setAttribute('data-bs-target', '#collapse-' + newName);
+        element.setAttribute('aria-controls', 'collapse-' + newName);
+      } else {
+        element.setAttribute('id', 'collapse-' + newName);
+      }
+    });
+  });
+</script>
+
+
+{% endblock %}

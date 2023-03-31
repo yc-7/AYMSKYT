@@ -4,7 +4,7 @@ from minted.forms import TimeFrameForm
 from minted.models import Category , Expenditure
 from minted.views.analytics_views.analytics_view_functions import *
 import datetime
-from minted.views.budget_views_functions import *  
+from minted.views.budget_views.budget_views_functions import *  
 
 @staff_prohibited
 def view_analytics(request):
@@ -30,7 +30,7 @@ def view_analytics(request):
     
     categories = Category.objects.filter(user = request.user)
     if not categories:
-        return render(request, 'analytics.html', {'form': form})
+        return render(request, 'analytics/analytics.html', {'form': form})
 
     all_budgets = get_budgets(request.user, categories)
     colours = [category.colour for category in categories]
@@ -53,7 +53,7 @@ def view_analytics(request):
 
     }
 
-    return render(request, 'analytics.html', {
+    return render(request, 'analytics/analytics.html', {
         'form': form, 
         'category_pie_chart_data': category_pie_chart_data, 
         'category_line_chart_data': category_line_chart_data, 
@@ -76,12 +76,12 @@ def dashboard_analytics(request):
     transactions = Expenditure.objects.filter(category__user=request.user).order_by('-date')
     
     if not categories:
-        return render(request, 'dashboard.html')
+        return render(request, 'dashboard/dashboard.html')
     
 
     spend_this_month_data = generate_all_spending_pie_chart_dataset(categories, start_date, end_date, float(budget))
     
-    return render(request, 'dashboard.html', {'spend_this_month_data': spend_this_month_data, 'transactions': transactions})
+    return render(request, 'dashboard/dashboard.html', {'spend_this_month_data': spend_this_month_data, 'transactions': transactions})
 
 
 

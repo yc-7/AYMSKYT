@@ -15,7 +15,7 @@ class FriendsListView(AdminProhibitedMixin, LoginRequiredMixin, ListView):
     """View that displays a users friends"""
     
     model = User
-    template_name = 'friend_list.html'
+    template_name = 'friends/friend_list.html'
     context_object_name = 'friends'
     http_method_names = ['get']
     paginate_by = settings.FRIENDS_PER_PAGE
@@ -31,7 +31,7 @@ class NewFriendRequestView(AdminProhibitedMixin, LoginRequiredMixin, FormView):
     """View that handles sending friend requests"""
 
     form_class = FriendReqForm
-    template_name = 'friend_request.html'
+    template_name = 'friends/friend_request.html'
 
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the friend request form"""
@@ -62,7 +62,7 @@ class NewFriendRequestView(AdminProhibitedMixin, LoginRequiredMixin, FormView):
 class FriendRequestListView(AdminProhibitedMixin, LoginRequiredMixin, ListView):
     """View to display a users incoming friend requests"""
     model = User
-    template_name = 'request_list.html'
+    template_name = 'friends/request_list.html'
     context_object_name = 'requests'
     http_method_names = ['get']
     paginate_by = settings.REQUESTS_PER_PAGE

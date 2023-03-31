@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, Category
-from django import forms
-from minted.forms import SpendingLimitForm
 
 class CreateCategoryViewTest(TestCase):
     fixtures = ['minted/tests/fixtures/default_categories.json', 
@@ -27,7 +25,7 @@ class CreateCategoryViewTest(TestCase):
         self.client.login(email = self.user.email, password = 'Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
     
     def test_successful_creation(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -37,7 +35,7 @@ class CreateCategoryViewTest(TestCase):
         self.assertEqual(category_count_start, category_count_end-1)
         response_url = reverse('category_list')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
 
     def test_unsuccessful_creation(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -47,7 +45,7 @@ class CreateCategoryViewTest(TestCase):
         category_end_count = len(Category.objects.all())
         self.assertEqual(category_start_count, category_end_count)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
     
     def test_unsuccessful_category_creation(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -58,6 +56,6 @@ class CreateCategoryViewTest(TestCase):
         category_count_end = len(Category.objects.all())
         self.assertEqual(category_count_start, category_count_end)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
         form = response.context['category_form']
         self.assertEqual(form.errors['name'], ['You already have a category with this name'])

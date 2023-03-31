@@ -67,7 +67,7 @@ class AddExpenditureViewTestCase(TestCase, LoginRequiredTester):
         self.url = reverse('add_expenditure', kwargs = {'category_name': self.category_name})
         response = self.client.get(self.url, follow = True)
         self.assertRedirects(response, '/create_category/', status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
 
     def test_view_redirects_to_login_if_not_logged_in(self):
         self.assertLoginRequired(self.url)

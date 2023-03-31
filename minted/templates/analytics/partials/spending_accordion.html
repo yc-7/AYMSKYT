@@ -1,0 +1,30 @@
+<div class="accordion" id="accordion" style="padding-bottom: 2%;">
+    <div class="accordion-item" id="accordion-item">
+      <h2 class="accordion-header" id="heading">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}" aria-controls="collapse-{{ forloop.counter }}" data-name="{{ spendings.name }}" style="color: #47235e ;">
+            <div class="row">
+              <div class="col-12">
+                <h3><b>{{ spendings.name }}</b></h3>
+              </div>
+            </div>
+        </button>
+      </h2>
+      <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#accordion" data-name="{{ spendings.name }}">
+        <div class="accordion-body" style="color: #47235e ;">
+          <div class="card-body text-center">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+              <div class="col">
+                <h5>{{ spendings.spent_text}}</h5>
+              </div>
+              <div class="col">
+                <h5>Budget Start Date: <b>{{ spendings.start_date }}</b></h5>
+              </div>
+              <div class="col">
+                <h5>Budget End Date: <b>{{ spendings.end_date }}</b></h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

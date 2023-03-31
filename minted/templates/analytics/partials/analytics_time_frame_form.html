@@ -1,0 +1,10 @@
+<div class="container " style="font-size: large;" >
+<h1 style="padding-bottom: 2%; font-weight:800;">Analytics</h1>
+<form action="{% url 'view_analytics' %}" method="post" class="row g-2 align-items-center">
+    {% csrf_token %}
+    {% include 'partials/bootstrap_form.html' with form=form %}
+    <div class="col-auto">
+    <input type="submit" value="Update" class="btn btn-lg custom-button">
+    </div>
+</form>
+</div>

@@ -39,7 +39,7 @@ class FriendRequestDeclineViewTest(TestCase, LoginRequiredTester, AdminProhibite
         response = self.client.get(self.url, follow=True)
         friend_request_end_count = FriendRequest.objects.count()
         self.assertEqual(friend_request_start_count, friend_request_end_count)
-        self.assertTemplateUsed(response, 'request_list.html')
+        self.assertTemplateUsed(response, 'friends/request_list.html')
         redirect_url = reverse('request_list')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
     
@@ -49,7 +49,7 @@ class FriendRequestDeclineViewTest(TestCase, LoginRequiredTester, AdminProhibite
         response_url = reverse('request_list')
         response = self.client.post(self.url, follow=True)
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'request_list.html')
+        self.assertTemplateUsed(response, 'friends/request_list.html')
         total_requests_after_decline = FriendRequest.objects.count()
         self.assertTrue(total_requests_before_decline, total_requests_after_decline+1)
 

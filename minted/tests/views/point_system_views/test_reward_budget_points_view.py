@@ -1,7 +1,7 @@
 from django.test import TestCase
 from minted.models import User
 from minted.views.general_user_views.point_system_views import *
-from minted.views.budget_views_functions import Budget
+from minted.views.budget_views.budget_views_functions import Budget
 from minted.tests.helpers import LoginRequiredTester
 from unittest.mock import MagicMock, patch
 

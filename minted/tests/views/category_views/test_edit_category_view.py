@@ -41,7 +41,7 @@ class EditExpenditureViewTestCase(TestCase):
         self.client.login(email = self.user.email, password = 'Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'edit_category.html')
+        self.assertTemplateUsed(response, 'categories/edit_category.html')
 
     def test_edit_category_redirects_if_category_does_not_exist(self):
         self.client.login(email = self.user.email, password = 'Password123')
@@ -49,7 +49,7 @@ class EditExpenditureViewTestCase(TestCase):
         response = self.client.get(self.url, follow=True)
         response_url = reverse('create_category')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
     
     def test_successful_edit(self):
         self.category_id = 3
@@ -62,7 +62,7 @@ class EditExpenditureViewTestCase(TestCase):
         self.assertEqual(category_count_after, category_count)
         response_url = reverse('category_list')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
         self.assertEqual(form['name'].value(),'Essentials')
 
     def test_unsuccessful_edit_due_to_invalid_name(self):
@@ -74,7 +74,7 @@ class EditExpenditureViewTestCase(TestCase):
         category_count_after = len(Category.objects.all())
         self.assertEqual(category_count_after, category_count)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'edit_category.html')
+        self.assertTemplateUsed(response, 'categories/edit_category.html')
 
     def test_unsuccessful_edit_due_to_duplicate_category_name(self):
         self.category_id = 3
@@ -85,7 +85,7 @@ class EditExpenditureViewTestCase(TestCase):
         category_count_after = len(Category.objects.all())
         self.assertEqual(category_count_after, category_count)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'edit_category.html')
+        self.assertTemplateUsed(response, 'categories/edit_category.html')
         form = response.context['category_form']
         self.assertEqual(form.errors['name'], ['You already have a category with this name'])
 
@@ -95,7 +95,7 @@ class EditExpenditureViewTestCase(TestCase):
         response = self.client.get(self.url, follow=True)
         response_url = reverse('category_list')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
     
     def test_get_category_list_view_with_pagination(self): 
         self.category_id = 3
@@ -104,16 +104,16 @@ class EditExpenditureViewTestCase(TestCase):
         response = self.client.get(reverse('category_list'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['categories']), settings.CATEGORIES_PER_PAGE)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
         self.assertTrue(response.context['is_paginated'])
         page_one_url = reverse('category_list') + '?page=1'
         response = self.client.get(page_one_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['categories']), settings.CATEGORIES_PER_PAGE)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
         page_two_url = reverse('category_list') + '?page=2'
         response = self.client.get(page_two_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['categories']), settings.CATEGORIES_PER_PAGE)
-        self.assertTemplateUsed(response, 'category_list.html')
+        self.assertTemplateUsed(response, 'categories/category_list.html')
         

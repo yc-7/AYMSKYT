@@ -54,7 +54,7 @@ class LogInViewTestCase(TestCase, LogInTester):
         response = self.client.get(self.url, follow = True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_post_log_in_redirects_when_logged_in(self):
         self.client.login(email = self.user.email, password = "Password123")
@@ -62,7 +62,7 @@ class LogInViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, form_input, follow = True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_post_log_in_with_incorrect_credentials_and_redirect(self):
         redirect_url = reverse('create_category')
@@ -77,7 +77,7 @@ class LogInViewTestCase(TestCase, LogInTester):
         self.assertTrue(self._is_logged_in())
         response_url = reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_USER)
         self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
         messages_list = list(response.context['messages'])
         self.assertEqual(len(messages_list), 0)
 
@@ -97,7 +97,7 @@ class LogInViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, form_input, follow = True)
         self.assertTrue(self._is_logged_in())
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'create_category.html')
+        self.assertTemplateUsed(response, 'categories/create_category.html')
         messages_list = list(response.context['messages'])
         self.assertEqual(len(messages_list), 0)
 
@@ -107,7 +107,7 @@ class LogInViewTestCase(TestCase, LogInTester):
         self.assertTrue(self._is_logged_in())
         response_url = reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN_AS_USER)
         self.assertRedirects(response, response_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
         messages_list = list(response.context['messages'])
         self.assertEqual(len(messages_list), 0)
 

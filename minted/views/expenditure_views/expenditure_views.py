@@ -5,8 +5,8 @@ from django.views.generic import ListView
 from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
-from .general_user_views.login_view_functions import *
-from minted.views.expenditure_receipt_functions import handle_uploaded_receipt_file, delete_file
+from minted.views.general_user_views.login_view_functions import *
+from minted.views.expenditure_views.expenditure_receipt_functions import handle_uploaded_receipt_file, delete_file
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 
