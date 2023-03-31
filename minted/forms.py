@@ -44,7 +44,11 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         )
 
 class SpendingLimitForm(forms.ModelForm):
+    """Form to set budget"""
+
     class Meta:
+        """Form options"""
+
         model = SpendingLimit
         fields = ['budget', 'timeframe']
 
@@ -53,10 +57,11 @@ class SpendingLimitForm(forms.ModelForm):
 
         super().clean()
         budget = self.cleaned_data.get('budget')
-        if budget == 0:
-            self.add_error('budget', 'Your budget cannot be 0')
-        elif budget <= 0:
-            self.add_error('budget', 'Your budget cannot be negative')
+        if budget is not None:
+            if budget == 0:
+                self.add_error('budget', 'Your budget cannot be 0')
+            elif budget <= 0:
+                self.add_error('budget', 'Your budget cannot be negative')
 
 class EditProfileForm(forms.ModelForm):
     """Form to update user profile details"""
