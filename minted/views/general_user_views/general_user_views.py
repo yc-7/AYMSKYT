@@ -40,7 +40,6 @@ class LogInView(LoginProhibitedMixin, View):
         if user is not None:
             login(request, user)
             update_streak(user)
-            reward_login_and_streak_points(user)
             self.next = request.POST.get('next') or get_redirect_url_for_user(user)
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "Log in credentials were invalid!")
@@ -66,13 +65,13 @@ def sign_up(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             request.session['user_data'] = form.cleaned_data
-            return redirect('spending_signup')
+            return redirect('budget_sign_up')
     else:
         form = SignUpForm()
-    return render(request, 'account/signup.html', { 'form': form })
+    return render(request, 'account/sign_up.html', { 'form': form })
 
 @login_prohibited
-def spending_signup(request):
+def budget_sign_up(request):
     user_data = request.session.get('user_data')
     if SocialAccount.objects.filter(user=request.user.id).exists() == False and user_data == None:
         return redirect('sign_up')
@@ -99,13 +98,12 @@ def spending_signup(request):
                 return redirect(redirect_url)
     else:
         form = SpendingLimitForm()
-    return render(request, 'account/spending_signup.html', { 'form': form })
+    return render(request, 'account/budget_sign_up.html', { 'form': form })
 
 @staff_prohibited
 def dashboard(request):
     if SocialAccount.objects.filter(user=request.user.id).exists():
             update_streak(request.user)
-            reward_login_and_streak_points(request.user)
     return dashboard_analytics(request)
 
 def help_page(request):
@@ -117,7 +115,7 @@ def profile(request):
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     user = request.user
 
-    webpush_subscription_status = 'Subscribed' if is_user_subscribed(user.id) else 'Not subscribed'
+    webpush_subscription_status = 'On' if is_user_subscribed(user.id) else 'Off'
 
     return render(request, 'profile.html', {'user': user, 'vapid_key': vapid_key, 'subscription_status': webpush_subscription_status})
 

@@ -30,6 +30,7 @@
   {{ end_date|json_script:"endDate"}}
 
   <div class="container">
+    {% if stats.budget|length > 1 %}
     <div class="row row-cols-1 row-cols-md-2 g-4">
       <div class="col">
         <div class="card bg-light">
@@ -38,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="col">
+      <div class="col">  
         <div class="card bg-light">
           <div class="card-body text-center">
             <canvas id="line-graph"></canvas>
@@ -46,33 +47,73 @@
         </div>
       </div>
     </div>
+    {% else %}
+    <div class="card bg-light">
+      <div class="card-body text-center">
+        <h4> You have no graph data to view. Create some categories and add expenditures to get started! </h4>
+      </div>
+    </div> 
+    {% endif %}
+    
   </div>
 </section>
 
 <section>
-  <div class="container">
+  <div class="container" style="padding-bottom: 2%;">
     <div class="accordion" id="accordion" style="padding-bottom: 2%;">
-      <div class="accordion-item">
+      <div class="accordion-item" id="accordion-item-one">
         <h2 class="accordion-header" id="headingOne">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="color: #47235e ;">
-            <h2>Your Spending</h2>
+            <h2>Your Spending Progress</h2>
           </button>
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion">
           <div class="accordion-body" style="color: #47235e ;">
-            Here you can see the percentage you have spent from your budgets. Your category budgets may have different tracking periods to your overall budget. Click <span class="bold-pink">Budgets</span>  in the navbar to get the details.
+            Here you can see the percentage you have spent from your budgets. Your category budgets may have different tracking periods to your overall budget. 
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card bg-light">
+    {% if stats.budget|length > 1 %}
+    <div class="card bg-light" style="padding-bottom: 2%;">
 
-      {%if budget%}
-      {% for spendings in budget %}
+      {%if stats.budget%}
+      {% for spendings in stats.budget %}
       <div class="p-3">
-        <h3>{{ spendings.name }}</h3>
-        <div class="progress custom-progress-bar" style="height: 30px; border-radius: 15px;">
+        
+        <div class="accordion" id="accordion" style="padding-bottom: 2%;">
+          <div class="accordion-item" id="accordion-item">
+            <h2 class="accordion-header" id="heading">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ spendings.name }}"  aria-controls={{ spendings.name }} style="color: #47235e ;"> 
+                  <div class="row">
+                    <div class="col-12">
+                      <h3><b>{{ spendings.name }}</b></h3>
+                    </div>
+                  </div>
+              </button>
+            </h2>
+            <div id={{ spendings.name }} class="accordion-collapse collapse" aria-labelledby={{ spendings.name }} data-bs-parent="#accordion">
+              <div class="accordion-body" style="color: #47235e ;">
+                <div class="card-body text-center">
+                  <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                      <h5>{{ spendings.spent_text}}</h5>
+                    </div>
+                    <div class="col">
+                      <h5>Budget Start Date: <b>{{ spendings.start_date }}</b></h5>
+                    </div>
+                    <div class="col">
+                      <h5>Budget End Date: <b>{{ spendings.end_date }}</b></h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress custom-progress-bar" style="height: 30px; border-radius: 10px;">
           <div class="progress-bar progress-bar-striped progress-bar-animated
                      {% if spendings.percentage_spent < 70 %}
                      bg-success
@@ -82,10 +123,13 @@
                      bg-danger
                      {% endif %}"
                      style="--percentage-spent: {% if spendings.percentage_spent <= 100 %}{{ spendings.percentage_spent }}{% else %}100{% endif %}%;" 
+                     
                      aria-valuenow="{{ spendings.percentage_spent }}" 
                      aria-valuemin="0" 
                      aria-valuemax="100">
-            {{ spendings.percentage_spent }}%
+            
+              {{ spendings.percentage_spent }}%
+            
           </div>
         </div>
       </div>
@@ -93,41 +137,77 @@
       {% endif %}
 
     </div>
+    {% endif %}
   </div>
 
   <div class="container">
-        <div class="card bg-light">
-          <div class="card-body text-center">
-            <div id="stats_container" style="padding:30px;">
-              {%if extreme_labels.max_labels%}
-                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
-                  {% for category in extreme_labels.max_labels %}
+    <div class="accordion" id="accordion-two" style="padding-bottom: 2%;">
+      <div class="accordion-item" id="accordion-item-two">
+        <h2 class="accordion-header" id="headingTwo">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" style="color: #47235e ;">
+            <h2>View Your Spending Stats</h2>
+          </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordion">
+          <div class="accordion-body" style="color: #47235e ;">
+            <div class="card-body text-center">
+            {% if stats%}
+            {%if stats.extreme_labels.max_labels%}
+                <h5>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
+                  {% for category in stats.extreme_labels.max_labels %}
                     <b>{{ category }}</b>
-                    {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.max_labels|length > 1%}
+                    {% if forloop.counter != stats.extreme_labels.min_labels|length and stats.extreme_labels.max_labels|length > 1%}
                       and
                     {% endif %}
                   {% endfor %}
-                </h4>
-              {% endif %}
+                </h5>
+            {% endif %}
   
   
-              {%if extreme_labels.min_labels%}
-                <h4>Between {{ start_date }} and {{ end_date }}, you have overall spent the least on
-                  {% for category in extreme_labels.min_labels %}
+              {%if stats.extreme_labels.min_labels%}
+                <h5>Between {{ start_date }} and {{ end_date }}, you have overall spent the least on
+                  {% for category in stats.extreme_labels.min_labels %}
                     <b>{{ category}}</b>
-                    {% if forloop.counter != extreme_labels.min_labels|length and extreme_labels.min_labels|length > 1%}
+                    {% if forloop.counter != stats.extreme_labels.min_labels|length and stats.extreme_labels.min_labels|length > 1%}
                       and
                     {% endif %}
                   {% endfor %}
-                </h4>
+                </h5>
               {% endif %}
-  
-              <h4> You are currently on budget for <b>{{categories_on_budget_percentage}}%</b> of your categories </h4>
-              <h4> You currently have <b>{{percent_of_budget_remaining}}%</b> of your overall budget left </h4>
-            </div>
+              
+              {%if stats.categories_on_budget_percentage%}
+              <h5> You are currently on budget for <b>{{stats.categories_on_budget_percentage}}%</b> of your categories </h5>
+              {% endif %}
+              {%if stats.percent_of_budget_remaining%}
+              <h5> You currently have <b>{{stats.percent_of_budget_remaining}}%</b> of your overall budget left </h5>
+              {% endif %}
+
+              {%if stats.total_spending%}
+              <h5> Since joining Minted, you have spent <b>£{{stats.total_spending}}</b></h5>
+              {% endif %}
+
+              {%if stats.total_spending_between_dates%}
+              <h5> Between {{ start_date }} and {{ end_date }}, you have spent <b>£{{ stats.total_spending_between_dates }}</b></h5>
+              {% endif %}
+
+              {%if stats.biggest_purchase%}
+              <h5> Your biggest purchase since joining minted has been <b>£{{ stats.biggest_purchase.amount}}</b> on 
+                {% for name in stats.biggest_purchase.names %}
+                    <b>{{ name}}</b>
+                    {% if forloop.counter != stats.biggest_purchase.names|length and stats.biggest_purchase.names|length > 1%}
+                      and
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </h5>
+              </div>
+            {% else %}
+            <h4>You have no stats yet. Start making categories and add expenditures to them to get started!</h4>
+            {% endif %}
           </div>
         </div>
-  </div>
+      </div>
+    </div>
 
 </section>
 

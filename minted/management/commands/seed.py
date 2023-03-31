@@ -24,6 +24,8 @@ class Command(BaseCommand):
     REWARD_CHOICES = ['qr', 'random']
     REWARD_BRAND_NAMES = ['Amazon', 'Tesco', 'Apple', 'Lenovo', 'Dell']
 
+    MAX_USER_STREAK = 30
+
     def __init__(self):
         super().__init__()
         self.faker = Faker('en_GB')
@@ -37,9 +39,17 @@ class Command(BaseCommand):
                 return
             
         print("Seeding...")
+
+        print("Creating users...")
         self.create_users()
+
+        print("Creating default rewards...")
         self.create_default_rewards()
-        print("Done")
+
+        print("Assigning friends...")
+        self.assign_friends_for_users()
+
+        print("Done!")
 
     def create_users(self):
         num_of_users_created = 0
@@ -94,7 +104,7 @@ class Command(BaseCommand):
         
     def create_random_streak(self):
         streak = Streak.objects.create(
-            streak = random.randint(0, 6)
+            streak = random.randint(0, self.MAX_USER_STREAK)
         )
         return streak
     
@@ -113,6 +123,14 @@ class Command(BaseCommand):
                 description = f"{brand_name} £{points_required//10} voucher"
             )
             num_of_created_rewards += 1
+
+    def assign_friends_for_users(self):
+        all_users = list(User.objects.all().filter(is_superuser = False))
+        for user in all_users.copy():
+            all_users.remove(user)
+            num_of_friends_to_add = random.randint(0, len(all_users))
+            for _ in range(num_of_friends_to_add):
+                user.friends.add(random.choice(all_users))
 
     def database_is_empty(self):
         models = apps.get_app_config('minted').get_models()

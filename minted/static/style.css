@@ -85,3 +85,10 @@ a:hover {
   width: var(--percentage-spent);
 }
 
+.pagination > li > a {
+  background-color: #72e0ad;
+}
+
+.pagination > li > a:hover {
+  background-color: skyblue;
+}

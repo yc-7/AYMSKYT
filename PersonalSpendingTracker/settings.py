@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY'] if 'DJANGO_SECRET_KEY' in os.environ else 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minted-aymskyt.azurewebsites.net']
 CSRF_TRUSTED_ORIGINS = ['https://minted-aymskyt.azurewebsites.net']
@@ -67,7 +67,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_CHOICE_SESSION_KEY = None
 
-LOGIN_REDIRECT_URL = 'spending_signup'
+LOGIN_REDIRECT_URL = 'budget_sign_up'
 LOGOUT_REDIRECT_URL = '/'
 
 ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm', 'login': 'minted.forms.LogInForm'}
@@ -103,7 +103,7 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
-    ('0 0 * * *', 'minted.cron.give_budget_rewards'), #Everyday at midnight 
+    ('0 0 * * *', 'minted.cron.give_budget_points'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [
@@ -240,3 +240,9 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
+
+#Page lengths
+FRIENDS_PER_PAGE = 8
+REQUESTS_PER_PAGE = 8
+EXPENDITURES_PER_PAGE = 8
+CATEGORIES_PER_PAGE = 8

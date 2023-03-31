@@ -5,42 +5,49 @@
 {% block content %}
 <div class="container">
   <h1 style=" font-weight:800;">Categories</h1>
-    <p class="pt-3"><a href="{% url 'create_category' %}" class="btn custom-button"><i class = "bi bi-plus-lg"></i> New Category</a></p>
-    <table class="table table-striped">
-        <thead>
-          <tr>
-            <th style="text-align:center; width:auto"></th>
-            <th style="text-align:center; width:30%"></th>
-            <th style="text-align:center; width:30%"></th>
-            
-          </tr>
-        </thead>
-        
-        {% if categories %}
-          {% for category in categories %}
-            <tr class="clickable" ><form action="{% url 'edit_category' category.id %}" method="get">
-              {% csrf_token %}
-                <td style="text-align:center; font-weight:800"><a href="{% url 'category_expenditures' category.name %}">{{ category.name }}</a></td>
-                <td style="text-align:center">{{ category.budget }}</td>
-                <td style="text-align:center">
-                  <a href = "{% url 'add_expenditure' category.name %}" class = "btn btn-primary" role = "button" >
-                  <i class = "bi bi-plus-lg"></i>
-                  Add expenditure
-              </a></td>
-                <td style="text-align:center"><input type="submit" value="Edit"  class="btn custom-button"/></td>
-            </form>
-            <td><form action="{% url 'delete_category' category.id %}" method="post">
-              {% csrf_token %}
-              <td style="text-align:center"><input type="submit" value="Delete"  class="btn custom-button"/></td>
-            </form>
-          </td>
-        </tr>
-          {% endfor %}
-        {% else %}
-          <tr>
-              <td colspan=4 style="text-align:left">No categories yet...</td>
-          </tr>
-        {% endif %}
-      </table>
+    <p class="pt-3"><a href="{% url 'create_category' %}" class="btn custom-button"><i class = "bi bi-plus-lg"></i> New Category</a>
+    <a href="{% url 'budget_list' %}" class="btn custom-button"> View Budgets</a></p>
+  <div class="card bg-white">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th style="text-align:center; width:auto"></th>
+        <th style="text-align:center; width:30%"></th>
+        <th style="text-align:center; width:30%"></th>
+      </tr>
+    </thead>
+
+    {% if categories %}
+    {% for category in categories %}
+    <tr class="clickable">
+      <form action="{% url 'edit_category' category.id %}" method="get">
+        {% csrf_token %}
+        <td style="text-align:center">
+        <a href="{% url 'category_expenditures' category.name %}"><b>{{ category.name }}</b></a>
+        </td>
+        <td style="text-align:center">{{ category.budget }}</td>
+        <td style="text-align:center">
+          <a href = "{% url 'add_expenditure' category.name %}" class = "btn custom-button" role = "button" >
+          <i class = "bi bi-plus-lg"></i>
+          Add expenditure
+        </a></td>
+        <td style="text-align:center"><input type="submit" value="Edit" class="btn custom-button" /></td>
+      </form>
+      <td>
+        <form action="{% url 'delete_category' category.id %}" method="post">
+          {% csrf_token %}
+      <td style="text-align:center"><input type="submit" value="Delete" class="btn custom-button" /></td>
+      </form>
+      </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+      <td colspan=4 style="text-align:left">No categories yet...</td>
+    </tr>
+    {% endif %}
+  </table>
+  </div>
+  {% include 'partials/pagination_bar.html' %}
 </div>
 {% endblock %}
