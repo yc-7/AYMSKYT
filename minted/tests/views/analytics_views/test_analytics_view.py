@@ -36,7 +36,7 @@ class AnalyticsViewTest(TestCase, LoginRequiredTester):
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'analytics.html')
+        self.assertTemplateUsed(response, 'analytics/analytics.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, TimeFrameForm))
 

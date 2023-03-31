@@ -30,7 +30,7 @@ def view_analytics(request):
     
     categories = Category.objects.filter(user = request.user)
     if not categories:
-        return render(request, 'analytics.html', {'form': form})
+        return render(request, 'analytics/analytics.html', {'form': form})
 
     all_budgets = generate_budget_list(request.user, categories)
     colours = [category.colour for category in categories]
@@ -53,7 +53,7 @@ def view_analytics(request):
 
     }
 
-    return render(request, 'analytics.html', {
+    return render(request, 'analytics/analytics.html', {
         'form': form, 
         'category_pie_chart_data': category_pie_chart_data, 
         'category_line_chart_data': category_line_chart_data, 

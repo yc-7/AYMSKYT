@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="accordion" id="accordion-two" style="padding-bottom: 2%;">
+      <div class="accordion-item" id="accordion-item-two">
+        <h2 class="accordion-header" id="headingTwo">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" style="color: #47235e ;">
+            <h2>View Your Spending Stats</h2>
+          </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordion">
+          <div class="accordion-body" style="color: #47235e ;">
+            <div class="card-body text-center p-4">
+                {% if stats%}
+                {%if stats.extreme_labels.max_labels%}
+                <h5>Between {{ start_date }} and {{ end_date }}, you have overall spent the most on
+                    {% for category in stats.extreme_labels.max_labels %}
+                    <b>{{ category }}</b>
+                    {% if forloop.counter != stats.extreme_labels.min_labels|length and stats.extreme_labels.max_labels|length > 1%}
+                        and
+                    {% endif %}
+                    {% endfor %}
+                </h5>
+                {% endif %}
+
+
+                {%if stats.extreme_labels.min_labels%}
+                <h5>Between {{ start_date }} and {{ end_date }}, you have overall spent the least on
+                    {% for category in stats.extreme_labels.min_labels %}
+                    <b>{{ category}}</b>
+                    {% if forloop.counter != stats.extreme_labels.min_labels|length and stats.extreme_labels.min_labels|length > 1%}
+                        and
+                    {% endif %}
+                    {% endfor %}
+                </h5>
+                {% endif %}
+                {% include 'analytics/statistics/categories_on_budget.html' %}
+                {% include 'analytics/statistics/total_spending.html' %}
+                {% include 'analytics/statistics/total_spending_between_dates.html' %}
+                {% include 'analytics/statistics/biggest_purchase.html' %}
+                {% else %}
+                <h4>You have no stats yet. Start making categories and add expenditures to them to get started!</h4>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

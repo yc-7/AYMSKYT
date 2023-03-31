@@ -1,0 +1,6 @@
+{%if stats.categories_on_budget_percentage%}
+<h5> You are currently on budget for <b>{{stats.categories_on_budget_percentage}}%</b> of your categories </h5>
+{% endif %}
+{%if stats.percent_of_budget_remaining%}
+<h5> You currently have <b>{{stats.percent_of_budget_remaining}}%</b> of your overall budget left </h5>
+{% endif %}

@@ -1,0 +1,10 @@
+{%if stats.biggest_purchase%}
+<h5> Your biggest purchase since joining minted has been <b>£{{ stats.biggest_purchase.amount}}</b> on 
+{% for name in stats.biggest_purchase.names %}
+    <b>{{ name}}</b>
+    {% if forloop.counter != stats.biggest_purchase.names|length and stats.biggest_purchase.names|length > 1%}
+        and
+    {% endif %}
+    {% endfor %}
+{% endif %}
+</h5>
