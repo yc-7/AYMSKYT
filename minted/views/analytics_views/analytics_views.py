@@ -75,12 +75,12 @@ def dashboard_analytics(request):
     transactions = Expenditure.objects.filter(category__user=request.user).order_by('-date')
     
     if not categories:
-        return render(request, 'dashboard.html')
+        return render(request, 'dashboard/dashboard.html')
     
 
     spend_this_month_data = generate_all_spending_pie_chart_dataset(categories, start_date, end_date, float(budget))
     
-    return render(request, 'dashboard.html', {'spend_this_month_data': spend_this_month_data, 'transactions': transactions})
+    return render(request, 'dashboard/dashboard.html', {'spend_this_month_data': spend_this_month_data, 'transactions': transactions})
 
 
 

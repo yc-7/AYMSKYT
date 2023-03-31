@@ -40,7 +40,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
         response = self.client.get(self.url, follow = True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_post_sign_up_redirects_when_logged_in(self):
         self.client.login(email = self.user.email, password = 'Password123')
@@ -50,7 +50,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
         self.assertEqual(after_count, before_count)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code = 302, target_status_code = 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_successful_sign_up_redirects(self):
         response = self.client.post(self.url, self.form_input, follow = True)

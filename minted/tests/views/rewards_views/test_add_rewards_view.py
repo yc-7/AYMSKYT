@@ -59,7 +59,7 @@ class AddRewardsViewTestCase(TestCase, LoginRequiredTester):
         response = self.client.get(self.url, follow=True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'dashboard/dashboard.html')
         
     def test_add_rewards_success(self):
         self.client.force_login(self.user)

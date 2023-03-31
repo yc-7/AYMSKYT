@@ -1,0 +1,99 @@
+{% extends 'base_content.html' %}
+{% block title %}
+| Dashboard
+{% endblock %}
+{% block content %}
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'chartjs_chart_generators.js' %}"></script>
+
+
+<body>
+    <h1 class="p-4" id="welcome" data-username="{{ user.first_name }}"> </h1>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeMessageElement = document.getElementById('welcome');
+            const currentTime = new Date();
+            const currentHour = currentTime.getHours();
+            const userName = welcomeMessageElement.dataset.username;
+        
+            let welcomeMessage;
+        
+            if (currentHour >= 5 && currentHour < 12) {
+                welcomeMessage = 'Good morning';
+            } else if (currentHour >= 12 && currentHour < 18) {
+                welcomeMessage = 'Good afternoon';
+            } else if (currentHour >= 18 && currentHour < 22) {
+                welcomeMessage = 'Good evening';
+            } else {
+                welcomeMessage = 'Good night';
+            }
+
+            welcomeMessage += `, ${userName}!`;
+            welcomeMessageElement.textContent = welcomeMessage;
+        });
+        
+    </script>
+
+    
+    <section class="p-3">
+        <div class="container">
+            <div class="row text-center g-4">
+                {% with expenditures=user.get_expenditures %}
+                {% if expenditures %}   
+                
+                    <div class="col-md">
+                        {{ spend_this_month_data|json_script:"spendThisMonthData" }}
+                        <canvas id="over-view-chart"></canvas>
+                    </div>
+                    {% include 'dashboard/partials/spent_card.html' %}
+            {% else %}
+            <div class="col-md">
+                <div class="card bg-light text-light">
+                    <div class="card-body text-center">
+                        <div class="h1 mb-3">
+                            <img src="{% static 'leaf.svg' %}" alt="icon" style="height: 50px; width: 50px; fill: #7EDBB0;">
+                        </div>
+                        {% include 'dashboard/partials/welcome_message.html' %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endwith %}
+
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        var spend_this_month_data = JSON.parse(document.getElementById('spendThisMonthData').textContent);
+        
+        var colours = [(`rgba(${147}, ${56}, ${201}, 1)`)];
+
+        var spend_this_month_config = create_pie_chart_config(spend_this_month_data.data, spend_this_month_data.labels, colours)
+        
+
+        window.onload = function() {
+            var this_month_spend_chart = document.getElementById('over-view-chart').getContext('2d');
+            window.myLine = new Chart(this_month_spend_chart, spend_this_month_config);
+        }
+
+    </script>
+    
+    <section class="p-5">
+        <div class="container">
+            <div class="row text-center g-4">
+                {% include 'dashboard/partials/streaks_card.html' %}
+                {% include 'dashboard/partials/shop_card.html' %}
+                {% include 'dashboard/partials/friends_card.html' %}
+            </div>
+        </div>
+    </section>
+    {% include 'dashboard/partials/transactions_table.html' %}
+    <div>
+         <a href = "{% url 'help' %}" class = "btn btn-lg custom-button" role = "button"> <i class="bi bi-info-circle-fill"></i> Need Help? </a>
+    </div>
+</body>
+{% endblock %}
