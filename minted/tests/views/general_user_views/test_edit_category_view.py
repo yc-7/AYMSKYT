@@ -32,7 +32,6 @@ class EditExpenditureViewTestCase(TestCase):
                     budget= "150.00",
                     timeframe="/week"
                 )
-
             )
 
     def test_edit_category_url(self):
