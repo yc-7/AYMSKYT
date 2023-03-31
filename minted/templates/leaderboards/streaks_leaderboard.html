@@ -1,0 +1,19 @@
+{% extends 'leaderboards/base_leaderboard.html' %}
+{% block title %}
+| Streaks Leaderboard
+{% endblock %}
+{% block table %}
+</thead>
+<tr style = "text-align:center; font-weight:800;">
+  <td> Rank </td>
+  <td> User </td>
+  <td> Streak </td>
+</tr>
+{% for user in users %}
+<tr style = "text-align:center">
+  <td> {{ forloop.counter }} </td>
+  <td> {{ user }} </td>
+  <td> {{ user.streak_data.streak }} </td>
+</tr>
+{% endfor %}
+{% endblock %}

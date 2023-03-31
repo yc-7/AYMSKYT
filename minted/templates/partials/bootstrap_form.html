@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 {% for field in form %}
-<div class="mb-3">
+<div class="mb-3 col-auto">
     {{ field.label_tag }}
     {% if form.is_bound %}
     {% if field.errors %}
@@ -11,9 +11,6 @@
     {% else %}
     {% render_field field class="form-control"%}
     {% endif %}
-    <div class="valid-feedback">
-        Looks good!
-    </div>
     <div class="invalid-feedback">
         {{ field.errors }}
     </div>

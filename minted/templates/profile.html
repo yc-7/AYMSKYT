@@ -1,7 +1,9 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Profile
+{% endblock %}
 {% load static %}
 {% block content %}
-
 <script src="{% static 'registerSw.js' %}" defer></script>
 <head>
     <meta name="vapid-key" content="{{ vapid_key }}">
@@ -9,40 +11,63 @@
         <meta name="user_id" content="{{ user.id }}">
     {% endif %}
 </head>
-
-<div class="container">
-    <div>
-        <h1>Profile</h1>
-        <p>First name: {{ user.first_name }}</p>
-        <p>Last name: {{ user.last_name }}</p>
-        <p>Email: {{ user.email }}</p>
-        <a href="{% url 'edit_profile' %}" class="btn btn-lg btn-info">
-            Edit Details
-        </a>
+<div class="row justify-content-center">
+    <div class="float-start container my-auto text-center" style="width:400px" >
+        <div class="card bg-light">
+            <div class="card-body">
+                <i class=" bi-person-fill" style="font-size:50px; color:#d462a1"></i>
+                <div>
+                    <h1>Profile</h1>
+                    <p>First name: {{ user.first_name }}</p>
+                    <p>Last name: {{ user.last_name }}</p>
+                    <p>Email: {{ user.email }}</p>
+                    <a href = "{% url 'edit_profile' %}" class = "btn btn-lg custom-button" style="margin: 20px">
+                        Edit Details
+                    </a>
+                    <a href = "{% url 'change_password' %}" class = "btn btn-lg custom-button">
+                        Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div>
-        <h1>Budget</h1>
-        <p>Spending limit: {{ user.budget.budget }}</p>
-        <p>Timeframe: {{ user.budget.timeframe }}</p>
-        <a href="{% url 'edit_spending_limit' %}" class="btn btn-lg btn-info">
-            Edit Limits
-        </a>
+    {% if not request.user.is_staff %}
+
+    <div class ="float-end container" style="width:750px">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div>
+                    <i class="bi-credit-card-fill" style="font-size:35px; color:#d462a1"></i>
+                    <h1>Budget</h1>
+                    <p>Spending limit: {{ user.budget.budget }}</p>
+                    <p>Timeframe: {{ user.budget.timeframe }}</p>
+                    <a href = "{% url 'budget_list' %}" class = "btn btn-lg custom-button">
+                        View Budgets
+                    </a>
+                    <a href = "{% url 'edit_spending_limit' %}" class = "btn btn-lg custom-button">
+                        Edit Limits
+                    </a>
+                </div><br>
+
+                <div>
+                    <i class="bi-bell-fill" style="font-size:35px; color:#d462a1"></i>
+                    <h1>Register Notifications</h1>
+                    <a>Notification status: {{ subscription_status }}</a><br>
+                    <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg custom-button">
+                        Change notification settings
+                    </a>
+                    <a onclick="registerSw()" class="btn btn-lg custom-button">
+                        Turn on notifications
+                    </a>
+                    <form action = "{% url 'delete_push_subscription' %}" method = "post">
+                        {% csrf_token %}
+                        <input type="submit" value="Turn off notifications" class="btn btn-lg custom-button" style="margin:10px">
+                    </form>
+                    <a id="error-message"></a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <h1>Register Notifications</h1>
-        <a>Current notification subscription status: {{ subscription_status }}</a><br>
-        <a href="{% url 'create_notification_subscription' %}" class="btn btn-lg btn-info">
-            Change notification settings
-        </a>
-        <a onclick="registerSw()" class="btn btn-lg btn-info">
-            Refresh Subscription
-        </a>
-        <a id="error-message"></a>
-
-    </div>
-
+    {% endif %}
 </div>
-
 {% endblock %}

@@ -1,35 +1,59 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+from minted.decorators import staff_prohibited
 from minted.forms import *
 from minted.models import *
 from .general_user_views.login_view_functions import *
-from minted.views.expenditure_receipt_functions import handle_uploaded_file, delete_file
-from django.contrib import messages
+from minted.views.expenditure_receipt_functions import handle_uploaded_receipt_file, delete_file
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 
-@login_required
-def category_expenditures_view(request, category_name):
-    category_exists = Category.objects.filter(user=request.user, name=category_name).count() != 0
-    if not category_exists:
-        return redirect('category_list')
+class CategoryExpenditureListView(LoginRequiredMixin, ListView):
+    """View that displays a user's expenditure in a specific category"""
 
-    category = Category.objects.get(user=request.user, name=category_name)
-    expenditures = Expenditure.objects.filter(category=category).order_by('-date')
-    return render(request, 'expenditures/expenditures_list.html', { 'expenditures': expenditures, 'category': category })
+    model = Expenditure
+    template_name = 'expenditures/expenditure_list.html'
+    context_object_name = 'expenditures'
+    http_method_names = ['get']
+    paginate_by = settings.EXPENDITURES_PER_PAGE
 
-@login_required
+    def get(self, request, *args, **kwargs):
+        """Handle get request and redirect if category_name is invalid"""
+
+        try:
+            return super().get(request, *args, **kwargs)
+        except Http404:
+            return redirect('category_list')
+
+    def get_queryset(self):
+        """Return the user's expenditures in a given category"""
+
+        current_user = self.request.user
+        self.category = get_object_or_404(Category, user = current_user, name = self.kwargs['category_name'])
+        expenditures = Expenditure.objects.filter(category = self.category).order_by('-date')
+        return expenditures
+
+    def get_context_data(self, *args, **kwargs):
+        """Generate content to be displayed in the template"""
+
+        context = super().get_context_data(*args, **kwargs)
+        context['category'] = self.category
+        return context
+
+@staff_prohibited
 def delete_expenditure(request, expenditure_id):
     if request.method == 'POST':
         expenditure = Expenditure.objects.get(pk=expenditure_id)
         category = expenditure.category
         if request.user == category.user:
             if expenditure.receipt:
-                delete_file(expenditure.receipt.path)
+                delete_file(expenditure.receipt)
             expenditure.delete()
         return redirect('category_expenditures', category_name=category.name)
     return redirect('category_list')
 
-@login_required
+@staff_prohibited
 def edit_expenditure(request, category_name, expenditure_id):
     expenditure_exists = Expenditure.objects.filter(id=expenditure_id).count() != 0
     if not expenditure_exists:
@@ -45,15 +69,14 @@ def edit_expenditure(request, category_name, expenditure_id):
         if form.is_valid():
             expenditure = form.save(commit=False)
             new_file = request.FILES.get('receipt')
-            # clear = request.POST.get('receipt-clear') # This is so broken
             current_receipt = expenditure.receipt
             update_file = new_file and current_receipt
 
             if update_file:
-                delete_file(current_receipt.path)
+                delete_file(current_receipt)
 
             if new_file:
-                receipt_path = handle_uploaded_file(new_file)
+                receipt_path = handle_uploaded_receipt_file(new_file)
                 expenditure.receipt = receipt_path
 
             expenditure.save()
@@ -62,10 +85,12 @@ def edit_expenditure(request, category_name, expenditure_id):
     return render(request, 'expenditures/edit_expenditures.html', { 'form': form, 'expenditure': expenditure })
 
 
-@login_required
+@staff_prohibited
 def add_expenditure(request, category_name):
+    if Category.objects.filter(user=request.user, name=category_name).exists() == False:
+        return redirect('create_category')
     if request.method == 'POST':
-        category = Category.objects.get(user=request.user, name=category_name) # Need to make sure there are no duplicate categories with same name
+        category = Category.objects.get(user=request.user, name=category_name)
         form = ExpenditureForm(request.POST)
         if request.POST.get("addExpenditure"):
             if form.is_valid():
@@ -74,7 +99,7 @@ def add_expenditure(request, category_name):
                 expenditure.category = category
 
                 if file:
-                    receipt_path = handle_uploaded_file(file)
+                    receipt_path = handle_uploaded_receipt_file(file)
                     expenditure.receipt = receipt_path
                 
                 expenditure.save()

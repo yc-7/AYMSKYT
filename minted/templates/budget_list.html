@@ -1,7 +1,11 @@
 {% extends 'base_content.html' %}
+{% block title %}
+| Budgets
+{% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Budgets</h1>
+  <h1 class= "pb-4"style= "font-weight: 800;">Budgets</h1>
+  <div class="card bg-light">
     <table class="table table-striped">
         <thead>
           <tr>
@@ -10,12 +14,13 @@
             <th style="text-align:center; width:30%"></th>
           </tr>
         </thead>
-          <tr>
+          <tr style = "font-weight: 800;">
             <td style="text-align:center">Categories</td>
             <td style="text-align:center"></td>
             <td style="text-align:center">Start date</td>
             <td style="text-align:center">End date</td>
           </tr>
+        {%if budget%}
         {% for spendings in budget %}
           <tr>
               <td style="text-align:center">{{ spendings.name }}</td>
@@ -30,6 +35,8 @@
               <td style="text-align:center">{{ spendings.end_date }}</td>
           </tr>
         {% endfor %}
+        {% endif %}
+  </div>
   </table>
 </div>
 {% endblock %}

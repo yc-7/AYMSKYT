@@ -15,6 +15,8 @@ from pathlib import Path
 from django.contrib.messages import constants as message_constants
 from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv())
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,13 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY'] if 'DJANGO_SECRET_KEY' in os.environ else 'django-insecure-mlmbekqz9+)p0o!*24akj0(ufh&v$w_d(9cj6j0&58=!v++5_e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'fafb-62-254-68-117.eu.ngrok.io']
-# CSRF_TRUSTED_ORIGINS = ['https://fafb-62-254-68-117.eu.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minted-aymskyt.azurewebsites.net']
+CSRF_TRUSTED_ORIGINS = ['https://minted-aymskyt.azurewebsites.net']
 
 
 # Application definition
@@ -45,12 +47,45 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'webpush',
     'django_crontab',
+    'django.contrib.sites',
     'django_cleanup.apps.CleanupConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-load_dotenv(find_dotenv())
+
+SITE_ID = 2
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CHOICE_SESSION_KEY = None
+
+LOGIN_REDIRECT_URL = 'budget_sign_up'
+LOGOUT_REDIRECT_URL = '/'
+
+ACCOUNT_FORMS = {'signup': 'minted.forms.SignUpForm', 'login': 'minted.forms.LogInForm'}
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+CLIENT_ID = os.environ['CLIENT_ID']
+SECRET = os.environ['SECRET']
 
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
@@ -68,10 +103,12 @@ CRONJOBS = [
     ('0 9 * * *', 'minted.cron.send_daily_notifications'), # Everyday at 9:00
     ('0 9 * * 0', 'minted.cron.send_weekly_notifications'), # Every Sunday at 9:00 
     ('0 9 1 * *', 'minted.cron.send_monthly_notifications'), # First day of every month at 9:00 
+    ('0 0 * * *', 'minted.cron.give_budget_points'), #Everyday at midnight 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,6 +116,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'PersonalSpendingTracker.urls'
 
@@ -110,6 +149,27 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+if not DEBUG:
+    if 'DATABASE_NAME' in os.environ:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.environ['DATABASE_NAME'],
+                'USER': os.environ['DATABASE_USER'],
+                'PASSWORD': os.environ['DATABASE_PASSWORD'],
+                'HOST': os.environ['DATABASE_HOST'],
+                'PORT': os.environ['DATABASE_PORT'],
+                'OPTIONS': {
+                    'ssl': {'ca': os.environ['SSL_CERT_PATH']}
+                }
+            }
+        }
+    if 'AZURE_ACCOUNT_NAME' in os.environ:
+        DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+        AZURE_ACCOUNT_NAME = os.environ['AZURE_ACCOUNT_NAME']
+        AZURE_ACCOUNT_KEY = os.environ['AZURE_ACCOUNT_KEY']
+        AZURE_CONTAINER = os.environ['AZURE_CONTAINER']
 
 
 # Password validation
@@ -147,6 +207,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -164,7 +225,7 @@ REWARDS_ROOT = os.path.join(BASE_DIR, REWARDS_DIR)
 
 # URL for redirects
 REDIRECT_URL_WHEN_LOGGED_IN_AS_USER = 'dashboard'
-REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'dashboard'
+REDIRECT_URL_WHEN_LOGGED_IN_AS_ADMIN = 'rewards_list'
 
 # Message level tags should use Bootstrap terms
 MESSAGE_TAGS={
@@ -174,3 +235,14 @@ MESSAGE_TAGS={
 
 # User model for authentication and login purposes
 AUTH_USER_MODEL = 'minted.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
+
+#Page lengths
+FRIENDS_PER_PAGE = 8
+REQUESTS_PER_PAGE = 8
+EXPENDITURES_PER_PAGE = 8
+CATEGORIES_PER_PAGE = 8

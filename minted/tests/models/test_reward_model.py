@@ -87,6 +87,18 @@ class RewardModelTestCase(TestCase):
     def test_code_type_cannot_be_anything_but_qr_or_random(self):
         self.reward.code_type = 'x'
         self._assert_reward_is_invalid()
+    
+    def test_user_limit_can_be_0(self):
+        self.reward.user_limit = 0
+        self._assert_reward_is_valid()
+    
+    def test_user_limit_cannot_be_negative(self):
+        self.reward.user_limit = -1
+        self._assert_reward_is_invalid()
+ 
+    def test_user_limit_can_be_blank(self):
+        self.reward.user_limit = None
+        self._assert_reward_is_valid()
 
     def _assert_reward_is_valid(self):
         try:

@@ -7,13 +7,15 @@ from django.conf import settings
 import os
 import shutil
 from django.core.files.uploadedfile import SimpleUploadedFile
+from minted.tests.helpers import LoginRequiredTester
 
-class ExpenditureEditViewTestCase(TestCase):
+class ExpenditureEditViewTestCase(TestCase, LoginRequiredTester):
     """Test suite for the expenditure edit view."""
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
         'minted/tests/fixtures/default_other_user.json',
+        'minted/tests/fixtures/default_third_user.json',
         'minted/tests/fixtures/default_categories.json',
         'minted/tests/fixtures/default_expenditures.json', 
         'minted/tests/fixtures/default_spending_limit.json'
@@ -55,6 +57,9 @@ class ExpenditureEditViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'expenditures/edit_expenditures.html')
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_successful_expenditure_edit(self):
         self.client.login(email = self.user.email, password = 'Password123')

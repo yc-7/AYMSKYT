@@ -1,9 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import RewardClaim, Reward, User
+from minted.tests.helpers import LoginRequiredTester
 
 
-class ClaimRewardViewTestCase(TestCase):
+class ClaimRewardViewTestCase(TestCase, LoginRequiredTester):
     """Unit tests for the Rewards Homepage view"""
 
     fixtures = [
@@ -18,11 +19,14 @@ class ClaimRewardViewTestCase(TestCase):
         self.reward = Reward.objects.get(pk=1)
         self.url = reverse('claim_reward', kwargs={ 'brand_name': self.reward.brand_name, 'reward_id': self.reward.reward_id })
         self.user = User.objects.get(pk=1)
-        self.claim = RewardClaim.objects.get(pk=1)
-        self.other_user = User.objects.get(pk=2)
+        self.other_reward = Reward.objects.get(pk=3)
+        self.limited_reward = Reward.objects.get(pk=4)
 
     def test_claim_reward_url(self):
         self.assertEqual(self.url, f'/rewards/{self.reward.brand_name}/{self.reward.reward_id}/')
+
+    def test_view_redirects_to_login_if_not_logged_in(self):
+        self.assertLoginRequired(self.url)
 
     def test_get_claim_rewards(self):
         self.client.login(email=self.user.email, password='Password123')
@@ -48,9 +52,39 @@ class ClaimRewardViewTestCase(TestCase):
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
     
     def test_get_claim_reward_redirects_if_user_does_not_have_enough_points(self):
-        self.client.login(email = self.other_user.email, password = 'Password123')
+        self.client.login(email = self.user.email, password = 'Password123')
         redirect_url = reverse('rewards')
-        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.reward.brand_name, 'reward_id': self.reward.reward_id  })
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.other_reward.brand_name, 'reward_id': self.other_reward.reward_id  })
 
         response = self.client.get(self.url, follow=True)
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+    def test_get_claim_reward_redirects_if_reward_is_at_user_limit(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        redirect_url = reverse('rewards')
+        self.limited_reward.user_limit = 0
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.limited_reward.brand_name, 'reward_id': self.limited_reward.reward_id  })
+
+        response = self.client.get(self.url, follow=True)
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+    def test_successful_reward_claim(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        self.user.points = self.reward.points_required
+        self.user.save()
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.reward.brand_name, 'reward_id': self.reward.reward_id  })
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_limit_decreases_when_successful_reward_claim(self):
+        self.client.login(email = self.user.email, password = 'Password123')
+        self.user.points = self.limited_reward.points_required
+        self.user.save()
+        user_limit_before = self.limited_reward.user_limit
+        self.url = reverse('claim_reward', kwargs={ 'brand_name': self.limited_reward.brand_name, 'reward_id': self.limited_reward.reward_id  })
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.limited_reward.refresh_from_db()
+        user_limit_after = self.limited_reward.user_limit
+        self.assertEqual(user_limit_before, user_limit_after+1)
