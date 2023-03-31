@@ -4,36 +4,41 @@
 {% endblock %}
 {% block content %}
 <div class = "container">
-    <h1> Friend Requests </h1>
-    <table class = "table table-striped">
-        {% if requests %}
-        {% for request in requests %}
-		<tr>
-			<td style = "text-align:center"> {{ request.from_user }} </td>
-			<td style = "text-align:right">
-				<div class = "btn-group" role = "group">
-					<form action = "{% url 'accept_request' request.id %}" method = "post">
-						{% csrf_token %}
-						<button type = "submit" class = "btn btn-light">
-							<i class = "bi-check-lg text-success"></i>
-						</button>
-					</form>
-					<form action = "{% url 'decline_request' request.id %}" method = "post">
-						{% csrf_token %}
-						<button type = "submit" class = "btn btn-light">
-							<i class = "bi-x-lg text-danger"></i>
-						</button>
-					</form>
-				</div>
-			</td>
-		</tr>
-        {% endfor %}
-        {% else %}
-        <tr>
-            <td colspan = 4 style = "text-align:left"> You have no pending friend requests </td>
-        </tr>
-        {% endif %}
-    </table>
+    <h1 class = "pb-4" style="font-weight: 800;"> Friend Requests </h1>
+	<div class="card bg-light">
+		<table class = "table table-striped">
+			{% if requests %}
+			{% for request in requests %}
+			<tr>
+				<td style = "text-align:center"> {{ request.from_user }} </td>
+				<td style = "text-align:right">
+					<div class = "btn-group" role = "group">
+						<form action = "{% url 'accept_request' request.id %}" method = "post">
+							{% csrf_token %}
+							<button type = "submit" class = "btn btn-light">
+								<i class = "bi-check-lg text-success"></i>
+							</button>
+						</form>
+						<form action = "{% url 'decline_request' request.id %}" method = "post">
+							{% csrf_token %}
+							<button type = "submit" class = "btn btn-light">
+								<i class = "bi-x-lg text-danger"></i>
+							</button>
+						</form>
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+			{% else %}
+			<tr>
+				<td colspan = 4 style = "text-align:left"> You have no pending friend requests </td>
+			</tr>
+			{% endif %}
+		</table>
+	</div>
+	<div class="pt-4">
+		<a href = "{% url 'friend_list' %}" class = "btn btn-lg custom-button" role = "button"> <i class = "bi bi-arrow-left-circle-fill"></i> Back </a>
+	</div>
     {% include 'partials/pagination_bar.html' %}
 </div>
 {% endblock %}
