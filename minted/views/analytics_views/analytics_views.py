@@ -1,7 +1,7 @@
 from minted.decorators import staff_prohibited
 from django.shortcuts import render
 from minted.forms import TimeFrameForm
-from minted.models import Category
+from minted.models import Category , Expenditure
 from minted.views.analytics_views.analytics_view_functions import *
 import datetime
 from minted.views.budget_views import *  
@@ -71,8 +71,8 @@ def dashboard_analytics(request):
     start_date = user_budget.start_date
     end_date = user_budget.end_date
     budget = request.user.budget.budget
-
-    categories = Category.objects.filter(user = request.user)
+    
+    transactions = Expenditure.objects.filter(category__user=request.user).order_by('-date')
     
     if not categories:
         return render(request, 'dashboard.html')
@@ -80,7 +80,7 @@ def dashboard_analytics(request):
 
     spend_this_month_data = generate_all_spending_pie_chart_dataset(categories, start_date, end_date, float(budget))
     
-    return render(request, 'dashboard.html', {'spend_this_month_data': spend_this_month_data})
+    return render(request, 'dashboard.html', {'spend_this_month_data': spend_this_month_data, 'transactions': transactions})
 
 
 
