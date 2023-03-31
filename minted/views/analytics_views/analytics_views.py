@@ -62,6 +62,7 @@ def view_analytics(request):
         'end_date':end_date,
         'stats': stats})
 
+@staff_prohibited
 def dashboard_analytics(request):
     
     categories = Category.objects.filter(user = request.user)

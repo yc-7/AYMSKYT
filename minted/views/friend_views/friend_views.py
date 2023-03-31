@@ -6,11 +6,12 @@ from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from minted.mixins import AdminProhibitedMixin
 from minted.forms import FriendReqForm
 from minted.models import User
 from minted.views.friend_views.friend_view_functions import *
 
-class FriendsListView(LoginRequiredMixin, ListView):
+class FriendsListView(AdminProhibitedMixin, LoginRequiredMixin, ListView):
     """View that displays a users friends"""
     
     model = User
@@ -26,7 +27,7 @@ class FriendsListView(LoginRequiredMixin, ListView):
         user_friends_list = current_user.friends.all().order_by('first_name')
         return user_friends_list
 
-class NewFriendRequestView(LoginRequiredMixin, FormView):
+class NewFriendRequestView(AdminProhibitedMixin, LoginRequiredMixin, FormView):
     """View that handles sending friend requests"""
 
     form_class = FriendReqForm
@@ -58,7 +59,7 @@ class NewFriendRequestView(LoginRequiredMixin, FormView):
 
         return reverse('friend_request')
 
-class FriendRequestListView(LoginRequiredMixin, ListView):
+class FriendRequestListView(AdminProhibitedMixin, LoginRequiredMixin, ListView):
     """View to display a users incoming friend requests"""
     model = User
     template_name = 'request_list.html'
@@ -72,7 +73,7 @@ class FriendRequestListView(LoginRequiredMixin, ListView):
         friend_requests_sent_to_current_user = FriendRequest.objects.filter(to_user = current_user).order_by('from_user')
         return friend_requests_sent_to_current_user
 
-class AcceptFriendRequestView(LoginRequiredMixin, View):
+class AcceptFriendRequestView(AdminProhibitedMixin, LoginRequiredMixin, View):
     """View that handles accepting friend requests"""
     http_method_name = ['get', 'post']
 
@@ -101,7 +102,7 @@ class AcceptFriendRequestView(LoginRequiredMixin, View):
 
         return redirect('request_list')
     
-class DeclineFriendRequestView(LoginRequiredMixin, View):
+class DeclineFriendRequestView(AdminProhibitedMixin, LoginRequiredMixin, View):
     """View that handles declining friend request"""
     http_method_name = ['get', 'post']
 
@@ -117,7 +118,7 @@ class DeclineFriendRequestView(LoginRequiredMixin, View):
         messages.add_message(request, messages.SUCCESS, "Friend request declined!")
         return redirect('request_list')
 
-class UnfriendView(LoginRequiredMixin, View):
+class UnfriendView(AdminProhibitedMixin, LoginRequiredMixin, View):
     """View that handles user unfriending"""
     http_method_name = ['get', 'post']
 

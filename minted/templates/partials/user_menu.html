@@ -34,7 +34,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class = "dropdown-item" href = "{% url 'profile' %}"> Profile </a></li>
+                {% if not request.user.is_staff %}
                 <li><a class = "dropdown-item" href = "{% url 'friend_list' %}"> Friends </a></li>
+                {% endif %}
                 <li>
                     <hr class="dropdown-divider">
                 </li>
