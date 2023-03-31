@@ -9,7 +9,7 @@ class RewardFormTestCase(TestCase):
         self.form_input = {
             'brand_name': 'Tesco', 
             'points_required': 20, 
-            'expiry_date': "2023-03-30", 
+            'expiry_date': "9999-03-30", 
             'description': 'Food voucher', 
             'code_type': 'qr' }
 
@@ -41,6 +41,6 @@ class RewardFormTestCase(TestCase):
         self.assertEqual(after_count, before_count+1)
         reward = Reward.objects.get(brand_name = 'Tesco')
         self.assertEqual(reward.points_required, 20)
-        self.assertEqual(reward.expiry_date, date(2023,3,30))
+        self.assertEqual(reward.expiry_date, date(9999,3,30))
         self.assertEqual(reward.description, 'Food voucher')
         self.assertEqual(reward.code_type, 'qr')
