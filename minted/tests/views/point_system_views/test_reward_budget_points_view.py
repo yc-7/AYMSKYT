@@ -1,9 +1,9 @@
 from django.test import TestCase
-from django.urls import reverse
 from minted.models import User
 from minted.views.general_user_views.point_system_views import *
-from minted.views.budget_views_functions import Budget
+from minted.views.budget_views.budget_views_functions import Budget
 from minted.tests.helpers import LoginRequiredTester
+from unittest.mock import MagicMock, patch
 
 class BudgetPointsTestViews(TestCase, LoginRequiredTester):
 
@@ -37,9 +37,18 @@ class BudgetPointsTestViews(TestCase, LoginRequiredTester):
         self.other_category = Category.objects.get(pk = 1)
 
     def test_today_is_not_end_date(self):
-        current_day = '2000-01-01'
-        ends_today = is_today_a_end_date(self.user, current_day)
-        self.assertNotIn(True, ends_today)
+        
+        now = datetime.now(pytz.utc)
+        one_year_ago = now - timedelta(days=365)
+        
+        with patch('minted.views.general_user_views.point_system_views.datetime', new=MagicMock(wraps=datetime)) as mock_datetime:
+            mock_datetime.now.return_value = one_year_ago
+            ends_today = user_has_budget_ending_today(self.user)
+            
+        self.assertFalse(ends_today)
+
+    def test_user_has_budget_ending_today(self):
+        self.assertTrue(user_has_budget_ending_today(self.user))
 
     
     def test_standardise_yearly_timeframe(self):

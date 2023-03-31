@@ -26,6 +26,7 @@ class CheckStreakTestCase(TestCase):
         update_streak(self.user)
         self.assertEqual(self.user.streak_data.streak, 2)
         
+        
     def test_increase_streak_edge_case(self):
 
         now = datetime.now(pytz.utc)

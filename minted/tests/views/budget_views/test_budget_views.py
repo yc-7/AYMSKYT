@@ -1,6 +1,7 @@
 from django.test import TestCase
+from django.conf import settings
 from django.urls import reverse
-from minted.models import User, Category, Expenditure
+from minted.models import User, Category, Expenditure, SpendingLimit
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from minted.tests.helpers import LoginRequiredTester
@@ -34,6 +35,17 @@ class BudgetListViewTestCase(TestCase, LoginRequiredTester):
             amount=2.85,
             date=self.today)
 
+    def _create_test_category_budgets(self, category_budgets_count):
+        for i in range(category_budgets_count):
+            Category.objects.create(
+                user =  self.user,
+                name = f'category{i}',
+                budget = SpendingLimit.objects.create(
+                    budget= "200.00",
+                    timeframe="/month"
+                )
+            )
+
     def test_budget_list_url(self):
         self.assertEqual(self.url, '/budget_list/')
 
@@ -42,6 +54,26 @@ class BudgetListViewTestCase(TestCase, LoginRequiredTester):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget_list.html')
+    
+    def test_get_budget_list_with_pagination(self):
+        self.client.login(email=self.user.email, password="Password123")
+        self._create_test_category_budgets(settings.BUDGETS_PER_PAGE*2)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['budgets']), settings.BUDGETS_PER_PAGE)
+        self.assertTemplateUsed(response, 'budget_list.html')
+        self.assertTrue(response.context['is_paginated'])
+        page_one_url = reverse('budget_list') + '?page=1'
+        response = self.client.get(page_one_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['budgets']), settings.BUDGETS_PER_PAGE)
+        self.assertTemplateUsed(response, 'budget_list.html')
+        page_two_url = reverse('budget_list') + '?page=2'
+        response = self.client.get(page_two_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['budgets']), settings.BUDGETS_PER_PAGE)
+        self.assertTemplateUsed(response, 'budget_list.html')
+
 
     def test_view_redirects_to_login_if_not_logged_in(self):
         self.assertLoginRequired(self.url)
@@ -83,7 +115,7 @@ class BudgetListViewTestCase(TestCase, LoginRequiredTester):
     def test_budget_list_does_not_show_other_user_budgets(self):
         self.client.login(email=self.user.email, password='Password123')
         response = self.client.get(self.url)
-        self.assertEqual(len(response.context['budget']), 4)
+        self.assertEqual(len(response.context['budgets']), 4)
         self.assertEqual(len(self.user.get_categories()),3)
         self.assertNotContains(response, 'Utilities')
         

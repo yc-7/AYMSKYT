@@ -26,6 +26,16 @@ class SpendingLimitFormTestCase(TestCase):
         form = SpendingLimitForm(data = self.form_input)
         self.assertFalse(form.is_valid())
 
+    def test_form_rejects_negative_budget(self):
+        self.form_input['budget'] = '-100'
+        form = SpendingLimitForm(data = self.form_input)
+        self.assertFalse(form.is_valid())
+
+    def test_form_rejects_zero_budget(self):
+        self.form_input['budget'] = '0'
+        form = SpendingLimitForm(data = self.form_input)
+        self.assertFalse(form.is_valid())
+
     def test_form_rejects_blank_timeframe(self):
         self.form_input['timeframe'] = ''
         form = SpendingLimitForm(data = self.form_input)

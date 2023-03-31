@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
+from minted.mixins import AdminProhibitedMixin
 from django.views.generic import ListView
 from minted.decorators import staff_prohibited
 from minted.forms import *
@@ -9,7 +10,7 @@ from minted.views.expenditure_views.expenditure_receipt_functions import handle_
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 
-class CategoryExpenditureListView(LoginRequiredMixin, ListView):
+class CategoryExpenditureListView(AdminProhibitedMixin, LoginRequiredMixin, ListView):
     """View that displays a user's expenditure in a specific category"""
 
     model = Expenditure

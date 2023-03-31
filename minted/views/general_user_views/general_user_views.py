@@ -106,6 +106,7 @@ def dashboard(request):
             update_streak(request.user)
     return dashboard_analytics(request)
 
+@staff_prohibited
 def help_page(request):
     return render(request, 'help_page.html')
 
@@ -136,28 +137,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
         messages.add_message(self.request, messages.SUCCESS, 'Profile updated')
         return reverse('profile')
-
-@staff_prohibited
-def edit_spending_limit(request):
-    if request.method == 'POST':
-        if request.user.budget is not None:
-            form = SpendingLimitForm(request.POST, instance=request.user.budget)
-        else:
-            form = SpendingLimitForm(request.POST)
-        if form.is_valid():
-            new_spending = form.save()
-            request.user.budget = new_spending
-            request.user.save()
-            messages.success(request, 'Your spending limits were successfully updated!')
-            return redirect('profile')
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        if request.user.budget is not None:
-            form = SpendingLimitForm(instance= request.user.budget)
-        else:
-            form = SpendingLimitForm()
-    return render(request, 'edit_spending_limit.html', {'form': form})
 
 class PasswordView(LoginRequiredMixin, FormView):
     """View that handles password change requests"""

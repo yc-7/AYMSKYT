@@ -1,4 +1,4 @@
-from minted.views.budget_views import *  
+from minted.views.budget_views.budget_views_functions import *  
 from minted.models import *
 import datetime
 from datetime import datetime, timedelta
@@ -7,7 +7,16 @@ import pytz
 import math
 
 def reward_streak_points(user):
-    points_rewarded = (user.streak_data.streak % 7) * 10
+    if (user.streak_data.streak % 7) == 0:
+        points_rewarded = 70
+    else:
+        points_rewarded= (user.streak_data.streak % 7)
+        
+    user.points += points_rewarded 
+    user.save()
+    
+def reward_login_points(user):
+    points_rewarded = 5
     user.points += points_rewarded 
     user.save()
 
@@ -37,7 +46,7 @@ def calculate_budget_points(user, all_budgets, category):
 
 def reward_budget_points(user):
     categories = user.get_categories()
-    all_budgets = generate_budget_list(user, categories)
+    all_budgets = get_budgets(user, categories)
     today = str(timezone.now().date())
 
     if not all_budgets:
@@ -53,7 +62,7 @@ def reward_budget_points(user):
 
 def user_has_budget_ending_today(user):
     categories = user.get_categories()
-    all_budgets = generate_budget_list(user, categories)
+    all_budgets = get_budgets(user, categories)
     today = str(datetime.now().date())
 
     for category in all_budgets:
@@ -72,13 +81,15 @@ def update_streak(user):
 
     if days_since_last_login >= 2:
         user.streak_data.streak = 1
+        reward_login_points(user)
     
     elif days_since_last_login == 1:
         user.streak_data.streak += 1
+        reward_streak_points(user)
+        reward_login_points(user)
     
     else:
         return
     
-    reward_streak_points(user)
     user.streak_data.last_login_time = datetime.now(pytz.utc)
     user.streak_data.save()

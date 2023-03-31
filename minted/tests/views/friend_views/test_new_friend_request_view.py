@@ -2,9 +2,9 @@ from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from minted.models import User, FriendRequest
-from minted.tests.helpers import LoginRequiredTester
+from minted.tests.helpers import LoginRequiredTester, AdminProhibitedTester
 
-class NewFriendViewTest(TestCase, LoginRequiredTester):
+class NewFriendViewTest(TestCase, LoginRequiredTester, AdminProhibitedTester):
 
     fixtures = [
         'minted/tests/fixtures/default_user.json',
@@ -32,6 +32,7 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
                 to_user = self.other_user
         )
         self.url = reverse('friend_request')
+        self.admin_user = User.objects.get(pk=2)
     
     def _create_test_requests(self, request_count):
         for user_id in range(request_count):
@@ -53,6 +54,10 @@ class NewFriendViewTest(TestCase, LoginRequiredTester):
 
     def test_view_redirects_to_login_if_not_logged_in(self):
         self.assertLoginRequired(self.url)
+
+    def test_view_redirects_if_admin_user(self):
+        self.client.force_login(self.admin_user)
+        self.assertAdminProhibited(self.url)
         
     def test_unsuccessful_friend_request(self):
         self.client.login(email=self.user.email, password="Password123")
