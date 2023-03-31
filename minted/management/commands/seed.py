@@ -7,11 +7,12 @@ import datetime
 
 class Command(BaseCommand):
 
-    NUMBER_OF_USERS_TO_CREATE = 10
+    NUMBER_OF_USERS_TO_CREATE = 100
     PASSWORD_FOR_ALL_USERS = 'Password123'
     
     CATEGORY_NAMES = ['Food', 'Transportation', 'Entertainment', 'Healthcare',
                       'Rent', 'Utilities', 'Insurance', 'Other']
+    CATEGORY_COLOURS = ['Red', 'Blue', 'Purple', 'Green', 'Orange', 'Pink', 'Yellow', 'Indigo']
     
     POINTS_START_RANGE = 10
     POINTS_END_RANGE = 200
@@ -107,11 +108,12 @@ class Command(BaseCommand):
     def create_categories_and_expenditures_for_user(self, user):
         num_categories_to_create = random.randint(1, len(self.CATEGORY_NAMES))
         category_names = self.CATEGORY_NAMES[:num_categories_to_create]
-        for category_name in category_names:
+        for index,category_name in enumerate(category_names):
             category = Category.objects.create(
                 user = user,
                 name = category_name,
-                budget = self.create_budget()
+                budget = self.create_budget(),
+                colour = self.CATEGORY_COLOURS[index]
             )
             self.create_expenditures(category)
 
