@@ -243,7 +243,7 @@
     
     nameElements.forEach(function(element) {
       const originalName = element.getAttribute('data-name');
-      const newName = originalName.replace(/ /g, '_');
+      const newName = originalName.replace(/ /g, '_').replace(/(:|\.|\[|\]|,|=|@|+)/g, '\\$1');
       
       if (element.classList.contains('accordion-button')) {
         element.setAttribute('data-bs-target', '#collapse-' + newName);
