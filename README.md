@@ -100,6 +100,10 @@ Seed the development database with:
 ```
 $ python3 manage.py seed
 ```
+Run the website locally with:
+```
+$ python3 manage.py runserver
+```
 Run all tests with:
 ```
 $ python3 manage.py test
@@ -113,6 +117,15 @@ To remove cronjobs after development:
 ```
 $ python3 manage.py crontab remove
 ```
+Get test code coverage report with:
+```
+$ coverage report
+```
+Get more detailed test code coverage report with:
+```
+$ coverage html
+```
+After running the command go into the project directory, then open index.html
 
 ## Sources:
 
