@@ -1,4 +1,4 @@
-from minted.views.budget_views import *  
+from minted.views.budget_views_functions import *  
 from minted.models import *
 import datetime
 from datetime import datetime, timedelta
@@ -37,7 +37,7 @@ def calculate_budget_points(user, all_budgets, category):
 
 def reward_budget_points(user):
     categories = user.get_categories()
-    all_budgets = generate_budget_list(user, categories)
+    all_budgets = get_budgets(user, categories)
     today = str(timezone.now().date())
 
     if not all_budgets:
@@ -53,7 +53,7 @@ def reward_budget_points(user):
 
 def user_has_budget_ending_today(user):
     categories = user.get_categories()
-    all_budgets = generate_budget_list(user, categories)
+    all_budgets = get_budgets(user, categories)
     today = str(datetime.now().date())
 
     for category in all_budgets:

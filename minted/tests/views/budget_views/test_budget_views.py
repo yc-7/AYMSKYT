@@ -83,7 +83,7 @@ class BudgetListViewTestCase(TestCase, LoginRequiredTester):
     def test_budget_list_does_not_show_other_user_budgets(self):
         self.client.login(email=self.user.email, password='Password123')
         response = self.client.get(self.url)
-        self.assertEqual(len(response.context['budget']), 4)
+        self.assertEqual(len(response.context['budgets']), 4)
         self.assertEqual(len(self.user.get_categories()),3)
         self.assertNotContains(response, 'Utilities')
         

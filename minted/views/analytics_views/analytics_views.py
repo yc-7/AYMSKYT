@@ -4,7 +4,7 @@ from minted.forms import TimeFrameForm
 from minted.models import Category , Expenditure
 from minted.views.analytics_views.analytics_view_functions import *
 import datetime
-from minted.views.budget_views import *  
+from minted.views.budget_views_functions import *  
 
 @staff_prohibited
 def view_analytics(request):
@@ -32,7 +32,7 @@ def view_analytics(request):
     if not categories:
         return render(request, 'analytics.html', {'form': form})
 
-    all_budgets = generate_budget_list(request.user, categories)
+    all_budgets = get_budgets(request.user, categories)
     colours = [category.colour for category in categories]
     category_pie_chart_data = generate_category_pie_chart_dataset(categories, start_date, end_date, float(budget))
     category_line_chart_data = generate_category_line_chart_dataset(categories, start_date, end_date, time_interval)
@@ -66,7 +66,7 @@ def view_analytics(request):
 def dashboard_analytics(request):
     
     categories = Category.objects.filter(user = request.user)
-    all_budgets = generate_budget_list(request.user, categories)
+    all_budgets = get_budgets(request.user, categories)
     user_budget = all_budgets[-1]
 
     start_date = user_budget.start_date

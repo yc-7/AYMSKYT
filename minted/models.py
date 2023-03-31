@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from .user_manager import UserManager
-from django.core.validators import MinValueValidator
 from .model_functions import *
 import datetime
 from random import randint
@@ -31,17 +30,17 @@ class SpendingLimit(models.Model):
     """Model for spending limits"""
 
     TIMEFRAME = [
-    ('/week', 'week'),
-    ('/month', 'month'),
-    ('/quarter', 'quarter'),
-    ('/year', 'year'),
-]
+        ('/week', 'week'),
+        ('/month', 'month'),
+        ('/quarter', 'quarter'),
+        ('/year', 'year'),
+    ]
 
-    budget = models.DecimalField(max_digits = 12, decimal_places = 2, blank=False)
-    timeframe = models.CharField(max_length=11, choices=TIMEFRAME, blank=False)
+    budget = models.DecimalField(max_digits = 12, validators = [MinValueValidator(0.01)], decimal_places = 2)
+    timeframe = models.CharField(max_length = 10, choices = TIMEFRAME)
 
     def __str__(self):
-        return ' £' + str(self.budget) + str(self.timeframe)
+        return '£' + str(self.budget) + str(self.timeframe)
 
 class Subscription(models.Model):
     """Model for subscription options"""
