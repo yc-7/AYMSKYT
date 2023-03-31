@@ -8,55 +8,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'chartjs_chart_generators.js' %}"></script>
 
-<div class="container " style="font-size: large;" >
-  <h1 style="padding-bottom: 2%; font-weight:800;">Analytics</h1>
-  <form action="{% url 'view_analytics' %}" method="post" class="row g-2 align-items-center">
-    {% csrf_token %}
-    {% include 'partials/bootstrap_form.html' with form=form %}
-    <div class="col-auto">
-      <input type="submit" value="Update" class="btn btn-lg custom-button">
-    </div>
-  </form>
-</div>
-
-
-<section class="p-5">
-  
-  {{ colours|json_script:"colours"  }}
-  {{ category_pie_chart_data|json_script:"categoryPieChartData" }}
-  {{ category_line_chart_data|json_script:"lineChartData" }}
-  {{ time_interval|json_script:"timeInterval"}}
-  {{ start_date|json_script:"startDate"}}
-  {{ end_date|json_script:"endDate"}}
-
-  <div class="container">
-    {% if stats.budget|length > 1 %}
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-      <div class="col">
-        <div class="card bg-light">
-          <div class="card-body text-center">
-            <canvas id="pie-chart"></canvas>
-          </div>
-        </div>
-      </div>
-      <div class="col">  
-        <div class="card bg-light">
-          <div class="card-body text-center">
-            <canvas id="line-graph"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% else %}
-    <div class="card bg-light">
-      <div class="card-body text-center">
-        <h4> You have no graph data to view. Create some categories and add expenditures to get started! </h4>
-      </div>
-    </div> 
-    {% endif %}
-    
-  </div>
-</section>
+{% include 'analytics/partials/analytics_time_frame_form.html' %}
+{% include 'analytics/partials/charts.html' %}
 
 <section>
   <div class="container" style="padding-bottom: 2%;">

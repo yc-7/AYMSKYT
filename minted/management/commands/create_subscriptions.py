@@ -6,7 +6,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         Subscription.objects.create(
             name = 'Budgets',
-            description = "Alerts for staying on and going over budgets"
         )
 
         Subscription.objects.create(
